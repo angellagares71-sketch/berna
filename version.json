@@ -1,0 +1,137 @@
+{
+  "version": "1.3.0",
+  "fecha": "2026-08-27",
+  "novedades": [
+    "Maneja el Skyrim: arranca Mantella, lee sus fallos y busca mejor modelo para los NPC",
+    "Se actualiza solo por internet desde el desplegable de arriba",
+    "Botones para apagar la camara y para que te escuche siempre",
+    "Le llamas Oye Berna y te contesta sin pulsar nada",
+    "Esta pendiente de lo que haces y te avisa si te ve atascado"
+  ],
+  "archivos": {
+    "ACTUALIZACIONES-COMO-ACTIVARLO.txt": {
+      "sha256": "076b68ec91720cab49c03cfcf59605751f77bd8d1f5fafe63e28085343b7a49c",
+      "bytes": 6586
+    },
+    "Asistente.bat": {
+      "sha256": "5d0b718fe5392e2d350ce4799660b8492965e1a0cf7e8095e47ab19388cbcd0a",
+      "bytes": 87
+    },
+    "CORREO-COMO-ACTIVARLO.txt": {
+      "sha256": "98e4bd9523d8ff22607e5eb49205cc8202ae9c6bb06230a25f45431053d8e7eb",
+      "bytes": 3854
+    },
+    "Diagnostico (si falla).bat": {
+      "sha256": "75caf0a33650c33d4cdb4152c74d193c9315ed3533aa9607dd56b85f70ec75bb",
+      "bytes": 209
+    },
+    "GOOGLE-COMO-ACTIVARLO.txt": {
+      "sha256": "21f779e784dd28cfd16c538141f68abce9a41e81a891b311c9fee836c5b185b6",
+      "bytes": 5056
+    },
+    "LEEME.txt": {
+      "sha256": "b842c307f913bb98c75816d9b83df1727ed9f623c320770ffec269f2aa756d77",
+      "bytes": 22895
+    },
+    "actualizaciones.py": {
+      "sha256": "2add0e0b7b361af4598dd3f942c48c196b80acf9facebf04abf8e3d59c170208",
+      "bytes": 16778
+    },
+    "agenda.py": {
+      "sha256": "5f4584070ab99e19e88ef1c13c044d0983d4bda2d6029cd664206d67469c7297",
+      "bytes": 13451
+    },
+    "asistente.py": {
+      "sha256": "c7ea763234239e2c048016e5da0cf7a8647322896579bf5f78a02784f8ca4167",
+      "bytes": 78726
+    },
+    "autorizar_google.py": {
+      "sha256": "7f198d3dc8a994ef73ad20aabc16bba1f4c0f7f59b22c8dd4834fb5330eedfd4",
+      "bytes": 385
+    },
+    "camara.py": {
+      "sha256": "2e8b5fd3aa038bfd51e033e480aa50f264980fad423e005a7fc54fa0b181ba48",
+      "bytes": 20680
+    },
+    "cantar.py": {
+      "sha256": "2294480dc13bab617d09b34ddc159360c8f5a37fabc2c988d8c3b61f9898e923",
+      "bytes": 15903
+    },
+    "cuentas.py": {
+      "sha256": "643a9dc43f412cfe62557a133fd4738265059a0d438f5c34e9c142059cf14119",
+      "bytes": 15433
+    },
+    "dron.py": {
+      "sha256": "a7f874c75cd900df27c477b20d2f5d1e465e896c163eb3d27382ec1bba636910",
+      "bytes": 13078
+    },
+    "estilos.py": {
+      "sha256": "f72bfb135a2efef8fe3df83716f99d260cab5e3d09e63257284ae1fcfd337b51",
+      "bytes": 25863
+    },
+    "herramientas.py": {
+      "sha256": "9863e545c5e3b20a825fbbda25edf8620189912be72677464cb159357fa223bd",
+      "bytes": 87673
+    },
+    "instalador.py": {
+      "sha256": "be30d1a40d6bbe06da05315d25a45bea2c68ac46560f1cae9180fe531196dcc2",
+      "bytes": 22783
+    },
+    "internet.py": {
+      "sha256": "df16d8b37b0cb3bdaa7f29acc0ac9955c7f71a5a3bcaeb580086f5cf596f1868",
+      "bytes": 12370
+    },
+    "manos.py": {
+      "sha256": "475ad20f8a693040462a8c117e0d225e62f284e8bb722455a3c4487f3a71d5a9",
+      "bytes": 32858
+    },
+    "mantella.py": {
+      "sha256": "534ac953aed57f4e64808558370946601670641c645794c85dc935703b4d32eb",
+      "bytes": 52914
+    },
+    "medios.py": {
+      "sha256": "967ac5663a23aadab10329c740f48c4bab54c79775bfc297f67dc1171dabe923",
+      "bytes": 20159
+    },
+    "muneco.py": {
+      "sha256": "6bd5e09975d726bc363445cdb8d3249f76e45a260144bae479abacac1c7e978e",
+      "bytes": 20635
+    },
+    "operar.py": {
+      "sha256": "0756c625cf48e26512020072cd915c71732eef6cb6f5b2a905c4e1b0ecf70f41",
+      "bytes": 10006
+    },
+    "oportunidades.py": {
+      "sha256": "6c659411647fa4f86667f8739937d5d8f8e19f69057f219f929c3e60c7152a00",
+      "bytes": 15036
+    },
+    "papeles.py": {
+      "sha256": "04396b274bbb35e157ddc53e5ed05e92759b14679a70b4bfdd8bcd2f7d81a37f",
+      "bytes": 14370
+    },
+    "sincronizar-al-terminar.bat": {
+      "sha256": "39ca3f1c66f4e61f3bad4a5afe11b5e63f020c106dff61a542941559601bcaec",
+      "bytes": 1108
+    },
+    "taller.py": {
+      "sha256": "46dfb0414ffc35e354a67e9c3f3333a0b6befb1a194ef13faf1661cfee63515a",
+      "bytes": 25389
+    },
+    "tareas.py": {
+      "sha256": "315ac69cbc73de631e938eac2a6f4ea39c3f298bcb13b1204ea7185808dc4622",
+      "bytes": 17117
+    },
+    "vigilante.py": {
+      "sha256": "b08a95588c6064e78d748b90a5e4872c43923248ca5c849e2281ce42055beabd",
+      "bytes": 12389
+    },
+    "vista.py": {
+      "sha256": "0ddcab47d7af6488e3bf5bcdb5560903208ab5b4046582201d1d44f14cde19dd",
+      "bytes": 8725
+    },
+    "whatsapp.py": {
+      "sha256": "7c831700a294529aea7160a3bfc8612cd6e782bc44c7423ef3df23c4218b0616",
+      "bytes": 8792
+    }
+  }
+}

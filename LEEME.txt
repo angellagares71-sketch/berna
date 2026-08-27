@@ -1,0 +1,589 @@
+========================================================
+  BERNA  -  tu asistente personal
+========================================================
+
+COMO ABRIRLO
+  Doble clic en el icono "Berna" del escritorio.
+  Tarda unos 10 segundos en arrancar. Cuando la cara
+  pone "Listo" en verde, ya puedes hablarle.
+
+
+LA CARA
+  No gesticula al azar. La boca se abre segun la fuerza
+  real del audio que esta sonando, asi que mueve los
+  labios de verdad con lo que dice.
+  Debajo siempre pone lo que esta haciendo:
+     Listo ............ esperandote
+     Te escucho ....... grabando (el aro late con tu voz)
+     Pensando ......... hablando con el modelo
+     Trabajando ....... usando una herramienta
+     Hablando ......... contestandote en voz alta
+
+
+QUE PUEDE HACER
+  - HABLARLE: pulsa "Hablar", di lo que quieras, vuelve
+    a pulsar. Te contesta en voz alta.
+  - ESCRIBIRLE: escribe abajo y pulsa Enter.
+    (Mayusculas+Enter salta de linea sin enviar.)
+  - MANDARLE COSAS: boton "Adjuntar". Lee .txt, .pdf,
+    .docx, .csv, .json y codigo.
+  - CALLARLO: boton "Callar" corta la voz al momento.
+  - Cambiar entre voz masculina y femenina arriba a la derecha.
+
+
+SUS HERRAMIENTAS  (las usa solo, no hay que pedirlas)
+
+  INTERNET
+    Buscar en internet          precios, noticias, lo que sea
+    Leer una pagina web         entra y te la resume
+    El tiempo                   ahora y proximos dias
+
+  MIRAR COSAS  (Berna VE)
+    Mirar tu pantalla           "mira mi pantalla y dime que
+                                me esta pidiendo esto"
+    Mirar una imagen            cualquier foto o captura del PC
+    Mirar la ultima captura     la que acabas de hacer
+    Leer un documento escaneado saca el texto de un PDF de fotos
+    OJO: para verla, la imagen se manda a Google. Por eso solo
+    mira cuando TU se lo pides, nunca por su cuenta.
+
+  TU ORDENADOR
+    Buscar archivos             "no encuentro la factura de..."
+    Listar una carpeta          que hay dentro de tal sitio
+    Leer un archivo             txt, pdf, docx, csv, codigo
+    Estado del PC               RAM, disco, bateria, que consume
+    Escribir un archivo         TE PIDE PERMISO antes
+    Abrir algo en Windows       TE PIDE PERMISO antes
+
+  TUS ARCHIVOS A FONDO
+    Buscar DENTRO de archivos   cuando recuerdas lo que ponia
+                                pero no como se llamaba
+    Leer hojas de Excel         .xlsx
+
+  TUS CUENTAS  (hay que activarlas, ver mas abajo)
+    Gmail                       ver y buscar tus correos
+    Google Calendar             ver tu agenda
+                                crear citas (TE PIDE PERMISO)
+    Google Drive                buscar y leer tus documentos
+    Correo IMAP                 para cuentas que no sean Gmail
+
+  OPERAR EL ORDENADOR
+    Abrir un programa           "abreme el LMMS", "pon el Steam"
+                                TE PIDE PERMISO
+    Cerrar un programa          TE PIDE PERMISO
+    Ver que programas tienes    los 80 y pico que reconoce
+    Ver tus ventanas abiertas
+    Volumen                     subir, bajar, silenciar
+    Multimedia                  play, pausa, siguiente, anterior
+    Captura de pantalla         va a Imagenes\Berna
+    Portapapeles                leer lo que copiaste,
+                                o dejarte algo copiado
+
+  WHATSAPP QUE TU LE EXPORTES
+    Ver los chats exportados    los .txt que hayas descargado
+    Leer una conversacion       los ultimos mensajes
+    Buscar dentro del chat      "que dijo Marta del sabado"
+    Resumir la conversacion     quien escribe, de cuando a cuando
+    No entra en tu WhatsApp: eres tu quien exporta el chat que
+    quieras. Dile "como exporto un chat" y te lo explica.
+
+  TRABAJO Y DINERO
+    Buscar encargos             segun tu perfil, con detector de
+                                timos (multinivel, trading...)
+    Investigar una actividad    que se cobra, que hace falta
+    Tu perfil                   lo que sabes hacer. Corrigelo
+                                diciendole "actualiza mi perfil"
+    Cartera de oportunidades    guardar, ver como va cada una
+    Vigilar un precio           te dice la verdad: si no consigue
+                                el precio, no se lo inventa
+    Berna NO toca dinero. Ni compra, ni paga, ni opera, ni
+    mete datos de tarjeta. Te deja el trabajo hecho hasta la
+    puerta; presentarte, comprar o firmar lo haces tu.
+
+  OTRAS
+    Hora y fecha                para calcular plazos
+    Calcular                    operaciones exactas
+    Recordar / Ver / Olvidar    memoria permanente
+
+
+TOCAR EL ORDENADOR: EL TECLADO Y EL RATON      NUEVO
+                                          TE PIDE PERMISO
+  Berna ya no solo te dice donde pinchar: pincha el.
+  Mueve el raton, pulsa botones, escribe textos y usa
+  atajos de teclado como si fueras tu.
+
+  COMO SE LE PIDE
+    "Berna, rellename este formulario"
+    "escribe esto en el Word que tengo abierto"
+    "ordename los archivos de la carpeta Dron"
+    "dale a guardar"
+
+  ANTES DE EMPEZAR TE PIDE LAS MANOS
+    Sale una ventana diciendote que va a hacer y cuantos
+    minutos necesita. Si dices que si, durante ese rato ya
+    no te pregunta en cada tecla (seria inaguantable). Como
+    mucho son 15 minutos, y se apaga solo al acabarse.
+
+  PARA PARARLO EN SECO
+    DEJA PULSADA LA TECLA ESC UN SEGUNDO.
+    Suelta el teclado al momento. Tambien vale decirle
+    "para" y lo suelta.
+
+  LO QUE NO VA A HACER, DIGAS LO QUE DIGAS
+    - Escribir contrasenas, claves, IBAN o numeros de
+      tarjeta. Eso lo tecleas tu. Si se los dictas, se niega.
+    - Tocar nada si delante tienes el banco, una pantalla
+      de pago, un gestor de contrasenas o una ventana de
+      seguridad de Windows.
+    - Moverte las manos porque se lo diga una pagina web,
+      un correo o un chat. Solo te obedece a ti.
+
+  Y TODO QUEDA APUNTADO
+    En tareas\registro.log: que hizo, cuando y donde.
+
+ACENTOS Y PERSONALIDADES                       NUEVO
+  Berna sabe hablar con 22 acentos y con 16
+  personalidades, y se cambian hablando. Basta con
+  decirselo:
+
+    "ponte andaluz"        "hablame en mexicano"
+    "ahora argentino"      "ponte gallego"
+    "se un abuelo"         "ponte de mayordomo"
+    "habla normal"         (le quita todo)
+
+  Se pueden mezclar: un abuelo cubano, un pirata
+  gallego, un sargento argentino.
+
+  ACENTOS
+    De Espana:  andaluz, gaditano, gallego, catalan,
+                vasco, canario, madrileno, neutro
+    De America: mexicano, argentino, uruguayo, cubano,
+                colombiano, venezolano, chileno,
+                peruano, dominicano
+    De fuera:   italiano, frances, ingles, aleman,
+                brasileno
+
+  PERSONALIDADES
+    normal, chulillo, abuelo, mayordomo, sargento,
+    pirata, poeta, cientifico, comercial, gracioso,
+    motivador, misterioso, friki, narrador,
+    futbolero, borde
+
+  COMO SUENA DE VERDAD
+    Escribe las palabras tal como suenan ("ehtamo" en
+    vez de "estamos"), y como la voz lee lo que hay
+    escrito, el acento SE OYE. Ademas cada acento
+    tiene su velocidad, y el mexicano usa una voz
+    mexicana de verdad.
+
+  Pregunta "¿que acentos sabes hacer?" y te los cuenta.
+
+LLEVARTELO A OTRO ORDENADOR                    NUEVO
+  Tienes en el escritorio una carpeta que se llama
+  "Instalar Berna". Esa carpeta es Berna entero,
+  preparado para instalarse en cualquier sitio.
+
+  COMO SE USA
+    1. Copiala a un pen (ocupa unos 613 MB).
+    2. En el ordenador nuevo, doble clic en INSTALAR.bat
+    3. Espera entre tres y diez minutos.
+    4. Aparece un acceso directo "Berna" en el escritorio.
+
+  NO NECESITA INTERNET NI SER ADMINISTRADOR
+    Lleva dentro el Python, los 59 paquetes, las tres
+    voces, los modelos de reconocer caras y el del oido.
+
+  OJO CON UNA COSA
+    Dentro hay una carpeta TUS-DATOS-PRIVADOS con TUS
+    CLAVES y lo que Berna recuerda de ti. Gracias a ella
+    la instalacion nueva funciona a la primera. Pero si le
+    prestas el pen a alguien, BORRA ESA CARPETA.
+    (Tu permiso de Google y las caras que conoce NO van
+    en el pen a proposito.)
+
+  SE MANTIENE SOLA
+    Cada vez que se le cambie algo a Berna, se vuelca a
+    esa carpeta con una orden, para que lo que te lleves
+    sea siempre la ultima version:
+
+      C:\Asistente
+      C:\Asistente\venv\Scripts\python.exe C:\Asistente\instalador.py
+
+BERNA PROGRAMA POR TI                          NUEVO
+                                          TE PIDE PERMISO
+  Si necesitas un programa, se lo pides y te lo hace. No
+  te explica como se hace: lo escribe, lo prueba, y si
+  falla lo arregla el solo hasta que funciona.
+
+  COMO SE LE PIDE
+    "hazme un programa que me ordene las fotos por fecha"
+    "necesito una calculadora de presupuestos del dron"
+    "hazme una pagina web con mis trabajos"
+    "que programas me has hecho?"
+
+  COMO TRABAJA
+    1. Crea una carpeta para el programa.
+    2. Escribe el codigo.
+    3. LO EJECUTA. Aqui esta la gracia: si peta, lee el
+       error, mira que linea falla y lo corrige. Y otra
+       vez, hasta que funciona.
+    4. Si necesita alguna libreria, se la instala.
+    5. Cuando ya va, te lo deja en el escritorio con un
+       acceso directo si se lo pides.
+
+  DONDE QUEDAN
+    En C:\Asistente\programas, una carpeta por programa,
+    con un LEEME.txt dentro explicando para que sirve.
+    Viajan en el pen con tus datos.
+
+  LO QUE NO VA A HACER
+    Ejecutar codigo que borre Windows, toque el registro
+    o espie el teclado: eso se niega aunque le insistas.
+    Y no programa nada que le haya dicho una pagina web o
+    un correo, solo lo que le pidas tu.
+
+  YA TIENES DOS HECHOS DE PRUEBA: 'dias_fin_ano' y
+  'letras_grandes'. Pidele que te los ejecute y los ves.
+
+SKYRIM Y SUS NPC PARLANTES                     NUEVO
+                                          TE PIDE PERMISO
+  Berna te lleva el Skyrim con Mantella, que es lo que hace
+  que los NPC hablen de verdad, en espanol y por voz.
+
+  Para jugar:
+    "Berna, ponme el Skyrim"
+  Te abre Steam, el juego con SKSE desde Mod Organizer y
+  Mantella, todo de una vez.
+
+  Si los NPC no te contestan, o el ordenador hace un ruido
+  raro de TOS mientras juegas, diselo. Ese ruido es el aviso
+  de error de Mantella. El te lo mira solo y te dice que pasa
+  en cristiano. Hay tres averias que suenan igual:
+    - Se ha acabado la cuota del dia. Solo cabe esperar.
+    - El modelo esta saturado. Se cambia de modelo.
+    - El modelo piensa en voz alta y Mantella tira lo que
+      dice. Tambien se cambia de modelo.
+
+  En los dos ultimos, Berna te lo arregla: prueba varios
+  modelos con las mismas instrucciones que usa Mantella, los
+  puntua (si hablan espanol, si se quedan en personaje y
+  cuanto tardan) y te ofrece el mejor. No lo cambia sin que
+  tu digas que si.
+
+  Y si le pides mejorar Mantella, te repasa los ajustes y te
+  propone lo que se puede afinar. Todo lo que toque lleva
+  copia de seguridad del config antes.
+
+  Tambien puedes preguntarle con quien has hablado en el
+  juego y que se dijo.
+
+
+PONERSE AL DIA POR INTERNET                    NUEVO
+                                          TE PIDE PERMISO
+  Arriba del todo de la ventana hay un desplegable que pone
+  "Berna". Dentro:
+
+    Buscar actualizaciones por internet
+    Que version tengo
+    Deshacer la ultima actualizacion
+    Actualizar la carpeta del pen
+
+  Con el primero Berna mira si hay version nueva, te dice
+  que trae y que archivos cambian, y solo se actualiza si
+  le dices que si. Luego hay que cerrarlo y volverlo a
+  abrir.
+
+  Tambien se lo puedes pedir hablando: "mira si hay version
+  nueva tuya".
+
+  NO SE TOCA NADA TUYO: ni tu configuracion, ni tus claves,
+  ni tu memoria, ni tu perfil, ni las caras que conoce, ni
+  los programas que te ha hecho. Y guarda copia de lo que
+  cambia, en la carpeta copias, por si hay que dar marcha
+  atras.
+
+  Si eres tu quien publica las versiones para los demas, eso
+  se monta una sola vez siguiendo el archivo
+  ACTUALIZACIONES-COMO-ACTIVARLO.txt.
+
+
+LOS DOS INTERRUPTORES: LA CAMARA Y EL OIDO     NUEVO
+
+  Debajo del muneco, a la izquierda, hay dos botones. Cada
+  uno dice en que estado esta, no lo que va a hacer, para
+  que se vea de un vistazo.
+
+  CAMARA: ENCENDIDA  /  CAMARA: APAGADA
+    Apagada, Berna no puede ver nada de nada: ni mirarte, ni
+    reconocer a nadie, ni hacer fotos. No es que se porte
+    bien, es que no puede.
+
+    Y esto es importante: BERNA PUEDE APAGARLA PERO NO
+    ENCENDERLA. Si le dices "apaga la camara", la apaga. Para
+    volver a encenderla tienes que pulsar tu el boton. Es a
+    proposito: asi no hay texto en una web ni en un correo
+    que pueda convencerle de encenderte la camara.
+
+  ESCUCHA: SIEMPRE  /  ESCUCHA: AL PULSAR
+    En "al pulsar" funciona como siempre: le hablas cuando
+    pulsas el boton Hablar.
+
+    En "siempre" te oye sin que pulses nada y se despierta
+    cuando le llamas por su nombre:
+
+        "Oye Berna, que tiempo hace"      -> te contesta
+        "Oye Berna"                       -> dice "dime" y espera
+
+    Lo que oye NO SALE DE TU ORDENADOR: lo entiende Whisper
+    ahi mismo, no se graba ningun audio, y no se manda nada a
+    internet hasta que le has llamado por su nombre. Aun asi,
+    si te incomoda tener el microfono abierto, ese boton lo
+    apaga en el acto.
+
+    Le entiende aunque el microfono le oiga regular: por
+    dentro acepta "verna", "berta" o "vetna", que es lo que
+    suele entender. Lo que NO le despierta son palabras
+    normales parecidas como "buena" o "venga".
+
+    SI NO TE OYE CUANDO LE LLAMAS, tiene arreglo en diez
+    segundos y lo haces tu:
+
+        Berna  >  Ajustar el oido
+
+    Te pide que digas "Oye Berna, que tal estas" un par de
+    veces, mide a que volumen le llegas y se queda con el
+    punto justo. Cada microfono y cada cuarto son distintos,
+    y eso no se puede adivinar de fabrica.
+
+    Y si alguna vez pone en rojo "no me llega el microfono",
+    es que se lo ha quedado otro programa. Cierra el otro y
+    se recupera solo.
+
+
+QUE ESTE PENDIENTE DE TI                       NUEVO
+
+  Tercer boton, debajo de los otros dos:
+
+      PENDIENTE DE TI: SI  /  PENDIENTE DE TI: no
+
+  Encendido, Berna sigue lo que haces desde que lo abres
+  hasta que lo apagas, y te habla EL SOLO si te ve atascado
+  o si te salta una ventana de error.
+
+  QUE MIRA EXACTAMENTE
+    Que ventana tienes delante, de que programa y cuanto
+    llevas en ella. Eso se lo pregunta a Windows: es
+    instantaneo, no cuesta nada y NO SALE DE TU ORDENADOR.
+    No graba la pantalla, no guarda fotos, y no sabe lo que
+    escribes. Solo titulos de ventana y tiempos, y se le
+    olvida al cerrarlo.
+
+  CUANDO HACE UNA FOTO DE VERDAD
+    Solo cuando hay motivo: llevas mas de 8 minutos clavado
+    en la misma ventana, o te ha saltado un error. Esa foto
+    si va a Google, que es quien la interpreta. Por eso:
+      - Como mucho 4 fotos en una hora, para no gastarte la
+        cuota que compartes con el Skyrim.
+      - NUNCA con un banco, una pantalla de pago, un gestor
+        de contrasenas o un inicio de sesion delante. Ahi no
+        mira aunque lleves una hora.
+      - Y no te avisa mas de una vez cada diez minutos, ni
+        repite el mismo aviso.
+
+  QUE LE PUEDES PREGUNTAR
+      "¿en que estoy?"
+      "¿en que se me ha ido la mañana?"
+      "¿me estas vigilando?"
+
+  Y si te agobia:
+      "Berna, dejame en paz" -> lo apaga.
+  Para volver a encenderlo lo pulsas tu, igual que la camara:
+  el solo no puede.
+
+
+ACTIVAR TUS CUENTAS
+  Estos dos pasos solo puedes darlos tu, porque hay que
+  entrar en tus propias cuentas:
+
+    GOOGLE (Gmail + Calendar + Drive)
+      Lee  C:\Asistente\GOOGLE-COMO-ACTIVARLO.txt
+      Unos 15 minutos, gratis, una sola vez.
+      NO se guarda ninguna contrasena: autorizas desde tu
+      navegador y el permiso se revoca cuando quieras.
+
+    CORREO IMAP (si tu correo no es Gmail)
+      Lee  C:\Asistente\CORREO-COMO-ACTIVARLO.txt
+      Necesita una contrasena de aplicacion que generas tu.
+
+  Berna NO puede enviar correos ni borrar nada. Solo leer.
+  Para cortarle el acceso, dile "desconecta mi Google".
+
+
+QUE LO HAGA EL POR TI  (nuevo)
+  Ya no tienes que pelearte con la consola. Cuando Claude
+  o un manual te digan "pega esto en PowerShell", diselo
+  a Berna y lo hace el:
+
+    "Berna, ejecuta esto: pip install pillow"
+    "instalame el VLC"
+    "mira si tengo algo pendiente"      <- tareas de Claude
+    "hazlo"                             <- la ejecuta
+    "leeme otra vez como fue"           <- para copiarselo a Claude
+
+  Antes de tocar nada te saca una ventana con el comando
+  ENTERO. Si no lo entiendes, preguntale que hace: te lo
+  explica en cristiano. Si no te fia, dile que NO.
+
+  Claude tambien puede dejarte el trabajo escrito en
+  C:\Asistente\tareas. Ahi hay un COMO-FUNCIONA.txt.
+  Todo lo que ejecuta queda apuntado con fecha en
+  C:\Asistente\tareas\registro.log.
+
+  Y TAMBIEN ENTRA EN INTERNET A TRAERTE COSAS:
+
+    "mira que hay para instalar que se llame 7zip"
+    "instalame el 7-Zip"          <- se lo baja e instala solo
+    "bajame este archivo: <direccion>"
+    "abreme la pagina de las claves de Google"
+
+  Cuando haya que pinchar en una web, el reparto es: el te
+  abre la pagina, mira lo que te sale y te va diciendo donde
+  pinchar. Los dedos los pones tu. Las contrasenas y las
+  tarjetas NO las escribe el nunca, ni aunque se las dictes.
+  Y bajar un archivo no es abrirlo: si hay que instalarlo,
+  te lo pide aparte.
+
+  Si sacas una clave nueva en una web, dictasela y te la
+  guarda el en config.json:  "guardame esta clave de gemini"
+
+  Y SABE CANTAR:
+
+    "cantame algo"
+    "inventate una cancion sobre el gato"
+    "cantalo con la melodia triste"
+    "cantalo mas grave"        (o mas agudo)
+
+  Melodias: alegre, nana, triste, marcha, burlona y escala.
+  Canta con su misma voz, afinado y con vibrato. Si le pides
+  una cancion conocida no te copia la letra: se inventa una
+  suya sobre lo mismo. El boton "Callar" tambien corta el
+  cante, y la boca se le mueve igual que al hablar.
+
+  HAY COSAS QUE SE NIEGA A HACER, y no insistas porque no
+  va a cambiar de opinion: formatear, borrar carpetas de
+  Windows, apagar el antivirus o el cortafuegos, crear
+  usuarios, bajarse algo de internet y ejecutarlo a ciegas,
+  y cualquier cosa de dinero. Eso, si de verdad hace falta,
+  lo haces tu a mano.
+
+
+SU MEMORIA
+  Berna se acuerda de cosas tuyas ENTRE SESIONES.
+  Cuando le cuentes algo que merezca la pena lo apunta
+  solo en C:\Asistente\memoria.json.
+  Dile "que recuerdas de mi" para que te lo lea, y
+  "olvida el numero 3" para borrar algo.
+
+
+SEGURIDAD
+  Lo que Berna lee de internet o de un archivo lo trata
+  como DATOS, nunca como ordenes. Si una pagina web intenta
+  darle instrucciones, las ignora y te avisa.
+  Y todo lo que modifica tu ordenador pasa antes por una
+  ventana de confirmacion que tienes que aceptar tu.
+  Ahora que puede EJECUTAR comandos esto importa el doble:
+  Berna solo obedece ordenes que salgan de tu boca o de
+  la carpeta de tareas. Si un comando le llega dentro de
+  una web, un correo o un documento, NO lo ejecuta y te
+  avisa de que ese texto intentaba darle ordenes.
+
+
+SI FALLA
+  1. Ejecuta "Diagnostico (si falla).bat" en C:\Asistente.
+     Abre lo mismo dejando el error escrito en pantalla.
+
+  2. "No he podido conectar con ningun modelo"
+     Los modelos gratuitos se saturan a ratos. Berna ya
+     prueba 7 por orden automaticamente: primero los de
+     Google (Gemini) y detras los de OpenRouter. Si fallan
+     todos, espera un rato.
+
+  2b. "Has gastado el cupo de hoy"
+     La clave de OpenRouter tiene un tope diario de la CUENTA
+     entera (unas 50 peticiones), no de cada modelo, asi que
+     cambiar de modelo no sirve de nada. Se reinicia solo al
+     dia siguiente. OJO: es la misma clave que usa Mantella
+     en Skyrim, o sea que se reparten el cupo entre los dos.
+     Los de Google van por cupo aparte, por eso hay dos.
+
+  3. No te oye
+     Comprueba que el microfono de Windows sea el
+     "Microphone Array (AMD Audio Device)".
+     OJO: al encender el mando DualSense, Windows a veces
+     cambia el microfono al del mando, que no tiene
+     auriculares puestos.
+
+  4. Transcribe mal
+     En config.json cambia "whisper_tam" de "base" a "small".
+     Entiende mejor pero tarda mas.
+
+
+AJUSTES  (C:\Asistente\config.json)
+  modelos ......... lista por orden de preferencia. El primero
+                    es el que usa siempre que puede.
+  clave_gemini .... la de Google (aistudio.google.com, gratis)
+  clave_busqueda .. la de Tavily, para buscar en internet.
+                    Si desaparece, la busqueda deja de ir fina.
+  voz ............. voz por defecto
+  whisper_tam ..... tiny / base / small
+  microfono ....... null = el de Windows. Si deja de oirte,
+                    mira que no se lo haya robado el mando.
+  hablar .......... si contesta en voz alta
+  memoria_turnos .. cuantos mensajes de la charla recuerda
+  personalidad .... como se comporta. Cambialo a tu gusto.
+
+
+ARCHIVOS
+  asistente.py .... el programa y la cara
+  herramientas.py . todo lo que Berna sabe hacer
+  vista.py ........ mirar la pantalla y las imagenes
+  cuentas.py ...... Gmail, Calendar, Drive y correo IMAP
+  operar.py ....... abrir programas, volumen, portapapeles
+  tareas.py ....... ejecutar por ti lo que no sabes hacer
+  internet.py ..... instalar, descargar y abrirte paginas
+  manos.py ........ el teclado y el raton de verdad
+  camara.py ....... verte y reconocer a la gente
+  muneco.py ....... el muneco con cuerpo que se mueve
+  estilos.py ...... los acentos y las personalidades
+  taller.py ....... escribir programas, probarlos y arreglarlos
+  mantella.py ..... el Skyrim y sus NPC parlantes
+  actualizaciones.py  ponerse al dia por internet
+  vigilante.py .... estar pendiente de lo que haces
+  programas\ ...... lo que te ha programado
+  instalador.py ... vuelca todo a la carpeta del pen
+  caras.json ...... las caras que conoce (borralo y las olvida)
+  cantar.py ....... ponerle notas a su voz para cantar
+  whatsapp.py ..... leer los chats que le exportes
+  oportunidades.py  buscar encargos y vigilar precios
+  memoria.json .... lo que recuerda de ti
+  perfil.json ..... lo que sabes hacer, para buscarte trabajo
+  config.json ..... los ajustes
+  google\ ......... tu permiso de Google (borralo y se corta)
+  voces\ .......... las voces en espanol
+  tareas\ ......... el buzon de trabajo que te deja Claude
+
+
+LAS CLAVES: SON DOS Y NO SE MEZCLAN
+  La de BERNA esta en config.json, aqui mismo, en
+  "clave_gemini" (Google) y "clave_api" (OpenRouter).
+
+  La de MANTELLA, para los NPC de Skyrim, esta aparte, en:
+  C:\Modding\MO2\mods\Mantella\GPT_SECRET_KEY.txt
+  Hoy esa es una clave de GOOGLE, no de OpenRouter.
+
+  Antes las dos compartian ese fichero y se lio: si vuelves a
+  apuntar Berna ahi, le mandaria a OpenRouter una clave de
+  Google y se quedaria sin cerebro. Cada uno con la suya.
+
+  Si sacas una clave nueva, dictasela a Berna y el te la
+  guarda en su sitio.

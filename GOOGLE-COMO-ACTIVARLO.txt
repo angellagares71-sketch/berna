@@ -1,0 +1,144 @@
+============================================================
+  DARLE A BERNA ACCESO A TU GOOGLE
+  (Gmail, Calendar y Drive)
+
+  Guia actualizada al 25/08/2026 para la consola NUEVA
+  de Google ("Google Auth Platform"). Si ves menus con
+  otros nombres, Google la habra vuelto a cambiar.
+============================================================
+
+POR QUE TIENES QUE HACER ESTO TU
+  Google no deja que un programa entre en tu cuenta con tu
+  contrasena. Usa un sistema de permisos: tu autorizas desde
+  tu navegador y Google entrega un permiso revocable.
+  Ese sistema exige unas credenciales que solo puedes generar
+  tu, desde tu propia cuenta.
+
+  Tu contrasena no se escribe en ningun sitio y Berna
+  nunca la ve. El permiso se revoca cuando quieras en
+  myaccount.google.com/permissions
+
+  Es gratis y se hace UNA sola vez.
+
+
+------------------------------------------------------------
+  PASO 1  -  El proyecto
+------------------------------------------------------------
+  console.cloud.google.com/projectcreate
+
+  Si arriba a la izquierda ya te sale un proyecto elegido
+  (por ejemplo "My Project 1369"), YA LO TIENES. El nombre
+  da igual, no hace falta que se llame Berna.
+
+
+------------------------------------------------------------
+  PASO 2  -  Encender las tres APIs
+------------------------------------------------------------
+  Entra en cada enlace y pulsa el boton HABILITAR:
+
+  console.cloud.google.com/apis/library/gmail.googleapis.com
+  console.cloud.google.com/apis/library/calendar-json.googleapis.com
+  console.cloud.google.com/apis/library/drive.googleapis.com
+
+  Si el boton pone "ADMINISTRAR" en vez de "HABILITAR",
+  es que ya estaba encendida. Perfecto, sigue.
+
+
+------------------------------------------------------------
+  PASO 3  -  Anadirte como usuario de prueba
+------------------------------------------------------------
+  console.cloud.google.com/auth/audience
+
+  (En el menu de la izquierda es la seccion "Publico".)
+
+  Busca "Usuarios de prueba" y pulsa "+ ADD USERS" o
+  "Anadir usuarios". Mete tu propio correo de Gmail.
+
+  *** ESTE PASO ES IMPRESCINDIBLE. Si no te anades, Google
+  te dara error justo al final, cuando vayas a autorizar. ***
+
+  Si te pide antes rellenar "Marca" (nombre de la app y
+  correo de contacto), rellenalo: nombre Berna y tu
+  correo. Tipo de usuario: EXTERNO.
+
+
+------------------------------------------------------------
+  PASO 4  -  Crear el cliente  <-- ESTE ES EL QUE GENERA
+                                   EL ARCHIVO
+------------------------------------------------------------
+  console.cloud.google.com/auth/clients
+
+  (En el menu de la izquierda es la seccion "Clientes".)
+
+  1. Pulsa "+ CREAR CLIENTE".
+  2. Tipo de aplicacion:  APLICACION DE ESCRITORIO
+     *** NO elijas "Aplicacion web". No funcionaria. ***
+  3. Nombre: Berna.  Pulsa CREAR.
+
+
+------------------------------------------------------------
+  PASO 5  -  Descargar el JSON
+------------------------------------------------------------
+  Al crearlo sale una ventana con el ID del cliente.
+  Pulsa "DESCARGAR JSON".
+
+  Si ya cerraste esa ventana: en la lista de Clientes,
+  a la derecha de la fila de Berna hay un ICONO DE
+  DESCARGA (una flecha hacia abajo). Pulsalo.
+
+  Se descarga un archivo llamado algo como
+     client_secret_1234-abcd.apps.googleusercontent.com.json
+
+
+------------------------------------------------------------
+  PASO 6  -  Colocarlo
+------------------------------------------------------------
+  1. Renombralo a exactamente:   credentials.json
+  2. Muevelo a:                  C:\Asistente\google\
+
+  Tiene que quedar asi:
+     C:\Asistente\google\credentials.json
+
+  (O simplemente dejalo en Descargas y avisa, que se
+  renombra y se mueve solo.)
+
+
+------------------------------------------------------------
+  PASO 7  -  Autorizar
+------------------------------------------------------------
+  1. Cierra Berna y vuelve a abrirlo.
+  2. Escribele:  "mira mi correo"
+  3. Se abre tu navegador en la pagina de Google.
+  4. Elige tu cuenta y pulsa Continuar.
+  5. Google avisa de que la app "no esta verificada".
+     Es normal: la app la has creado tu. Pulsa
+     "Configuracion avanzada" > "Ir a Berna (no seguro)".
+  6. Acepta los permisos.
+
+  Listo. El permiso queda en google\token.json y no te
+  vuelve a preguntar.
+
+
+------------------------------------------------------------
+  QUE PODRA HACER (Y QUE NO)
+------------------------------------------------------------
+  SIN preguntarte:
+     leer y buscar en tus correos
+     ver tu agenda
+     buscar y leer archivos de tu Drive
+
+  PIDIENDOTE CONFIRMACION en una ventana:
+     crear una cita en tu calendario
+
+  NO PUEDE (no esta programado):
+     enviar correos
+     borrar nada
+     modificar tus archivos de Drive
+
+
+------------------------------------------------------------
+  PARA CORTARLE EL ACCESO
+------------------------------------------------------------
+  Rapido:   dile a Berna "desconecta mi Google".
+  Del todo: myaccount.google.com/permissions > Quitar acceso.
+  A mano:   borra C:\Asistente\google\token.json

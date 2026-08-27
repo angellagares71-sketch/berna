@@ -1,0 +1,114 @@
+============================================================
+  DARLE A BERNA ACCESO A TU CORREO POR IMAP
+============================================================
+
+CUANDO USAR ESTO
+  IMAP sirve para cualquier correo: Gmail, Outlook, Yahoo, o
+  el de tu proveedor de internet.
+
+  Si tu correo es Gmail, es MEJOR la otra via
+  (GOOGLE-COMO-ACTIVARLO.txt), porque no necesita ninguna
+  contrasena y ademas te da agenda y Drive.
+  Usa IMAP si tu correo NO es de Google.
+
+
+POR QUE TIENES QUE HACERLO TU
+  IMAP necesita una contrasena guardada. Yo no escribo
+  contrasenas tuyas en ningun sitio, asi que el ultimo paso
+  lo das tu.
+
+  IMPORTANTE: no pongas nunca tu contrasena normal. Se usa
+  una "contrasena de aplicacion", que es una clave distinta
+  que puedes anular cuando quieras sin tocar tu cuenta.
+
+
+------------------------------------------------------------
+  PASO 1  -  Generar la contrasena de aplicacion
+------------------------------------------------------------
+  GMAIL
+    1. Necesitas la verificacion en dos pasos activada.
+    2. Entra en   myaccount.google.com/apppasswords
+    3. Nombre: Berna.  Pulsa Crear.
+    4. Te da 16 letras. Copialas (sin los espacios).
+
+  OUTLOOK / HOTMAIL
+    1. Entra en   account.microsoft.com/security
+    2. Opciones de seguridad avanzadas.
+    3. Verificacion en dos pasos activada.
+    4. "Crear una nueva contrasena de aplicacion".
+
+  OTROS PROVEEDORES
+    Busca en su web "IMAP" o "contrasena de aplicacion".
+
+
+------------------------------------------------------------
+  PASO 2  -  Rellenar la configuracion
+------------------------------------------------------------
+  Abre este archivo con el Bloc de notas:
+
+     C:\Asistente\config.json
+
+  Busca estas cuatro lineas y rellenalas:
+
+     "imap_servidor": "",
+     "imap_usuario": "",
+     "imap_password": "",
+     "imap_puerto": 993,
+
+  SERVIDORES MAS COMUNES
+     Gmail .............. imap.gmail.com        puerto 993
+     Outlook / Hotmail .. outlook.office365.com puerto 993
+     Yahoo .............. imap.mail.yahoo.com   puerto 993
+     Movistar ........... imap.movistar.es      puerto 993
+
+  EJEMPLO ya relleno:
+
+     "imap_servidor": "imap.gmail.com",
+     "imap_usuario": "alagaresrivas@gmail.com",
+     "imap_password": "abcdefghijklmnop",
+     "imap_puerto": 993,
+
+  CUIDADO AL EDITAR
+     - No quites las comillas ni las comas.
+     - El puerto va SIN comillas, es un numero.
+     - Guarda el archivo y cierra el Bloc de notas.
+
+
+------------------------------------------------------------
+  PASO 3  -  Probar
+------------------------------------------------------------
+  Cierra Berna y vuelve a abrirlo (hay que reiniciarlo
+  para que lea la configuracion nueva).
+
+  Escribele:  "comprueba mi correo"
+
+  Si algo falla te dira exactamente que.
+
+
+------------------------------------------------------------
+  QUE PODRA HACER
+------------------------------------------------------------
+  Ver tus ultimos correos y buscar entre ellos por remitente,
+  asunto o contenido.
+
+  NO puede enviar, responder ni borrar correos.
+
+
+------------------------------------------------------------
+  PARA CORTARLE EL ACCESO
+------------------------------------------------------------
+  Vacia el campo "imap_password" en config.json, o anula la
+  contrasena de aplicacion desde tu proveedor. Anular esa
+  clave no afecta a tu contrasena normal.
+
+
+------------------------------------------------------------
+  UN AVISO HONESTO
+------------------------------------------------------------
+  Esa contrasena queda guardada en texto plano dentro de
+  config.json, en tu ordenador. Quien tenga acceso a tu PC
+  puede leerla. Por eso es una contrasena de aplicacion y no
+  la tuya de verdad: si algun dia sospechas, la anulas desde
+  tu cuenta y no ha pasado nada.
+  Si esto no te convence, usa la via de Google, que no guarda
+  ninguna contrasena.

@@ -1,0 +1,189 @@
+============================================================
+  QUE BERNA SE ACTUALICE SOLO POR INTERNET
+
+  Guia del 27/08/2026. Se hace UNA vez, y a partir de ahi
+  publicar una version nueva es una sola orden.
+============================================================
+
+
+QUE VAS A CONSEGUIR
+  Que cualquiera que tenga a Berna en su ordenador pueda
+  ponerse al dia el solo: abre Berna, pincha arriba en el
+  desplegable "Berna", elige "Buscar actualizaciones por
+  internet", le sale una ventana diciendo que archivos
+  cambian, dice que si, y ya esta.
+
+  Sin pen, sin traerte el ordenador y sin que nadie tenga
+  que saber nada de informatica.
+
+
+POR QUE ESTOS PASOS LOS TIENES QUE DAR TU
+  Hace falta una cuenta de GitHub, que es donde van a vivir
+  las versiones. Yo no puedo crear cuentas ni escribir
+  contrasenas tuyas en ningun sitio, asi que la cuenta la
+  abres tu. Lo demas ya esta hecho y montado.
+
+  Es gratis y no piden tarjeta.
+
+
+ANTES DE EMPEZAR, LEE ESTO
+  El sitio de donde Berna se baja las actualizaciones es la
+  llave de todos los ordenadores que lo tengan: Berna teclea,
+  pincha, ejecuta ordenes y entra en cuentas. Quien controle
+  ese sitio, controla esos ordenadores.
+
+  Por eso, cuando crees la cuenta:
+    - Pon una contrasena que no uses en ningun otro sitio.
+    - ACTIVA LA VERIFICACION EN DOS PASOS. Esto no es un
+      consejo de manual, es la unica defensa de verdad.
+
+  Y por eso Berna, por su parte, ya viene atado: solo se baja
+  de GitHub y de ningun otro sitio, comprueba la firma de
+  cada archivo, no acepta nombres con rutas, no toca nunca tu
+  configuracion ni tus claves ni tu memoria, prueba que el
+  codigo nuevo funciona ANTES de instalarlo, guarda copia de
+  lo viejo y siempre te pregunta antes.
+
+
+------------------------------------------------------------
+  PASO 1  -  La cuenta
+------------------------------------------------------------
+
+  Entra en:      github.com/signup
+
+  Te pide correo, contrasena y un nombre de usuario. El
+  nombre de usuario que elijas hace falta luego, apuntalo.
+
+  Cuando termines, activa la verificacion en dos pasos en:
+                 github.com/settings/security
+
+
+------------------------------------------------------------
+  PASO 2  -  El sitio donde van las versiones
+------------------------------------------------------------
+
+  Entra en:      github.com/new
+
+  Rellena solo esto:
+    Repository name .... berna
+    Description ........ (dejalo vacio)
+    Publico o privado .. PUBLICO
+
+  Y MUY IMPORTANTE: NO marques ninguna de las casillas de
+  abajo ("Add a README file", ".gitignore", "license"). La
+  carpeta tiene que quedar vacia del todo.
+
+  Pulsa "Create repository".
+
+  Te quedara una direccion tipo:
+                 github.com/TUUSUARIO/berna
+
+  POR QUE PUBLICO
+    Para que Berna pueda bajarse las actualizaciones sin
+    pedirle a nadie usuario ni contrasena. Ahi solo va el
+    programa: tus claves, tu memoria, tu perfil, tus caras y
+    tu configuracion NO se suben nunca. El programa que
+    publica lo comprueba dos veces y se planta si huele una
+    clave.
+
+
+------------------------------------------------------------
+  PASO 3  -  Enlazarlo (esto se hace una sola vez)
+------------------------------------------------------------
+
+  YA ESTA TODO PREPARADO. Solo tienes que hacer doble clic en:
+
+      C:\Asistente\Enlazar-con-GitHub.bat
+
+  Te pide tu nombre de usuario de GitHub y hace el resto: deja
+  apuntado de donde se baja Berna las actualizaciones, enlaza
+  la carpeta con tu repositorio y sube la version actual.
+
+  La primera vez, GitHub te abrira el navegador para que entres
+  en tu cuenta. Eso lo haces TU: ni Berna ni Claude escriben tu
+  contrasena en ningun sitio.
+
+  (La carpeta C:\Asistente\publicacion ya es un repositorio con
+  la version 1.3.0 dentro, comprometida y lista para subir.)
+
+
+------------------------------------------------------------
+  PASO 4  -  Publicar una version
+------------------------------------------------------------
+
+  Cada vez que haya algo nuevo que repartir:
+
+    cd C:\Asistente
+    venv\Scripts\python.exe publicar_actualizacion.py 1.2.0 "Lo que trae" "Y otra cosa"
+
+  El numero sube siempre: 1.2.0, luego 1.2.1, luego 1.3.0...
+  Lo que va entre comillas es lo que van a leer los demas
+  cuando les salga el aviso, asi que escribelo en cristiano.
+
+  El programa hace todo lo demas solo: repasa que no se
+  escape ninguna clave, copia los archivos, calcula las
+  firmas, escribe la lista de versiones y lo sube.
+
+
+------------------------------------------------------------
+  PASO 5  -  Como se actualizan los demas
+------------------------------------------------------------
+
+  Ellos no tienen que configurar nada: el sitio viaja dentro
+  del programa.
+
+  Abren Berna, y arriba del todo:
+
+    Berna  >  Buscar actualizaciones por internet
+
+  Les dice que version tienen, cual hay, que trae y que
+  archivos cambian. Si dicen que si, se actualiza y les avisa
+  de que cierren Berna y lo vuelvan a abrir.
+
+  Tambien se lo pueden pedir hablando: "mira si hay una
+  version nueva tuya".
+
+  Y si algo va raro justo despues:
+
+    Berna  >  Deshacer la ultima actualizacion
+
+
+------------------------------------------------------------
+  EL HUEVO Y LA GALLINA
+------------------------------------------------------------
+
+  Las copias de Berna que ya andan por ahi no traen el
+  actualizador dentro, asi que no pueden enterarse de nada
+  por internet.
+
+  A esas hay que darles esta version UNA vez a mano, con el
+  pen o mandandoles la carpeta. De ahi en adelante ya se
+  actualizan solas.
+
+
+------------------------------------------------------------
+  SI ALGO FALLA
+------------------------------------------------------------
+
+  "no existe (404)"
+      El repositorio no existe, esta privado, o el nombre
+      esta mal escrito. Comprueba que entras en
+      github.com/TUUSUARIO/berna sin iniciar sesion.
+
+  "Todavia no esta puesto de donde bajarse las actualizaciones"
+      Falta el PASO 3. Ejecuta la orden del --repo y vuelve
+      a publicar.
+
+  "El push ha fallado"
+      GitHub no te ha reconocido. Vuelve a intentarlo y
+      identificate tu en la ventana que te salga.
+
+  "el archivo no coincide con su firma"
+      Se ha bajado mal, o alguien lo ha tocado. Berna no
+      instala nada en ese caso. Vuelve a intentarlo; si
+      sigue igual, publica otra vez desde tu ordenador.
+
+  "tiene un fallo de programacion. No instalo nada"
+      Has publicado codigo roto. Berna se ha protegido solo
+      y se ha quedado con la version de antes, que es lo que
+      tiene que hacer. Arreglalo y publica otra vez.
