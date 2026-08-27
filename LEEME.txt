@@ -401,6 +401,35 @@ QUE ESTE PENDIENTE DE TI                       NUEVO
   el solo no puede.
 
 
+LAS MANOS: AHORA SI ACIERTAN                   NUEVO
+                                          TE PIDE PERMISO
+  Antes Berna miraba la pantalla y calculaba a ojo donde
+  estaba cada boton. Fallaba casi siempre, y por dos motivos
+  a la vez: la captura se le mandaba ENCOGIDA, asi que sus
+  numeros venian en una escala y pinchaba en otra; y ademas
+  nadie le pedia coordenadas, con lo que se las inventaba.
+
+  Ahora no adivina: le pregunta a Windows, que sabe como se
+  llama cada boton y donde esta exactamente.
+
+      "Berna, dale al boton de Guardar"
+      "escribeme el correo en la casilla de Email"
+      "que botones hay en esta ventana"
+
+  El mira los controles, encuentra el que le dices y pulsa
+  en su centro exacto, sin calcular nada.
+
+  DONDE NO LLEGA
+    Los juegos y los programas de dibujar no publican sus
+    botones. Ahi sigue mirando la pantalla y yendo a ojo,
+    pero te avisa de que va a ojo.
+
+  UN DETALLE QUE TE PUEDE EXTRANAR: si el titulo de la
+  ventana lleva la palabra "banco", Berna no la toca, aunque
+  sea un banco de imagenes. Es su cerrojo de seguridad y esta
+  puesto a proposito.
+
+
 ACTIVAR TUS CUENTAS
   Estos dos pasos solo puedes darlos tu, porque hay que
   entrar en tus propias cuentas:
@@ -559,6 +588,7 @@ ARCHIVOS
   mantella.py ..... el Skyrim y sus NPC parlantes
   actualizaciones.py  ponerse al dia por internet
   vigilante.py .... estar pendiente de lo que haces
+  controles.py .... ver los botones de verdad de cada ventana
   programas\ ...... lo que te ha programado
   instalador.py ... vuelca todo a la carpeta del pen
   caras.json ...... las caras que conoce (borralo y las olvida)

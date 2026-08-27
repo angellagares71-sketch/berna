@@ -1291,6 +1291,39 @@ ESQUEMAS = [
        "Deja Berna como estaba antes de la ultima actualizacion. Usalo si algo "
        "empieza a ir raro justo despues de actualizar.", {}, []),
 
+    _t("ver_controles",
+       "Te dice QUE botones, enlaces y cuadros de texto hay en la ventana de "
+       "delante y DONDE esta cada uno exactamente. Lo dice Windows, asi que es "
+       "exacto. Usalo SIEMPRE antes de tocar nada con el raton: es mucho mejor "
+       "que mirar la pantalla y calcular a ojo.",
+       {"filtro": _S("Para quedarte solo con lo que lleve esa palabra"),
+        "ventana": _S("Titulo de la ventana. Vacio para la que este delante")}, []),
+
+    _t("pinchar_en",
+       "Pulsa el boton, el enlace o la casilla que se llame asi. ES LA FORMA "
+       "BUENA DE PINCHAR y la que tienes que usar siempre que puedas, porque "
+       "acierta seguro. Solo si esto no encuentra nada tiras de coordenadas.",
+       {"texto": _S("Lo que pone en el boton o enlace"),
+        "ventana": _S("Titulo de la ventana. Vacio para la de delante"),
+        "doble": {"type": "boolean", "description": "Doble clic"}}, ["texto"]),
+
+    _t("escribir_en",
+       "Pone el cursor en el cuadro de texto que se llame asi y escribe dentro. "
+       "Mejor que escribir_texto a secas, que escribe donde este el foco y se "
+       "acaba escribiendo en el sitio equivocado.",
+       {"campo": _S("Como se llama el cuadro, por ejemplo Nombre o Buscar"),
+        "texto": _S("Lo que hay que escribir"),
+        "ventana": _S("Titulo de la ventana. Vacio para la de delante"),
+        "intro": {"type": "boolean", "description": "Pulsar Enter al terminar"}},
+       ["campo", "texto"]),
+
+    _t("donde_esta_en_pantalla",
+       "Busca una cosa en la pantalla MIRANDOLA y te dice hacia donde cae. Es "
+       "una estimacion, no es exacto: usalo SOLO cuando ver_controles no vea "
+       "nada, que pasa en los juegos y en los programas de dibujar.",
+       {"que_busco": _S("Que hay que localizar, descrito en pocas palabras")},
+       ["que_busco"]),
+
     _t("que_sabes_hacer",
        "Repasa todo lo que puedes hacer. Usalo cuando Angel pregunte que sabes "
        "hacer, en que le puedes ayudar, o parezca perdido sobre como usarte.",
@@ -1398,6 +1431,7 @@ try:
         "mirar_pantalla": _V.mirar_pantalla,
         "mirar_imagen": _V.mirar_imagen,
         "mirar_ultima_captura": _V.mirar_ultima_captura,
+        "donde_esta_en_pantalla": _V.mirar_para_pinchar,
         "puede_ver": _V.puede_ver,
         "leer_documento_escaneado": _V.leer_documento_escaneado,
     })
@@ -1548,9 +1582,18 @@ try:
         "mover_raton": _Ma.mover_raton,
         "arrastrar_raton": _Ma.arrastrar_raton,
         "rueda_raton": _Ma.rueda_raton,
+        "pinchar_en": _Ma.pinchar_en,
+        "escribir_en": _Ma.escribir_en,
     })
 except Exception as _e:
     PROBLEMAS.append("El modulo de manos no ha cargado: %s" % _e)
+
+# ver los botones de verdad, en vez de adivinar donde estan
+try:
+    import controles as _Ct
+    _FUNCIONES["ver_controles"] = _Ct.ver_controles
+except Exception as _e:
+    PROBLEMAS.append("El modulo de controles no ha cargado: %s" % _e)
 
 # estar pendiente de lo que hace Angel
 try:
@@ -1626,6 +1669,7 @@ NECESITAN_PERMISO = {"escribir_archivo", "abrir_en_windows", "google_crear_event
                      "modo_manos", "enfocar_ventana", "escribir_texto",
                      "pulsar_teclas", "clic_raton", "mover_raton",
                      "arrastrar_raton", "rueda_raton",
+                     "pinchar_en", "escribir_en",
                      # Mantella: mirar el montaje es libre, TOCARLO no. Cambiar
                      # un ajuste o arrancarle un programa es de las suyas.
                      "mantella_cambiar_ajuste", "mantella_elegir_mejor_modelo",
@@ -1758,6 +1802,10 @@ ROTULOS = {
     "mover_raton": "moviendo el raton",
     "arrastrar_raton": "arrastrando con el raton",
     "rueda_raton": "moviendo la rueda del raton",
+    "ver_controles": "mirando que botones hay",
+    "pinchar_en": "pulsando un boton",
+    "escribir_en": "escribiendo en un cuadro",
+    "donde_esta_en_pantalla": "buscando algo en la pantalla",
     "mantella_estado": "mirando como esta Mantella",
     "mantella_revisar_fallos": "leyendo el registro de Mantella",
     "mantella_revisar_ajustes": "repasando los ajustes de Mantella",
@@ -1829,7 +1877,8 @@ GRUPOS = [
                              "personas_que_conozco", "poner_nombre_a_persona",
                              "olvidar_a_persona", "hacer_foto",
                              "apagar_la_camara"]),
-    ("Tocar el teclado y el raton", ["modo_manos", "escribir_texto",
+    ("Tocar el teclado y el raton", ["modo_manos", "ver_controles", "pinchar_en",
+                                     "escribir_en", "escribir_texto",
                                      "pulsar_teclas", "clic_raton",
                                      "arrastrar_raton", "rueda_raton",
                                      "enfocar_ventana", "parar_manos"]),

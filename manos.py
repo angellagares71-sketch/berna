@@ -837,3 +837,141 @@ def rueda_raton(pasos=3, permiso=None):
         return "Rueda girada %d pasos hacia %s." % (abs(pasos), "arriba" if pasos > 0 else "abajo")
     except Exception as e:
         return "No he podido girar la rueda: %s" % e
+
+
+# ===================================================================
+#  PINCHAR Y ESCRIBIR POR NOMBRE, sin adivinar coordenadas
+# ===================================================================
+#
+# Angel dijo el 27/08/2026 que esto "no daba pie con bola". Se midio antes de
+# tocar nada: el clic caia CLAVADO (5 de 5 en una rejilla de prueba). Lo que
+# fallaba era saber a donde apuntar, porque las coordenadas salian de que un
+# modelo se las inventara mirando una captura ENCOGIDA a 1600 px, mientras que
+# aqui se pincha en el marco de 1920. Ver controles.py para el detalle.
+#
+# Con esto ya no se adivina: Windows dice donde esta cada boton y se pincha en
+# su centro exacto. Las herramientas por coordenadas se quedan para los juegos
+# y los lienzos, que no publican sus controles.
+
+
+def _asomar(ventana):
+    """Pone delante la ventana antes de tocarla.
+
+    NO es un detalle: las coordenadas de una ventana tapada o minimizada no
+    sirven de nada, y encima se pincharia sobre lo que hubiera encima. Windows
+    da -32000 para las minimizadas, que fue lo que se vio en las pruebas.
+    """
+    if not ventana:
+        return None
+    r = enfocar_ventana(ventana, permiso=lambda aviso: True)
+    if r.startswith("Hay ") or r.startswith("No hay"):
+        return r
+    time.sleep(0.35)
+    return None
+
+
+def _centro_de(texto, ventana, tipos):
+    import controles
+    if not controles.hay_soporte():
+        return None, ("No tengo instalado uiautomation, asi que no puedo ver los "
+                      "botones por su nombre. Mira la pantalla y pincha por "
+                      "coordenadas.")
+    elegido, cands, error = controles._buscar(texto, ventana, tipos)
+    if error:
+        return None, error
+    if not elegido:
+        return None, None
+    return elegido, None
+
+
+def pinchar_en(texto, ventana="", doble=False, permiso=None):
+    """Pulsa el boton, el enlace o la casilla que se llame asi.
+
+    Es la forma BUENA de pinchar y la que hay que usar siempre que se pueda:
+    la coordenada la da Windows, no una estimacion.
+    """
+    texto = str(texto or "").strip()
+    if not texto:
+        return "Dime que quieres que pulse."
+
+    fuera = _asomar(ventana)
+    if fuera:
+        return fuera
+    elegido, error = _centro_de(texto, ventana, None)
+    if error:
+        return error
+    if not elegido:
+        return ("No veo nada que se llame '%s' en la ventana de delante. Pasame "
+                "ver_controles para saber que hay, o dime la ventana." % texto)
+
+    nombre, tipo, x, y, an, al, _c = elegido
+    fallo = _consumir("CLIC", "pulsar '%s' (en %d, %d)" % (nombre, x, y), permiso)
+    if fallo:
+        return fallo
+    try:
+        dx, dy = _a_absoluto(x, y)
+        _enviar(_raton(dx=dx, dy=dy, flags=MOUSEEVENTF_MOVE | MOUSEEVENTF_ABSOLUTE
+                       | MOUSEEVENTF_VIRTUALDESK))
+        time.sleep(0.06)
+        abajo, arriba = BOTONES["izquierdo"]
+        veces = 2 if doble is True else 1
+        for _ in range(veces):
+            _enviar(_raton(flags=abajo))
+            time.sleep(0.03)
+            _enviar(_raton(flags=arriba))
+            time.sleep(0.06)
+        time.sleep(0.25)
+        return ("Pulsado '%s' en (%d, %d). Mira ver_controles otra vez o la "
+                "pantalla para ver que ha pasado." % (nombre, x, y))
+    except Exception as e:
+        return "No he podido pulsarlo: %s" % e
+
+
+def escribir_en(campo, texto, ventana="", intro=False, permiso=None):
+    """Pincha en el cuadro de texto que se llame asi y escribe dentro.
+
+    Escribir a ciegas en la ventana de delante es como se acaba escribiendo en
+    el sitio equivocado. Aqui primero se pone el cursor donde toca.
+    """
+    campo = str(campo or "").strip()
+    if not campo:
+        return "Dime en que cuadro hay que escribir."
+
+    fuera = _asomar(ventana)
+    if fuera:
+        return fuera
+    elegido, error = _centro_de(campo, ventana,
+                                ("EditControl", "ComboBoxControl", "DocumentControl"))
+    if error:
+        return error
+    if not elegido:
+        return ("No veo ningun cuadro de texto que se llame '%s'. Pasame "
+                "ver_controles para ver como se llaman." % campo)
+
+    nombre, _tipo, x, y, _an, _al, _c = elegido
+    malo = _texto_prohibido(texto)
+    if malo:
+        _apuntar("NEGADA", str(texto)[:40], malo)
+        return ("Eso NO lo escribo yo: %s. Las claves, las tarjetas y los IBAN "
+                "los tecleas tu." % malo)
+
+    fallo = _consumir("ESCRIBIR", "escribir en '%s' (en %d, %d)" % (nombre, x, y),
+                      permiso)
+    if fallo:
+        return fallo
+    try:
+        dx, dy = _a_absoluto(x, y)
+        _enviar(_raton(dx=dx, dy=dy, flags=MOUSEEVENTF_MOVE | MOUSEEVENTF_ABSOLUTE
+                       | MOUSEEVENTF_VIRTUALDESK))
+        time.sleep(0.06)
+        abajo, arriba = BOTONES["izquierdo"]
+        _enviar(_raton(flags=abajo))
+        time.sleep(0.03)
+        _enviar(_raton(flags=arriba))
+        time.sleep(0.25)
+    except Exception as e:
+        return "No he podido poner el cursor en '%s': %s" % (nombre, e)
+    # ya con el cursor dentro, se escribe con lo de siempre (pega por
+    # portapapeles, que es lo unico que sale bien con acentos)
+    r = escribir_texto(texto, intro=intro, permiso=lambda a: True)
+    return "He puesto el cursor en '%s'. %s" % (nombre, r)

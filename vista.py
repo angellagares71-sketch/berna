@@ -216,3 +216,76 @@ def puede_ver():
         return "Falta la libreria Pillow para capturar la pantalla."
     return ("Si, puedo mirar tu pantalla y cualquier imagen del ordenador. "
             "Pidemelo cuando quieras con 'mira mi pantalla'.")
+
+
+# ===================================================================
+#  MIRAR PARA PINCHAR (el ultimo recurso)
+# ===================================================================
+#
+# Esto existe por un fallo que costo encontrar y que Angel resumio como que
+# "las manos no dan pie con bola" (27/08/2026).
+#
+# `mirar_pantalla` ENCOGE la captura a 1600 px antes de mandarla. Cualquier
+# coordenada que el modelo saque de esa imagen viene en el marco de 1600,
+# mientras que manos.py pincha en el de 1920. Un 20% de error constante,
+# siempre arriba y a la izquierda. Y encima al modelo nunca se le pedian
+# coordenadas: el prompt le pide que describa el sitio con palabras, asi que
+# los numeros se los tenia que inventar Berna.
+#
+# Aqui se hace bien: se le pide al modelo que diga la coordenada EN LA IMAGEN
+# QUE ESTA VIENDO, y la conversion al marco de la pantalla la hace este codigo,
+# que si sabe las dos medidas.
+#
+# AUN ASI ESTO ES EL ULTIMO RECURSO. Un modelo estimando pixeles sobre una foto
+# nunca va a ser exacto. Lo bueno es preguntarle a Windows donde estan los
+# botones: manos.ver_controles y manos.pinchar_en. Esto es solo para juegos,
+# lienzos de dibujo y programas que no publican sus controles.
+
+def mirar_para_pinchar(que_busco):
+    """Devuelve DONDE pinchar, ya convertido al marco en el que pincha Berna."""
+    import re as _re
+    que_busco = str(que_busco or "").strip()
+    if not que_busco:
+        return "Dime que hay que buscar en la pantalla."
+    try:
+        from PIL import ImageGrab
+        img = ImageGrab.grab()
+    except Exception as e:
+        return "No he podido capturar la pantalla: %s" % e
+
+    real = img.size                      # el marco en el que se pincha
+    data_uri, visto = _a_data_uri(img)   # el marco que ve el modelo (encogido)
+
+    pregunta = (
+        "En esta captura, localiza: %s\n\n"
+        "Contesta SOLO con una linea con esta forma exacta:\n"
+        "PUNTO x,y\n"
+        "donde x e y son el CENTRO de esa cosa, en pixeles de ESTA imagen, que "
+        "mide %d de ancho por %d de alto. La esquina de arriba a la izquierda es "
+        "0,0.\n"
+        "Si no lo ves, contesta solo: NO ESTA" % (que_busco, visto[0], visto[1]))
+
+    r = _preguntar_a_los_ojos(data_uri, pregunta,
+                              "Es la pantalla de Angel. Solo necesito la coordenada.")
+    if "NO ESTA" in (r or "").upper():
+        return ("No veo '%s' en la pantalla. Igual hay que bajar, abrir otra "
+                "ventana, o no esta." % que_busco)
+    m = _re.search(r"(\d{1,5})\s*,\s*(\d{1,5})", r or "")
+    if not m:
+        return ("No he sacado una coordenada clara. Esto es lo que he visto: %s"
+                % (r or "")[:300])
+
+    vx, vy = int(m.group(1)), int(m.group(2))
+    # la conversion, que es justo lo que faltaba
+    ex = real[0] / float(visto[0] or 1)
+    ey = real[1] / float(visto[1] or 1)
+    x, y = int(round(vx * ex)), int(round(vy * ey))
+    if not (0 <= x <= real[0] and 0 <= y <= real[1]):
+        return "Me ha dado una coordenada que se sale de la pantalla. No pincho ahi."
+
+    return ("'%s' esta hacia (%d, %d).\n\n"
+            "OJO: esto es una ESTIMACION mia mirando la pantalla, no es exacto. "
+            "Si esa ventana es un programa normal, es mucho mejor mirar con "
+            "ver_controles y pulsar con pinchar_en, que da el sitio exacto. Usa "
+            "esta coordenada solo si ver_controles no ve nada (juegos, lienzos)."
+            % (que_busco, x, y))

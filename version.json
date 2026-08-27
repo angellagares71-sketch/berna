@@ -1,12 +1,10 @@
 {
-  "version": "1.3.0",
+  "version": "1.4.0",
   "fecha": "2026-08-27",
   "novedades": [
-    "Maneja el Skyrim: arranca Mantella, lee sus fallos y busca mejor modelo para los NPC",
-    "Se actualiza solo por internet desde el desplegable de arriba",
-    "Botones para apagar la camara y para que te escuche siempre",
-    "Le llamas Oye Berna y te contesta sin pulsar nada",
-    "Esta pendiente de lo que haces y te avisa si te ve atascado"
+    "Las manos ya aciertan: pulsa los botones por su nombre en vez de calcular a ojo",
+    "Nuevo ver_controles: te dice que hay en la ventana y donde esta exactamente",
+    "Escribe en el cuadro que le digas, no donde caiga"
   ],
   "archivos": {
     "ACTUALIZACIONES-COMO-ACTIVARLO.txt": {
@@ -30,11 +28,11 @@
       "bytes": 5056
     },
     "LEEME.txt": {
-      "sha256": "b842c307f913bb98c75816d9b83df1727ed9f623c320770ffec269f2aa756d77",
-      "bytes": 22895
+      "sha256": "41201b780ad7a87d62346ff4d7f02df210f551ffc6ce9ca261eefbf78e186ae1",
+      "bytes": 24076
     },
     "actualizaciones.py": {
-      "sha256": "2add0e0b7b361af4598dd3f942c48c196b80acf9facebf04abf8e3d59c170208",
+      "sha256": "90cbf40d37dbbef9dabf0f8dfd55ad8421c0c6c42b0997f96d58d90ade955860",
       "bytes": 16778
     },
     "agenda.py": {
@@ -42,8 +40,8 @@
       "bytes": 13451
     },
     "asistente.py": {
-      "sha256": "c7ea763234239e2c048016e5da0cf7a8647322896579bf5f78a02784f8ca4167",
-      "bytes": 78726
+      "sha256": "b2b944ff7e295b74eab3cb6c9d7a652611fb742bfbd53a0c188df58583e88240",
+      "bytes": 79545
     },
     "autorizar_google.py": {
       "sha256": "7f198d3dc8a994ef73ad20aabc16bba1f4c0f7f59b22c8dd4834fb5330eedfd4",
@@ -56,6 +54,10 @@
     "cantar.py": {
       "sha256": "2294480dc13bab617d09b34ddc159360c8f5a37fabc2c988d8c3b61f9898e923",
       "bytes": 15903
+    },
+    "controles.py": {
+      "sha256": "b2c473d6ec4ef58d2decd71903bb17830ffd2b505e0d475cb0d6583cba4157af",
+      "bytes": 10452
     },
     "cuentas.py": {
       "sha256": "643a9dc43f412cfe62557a133fd4738265059a0d438f5c34e9c142059cf14119",
@@ -70,8 +72,8 @@
       "bytes": 25863
     },
     "herramientas.py": {
-      "sha256": "9863e545c5e3b20a825fbbda25edf8620189912be72677464cb159357fa223bd",
-      "bytes": 87673
+      "sha256": "db187e3ba322cebba90614ffa86176a20223644f1b07b8f9bd597ff4ce000a47",
+      "bytes": 90230
     },
     "instalador.py": {
       "sha256": "be30d1a40d6bbe06da05315d25a45bea2c68ac46560f1cae9180fe531196dcc2",
@@ -82,8 +84,8 @@
       "bytes": 12370
     },
     "manos.py": {
-      "sha256": "475ad20f8a693040462a8c117e0d225e62f284e8bb722455a3c4487f3a71d5a9",
-      "bytes": 32858
+      "sha256": "45dc3a0500b87729ac74a150af1a3212d07e36c706b734f0ee4ac746704efe20",
+      "bytes": 38180
     },
     "mantella.py": {
       "sha256": "534ac953aed57f4e64808558370946601670641c645794c85dc935703b4d32eb",
@@ -126,8 +128,8 @@
       "bytes": 12389
     },
     "vista.py": {
-      "sha256": "0ddcab47d7af6488e3bf5bcdb5560903208ab5b4046582201d1d44f14cde19dd",
-      "bytes": 8725
+      "sha256": "02c64b71aa552d44e5da4fc006a2146856e0bef4d0197efc9d7e9f9f3c978ac8",
+      "bytes": 12195
     },
     "whatsapp.py": {
       "sha256": "7c831700a294529aea7160a3bfc8612cd6e782bc44c7423ef3df23c4218b0616",
