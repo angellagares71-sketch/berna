@@ -33,7 +33,12 @@ def anotar(texto):
         pass
 
 PASO_BOCA = 0.045      # segundos por fotograma de sincronia labial
-MAX_RONDAS = 12        # cuantas veces seguidas puede usar herramientas
+MAX_RONDAS = 18        # cuantas veces seguidas puede usar herramientas
+# Cuanto se aparta un cerebro que ha fallado. La cuota de Google se cuenta por
+# minuto y por dia segun el modelo, asi que media hora es un descanso razonable
+# sin renunciar a el para siempre.
+CASTIGO_CUOTA = 30 * 60
+CASTIGO_SATURADO = 3 * 60
 URL_API = "https://openrouter.ai/api/v1/chat/completions"
 # Google habla el mismo idioma que OpenAI en esta direccion, asi que el mismo
 # codigo sirve para los dos. Su cuota diaria es aparte de la de OpenRouter.
@@ -204,6 +209,10 @@ class Berna(tk.Tk):
         self.nivel = 0.0
         self.ruido_fondo = None
         self.audio_vivo = False
+        # Cerebros que han dado 429 o 503 hace poco. Se esquivan un rato en vez
+        # de pagar una llamada fallida en CADA turno: con el primero de la
+        # cadena agotado, eso era medio segundo tirado por cada frase.
+        self.castigados = {}
 
         self._construir_menu()
         self._construir_ui()
@@ -1245,6 +1254,29 @@ class Berna(tk.Tk):
                 {"Authorization": "Bearer " + clave, "Content-Type": "application/json"},
                 modelo)
 
+    def _sirve(self, modelo):
+        """Si ese cerebro no esta castigado por haber fallado hace poco."""
+        return time.time() >= self.castigados.get(modelo, 0)
+
+    def _castigar(self, modelo, err):
+        """Aparta un rato al cerebro que acaba de fallar.
+
+        Es lo que hace que Berna no se atasque cuando se le agota la cuota del
+        modelo principal: en vez de tropezar con el en cada frase, lo esquiva y
+        tira del siguiente, y lo vuelve a intentar mas tarde.
+        """
+        e = str(err or "")
+        if "429" in e or e == "CUOTA_DIARIA":
+            cuanto = CASTIGO_CUOTA
+        elif "503" in e or "HTTP 5" in e or "timeout" in e.lower():
+            cuanto = CASTIGO_SATURADO
+        else:
+            return
+        if self._sirve(modelo):
+            anotar("cerebro apartado %d min: %s (%s)"
+                   % (cuanto // 60, modelo, e[:40]))
+        self.castigados[modelo] = time.time() + cuanto
+
     def _una_ronda(self, _cab, modelo, mensajes):
         """Una llamada al modelo. Devuelve (texto, llamadas_a_herramientas, error)."""
         import requests
@@ -1354,7 +1386,13 @@ class Berna(tk.Tk):
         for _ronda in range(MAX_RONDAS):
             texto, llamadas, err = "", [], "no se ha intentado"
             tope_openrouter = False
-            for modelo in self.cfg["modelos"]:
+            candidatos = [m for m in self.cfg["modelos"] if self._sirve(m)]
+            if not candidatos:
+                # todos castigados: se perdona a todos antes que quedarse mudo
+                self.castigados.clear()
+                candidatos = list(self.cfg["modelos"])
+                anotar("todos los cerebros castigados, se les perdona")
+            for modelo in candidatos:
                 # el tope diario es de la cuenta de OpenRouter; Google tiene la
                 # suya aparte, asi que a esos si merece la pena seguir llamando
                 if tope_openrouter and not modelo.startswith("gemini:"):
@@ -1366,6 +1404,7 @@ class Berna(tk.Tk):
                     break
                 if err == "CUOTA_DIARIA":
                     tope_openrouter = True
+                self._castigar(modelo, err)
                 ultimo_error = "%s: %s" % (corto, err)
             if err is not None:
                 if tope_openrouter:

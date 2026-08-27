@@ -1,9 +1,11 @@
 {
-  "version": "1.4.2",
+  "version": "1.5.0",
   "fecha": "2026-08-27",
   "novedades": [
-    "Arreglado: con el Skyrim abierto el boton Hablar dejaba de funcionar",
-    "Si el microfono se cae, ahora se recupera solo en vez de quedarse mudo"
+    "Mas listo: usa el mejor cerebro que este disponible y aparta el que se queda sin cuota",
+    "Ya no se atasca cuando su modelo principal se agota",
+    "Se acuerda de mas conversacion y encadena mas pasos seguidos",
+    "Nuevo: puede probarse sus propios cerebros y decirte cual falla"
   ],
   "archivos": {
     "ACTUALIZACIONES-COMO-ACTIVARLO.txt": {
@@ -31,7 +33,7 @@
       "bytes": 24076
     },
     "actualizaciones.py": {
-      "sha256": "a49a1222b546fb60cba429c86aec32dcb7d5ab0eadddb74fc4fa736d0ec5da8a",
+      "sha256": "1cb39072b81d70f7198e9ecede040e650bb43b3214479613b2c1db1737b28e4d",
       "bytes": 16778
     },
     "agenda.py": {
@@ -39,8 +41,8 @@
       "bytes": 13451
     },
     "asistente.py": {
-      "sha256": "e21a93c946827a84f85090c8d1597926dc6e900096d71b67fbc2cf827c42a22b",
-      "bytes": 82500
+      "sha256": "af67f8fa1f117d5799f5b7f2969a7ef7e8367d2a5b0f587ca6c08f6b54b6dfa2",
+      "bytes": 84327
     },
     "autorizar_google.py": {
       "sha256": "7f198d3dc8a994ef73ad20aabc16bba1f4c0f7f59b22c8dd4834fb5330eedfd4",
@@ -71,8 +73,8 @@
       "bytes": 25863
     },
     "herramientas.py": {
-      "sha256": "db187e3ba322cebba90614ffa86176a20223644f1b07b8f9bd597ff4ce000a47",
-      "bytes": 90230
+      "sha256": "a8233a334376ada49909f57f854b480d1c85275dd2b4cf48355913e776b319c0",
+      "bytes": 90593
     },
     "instalador.py": {
       "sha256": "be30d1a40d6bbe06da05315d25a45bea2c68ac46560f1cae9180fe531196dcc2",
@@ -87,8 +89,8 @@
       "bytes": 38180
     },
     "mantella.py": {
-      "sha256": "c9ebff685b7d11a095d2f0e3a4f612a6c12ad05eabc7bd1a0b694f95c52a3c05",
-      "bytes": 53909
+      "sha256": "c7adee00db95b75479b40b7a4698d49bb1ac69e54c7a8c79406cdcf3fa7163cd",
+      "bytes": 57325
     },
     "medios.py": {
       "sha256": "967ac5663a23aadab10329c740f48c4bab54c79775bfc297f67dc1171dabe923",

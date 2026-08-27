@@ -1324,6 +1324,11 @@ ESQUEMAS = [
        {"que_busco": _S("Que hay que localizar, descrito en pocas palabras")},
        ["que_busco"]),
 
+    _t("estado_del_cerebro",
+       "Prueba tus propios modelos de IA y dice cual funciona hoy y cual se ha "
+       "quedado sin cuota. Usalo si Angel dice que vas lento, que fallas o que "
+       "no contestas bien.", {}, []),
+
     _t("que_sabes_hacer",
        "Repasa todo lo que puedes hacer. Usalo cuando Angel pregunte que sabes "
        "hacer, en que le puedes ayudar, o parezca perdido sobre como usarte.",
@@ -1634,6 +1639,7 @@ try:
         "mantella_arrancar": _Mn.mantella_arrancar,
         "mantella_parar": _Mn.mantella_parar,
         "jugar_a_skyrim": _Mn.jugar_a_skyrim,
+        "estado_del_cerebro": _Mn.estado_del_cerebro,
     })
 except Exception as _e:
     PROBLEMAS.append("El modulo de Mantella no ha cargado: %s" % _e)
@@ -1817,6 +1823,7 @@ ROTULOS = {
     "mantella_arrancar": "encendiendo Mantella",
     "mantella_parar": "apagando Mantella",
     "jugar_a_skyrim": "arrancandote Skyrim",
+    "estado_del_cerebro": "probando sus propios modelos",
     "apagar_la_camara": "apagando la camara",
     "en_que_estoy_ahora": "mirando en que andas",
     "que_he_estado_haciendo": "repasando en que has estado",
@@ -1890,7 +1897,7 @@ GRUPOS = [
                                     "mantella_cambiar_ajuste",
                                     "mantella_conversaciones",
                                     "mantella_arrancar", "mantella_parar"]),
-    ("Memoria y varios", ["recordar", "ver_recuerdos", "olvidar", "hora_y_fecha",
+    ("Memoria y varios", ["estado_del_cerebro","recordar", "ver_recuerdos", "olvidar", "hora_y_fecha",
                           "calcular"]),
 ]
 

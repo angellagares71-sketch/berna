@@ -1237,3 +1237,81 @@ def jugar_a_skyrim(con_mantella=True, permiso=None):
             "juego un par de minutos. Si los NPC no contestan o el PC hace un "
             "ruido de tos, dimelo y le miro el log a Mantella."
             % ", ".join(pasos))
+
+
+# ===================================================================
+#  EL CEREBRO DE BERNA (no el de Mantella)
+# ===================================================================
+#
+# Va en este modulo porque aqui ya estaba toda la fontaneria para hablar con
+# Google y medir modelos. Angel pidio el 27/08 que Berna fuera "lo mas
+# inteligente y resolutivo posible", y parte de ser resolutivo es que cuando
+# se le atasque la cabeza sepa DECIR por que, en vez de contestar despacio y
+# que parezca que esta roto.
+#
+# El caso real: su cerebro principal (`gemini-3.1-flash-lite`) se quedo sin
+# cuota diaria y daba 429. Berna seguia funcionando, pero tirando del tercero
+# de la lista, que tarda 6 segundos por frase. Desde fuera eso es "me falla".
+
+def _cerebros_de_berna():
+    try:
+        with open(os.path.join(BASE, "config.json"), "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return {}
+
+
+def estado_del_cerebro():
+    """Prueba uno a uno los cerebros de Berna y dice cual sirve hoy."""
+    import requests
+    cfg = _cerebros_de_berna()
+    modelos = cfg.get("modelos") or []
+    if not modelos:
+        return "No tengo ninguna lista de modelos en config.json."
+    clave = (cfg.get("clave_gemini") or "").strip()
+    l = ["MIS CEREBROS, PROBADOS UNO A UNO AHORA MISMO:", ""]
+    vivos = 0
+    for m in modelos[:8]:
+        if not m.startswith("gemini:"):
+            l.append("  %-34s (de OpenRouter, no lo pruebo aqui)" % m)
+            continue
+        nombre = m.split(":", 1)[1]
+        if not clave:
+            l.append("  %-34s sin clave de Google" % nombre)
+            continue
+        t0 = time.time()
+        try:
+            r = requests.post(
+                "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",
+                headers={"Authorization": "Bearer " + clave,
+                         "Content-Type": "application/json"},
+                json={"model": nombre, "max_tokens": 10,
+                      "messages": [{"role": "user", "content": "Di solo hola"}]},
+                timeout=45)
+            t = time.time() - t0
+            if r.status_code == 200:
+                vivos += 1
+                l.append("  %-34s BIEN, %.1f s" % (nombre, t))
+            elif r.status_code == 429:
+                l.append("  %-34s SIN CUOTA por hoy" % nombre)
+            elif r.status_code == 503:
+                l.append("  %-34s saturado ahora mismo" % nombre)
+            else:
+                l.append("  %-34s error %s" % (nombre, r.status_code))
+        except Exception as e:
+            l.append("  %-34s no contesta (%s)" % (nombre, str(e)[:30]))
+    l.append("")
+    if vivos == 0:
+        l.append("NINGUNO responde. O no hay internet, o se ha acabado la cuota "
+                 "del dia entera. La de Google se renueva sola; hasta entonces no "
+                 "hay mucho que hacer.")
+    else:
+        l.append("Tengo %d cerebro(s) que funcionan, asi que voy tirando. Uso "
+                 "siempre el primero de la lista que responda, y al que falla lo "
+                 "aparto media hora para no tropezar con el en cada frase."
+                 % vivos)
+    l.append("")
+    l.append("Cuentaselo a Angel en dos frases, sin leerle la lista. Si el "
+             "primero esta sin cuota y hay otro bien, dile que vas mas lento "
+             "pero que sigues funcionando.")
+    return "\n".join(l)
