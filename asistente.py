@@ -483,8 +483,12 @@ class Berna(tk.Tk):
         """
         try:
             if self.cfg.get("escucha_siempre") and not self.audio_vivo:
-                self.lbl_sentidos.configure(
-                    text="OJO: no me llega el microfono", foreground="#bb0000")
+                if self._juega_al_skyrim():
+                    self.lbl_sentidos.configure(
+                        text="Micro cedido al Skyrim", foreground="#8a5a00")
+                else:
+                    self.lbl_sentidos.configure(
+                        text="OJO: no me llega el microfono", foreground="#bb0000")
             else:
                 self.lbl_sentidos.configure(foreground="#888888")
                 self._pintar_sentidos()
@@ -571,6 +575,33 @@ class Berna(tk.Tk):
                 return " ".join(crudo[i + 1:]).strip(" ,.")
         return None
 
+    def _juega_al_skyrim(self):
+        """Si Mantella o el juego estan en marcha, el microfono es SUYO.
+
+        Mantella necesita el microfono para que los NPC oigan a Angel, y en
+        esta maquina dos programas pidiendo el mismo microfono acaban con uno
+        de los dos recibiendo silencio (medido: rms 0,0000). Como el juego es
+        lo que Angel esta haciendo en ese momento, Berna se aparta solo.
+        """
+        try:
+            import psutil
+        except Exception:
+            return False
+        ahora = time.time()
+        if ahora - getattr(self, "_visto_juego", 0) < 4:
+            return getattr(self, "_hay_juego", False)
+        self._visto_juego = ahora
+        hay = False
+        for p in psutil.process_iter(["name"]):
+            n = (p.info.get("name") or "").lower()
+            if n in ("mantella.exe", "skyrimse.exe", "skyrimvr.exe", "skyrim.exe"):
+                hay = True
+                break
+        if hay != getattr(self, "_hay_juego", False):
+            anotar("microfono %s por el Skyrim" % ("soltado" if hay else "recuperado"))
+        self._hay_juego = hay
+        return hay
+
     def _bucle_audio(self):
         """UN solo microfono, abierto de por vida, y de ahi come todo el mundo.
 
@@ -586,6 +617,12 @@ class Berna(tk.Tk):
         import sounddevice as sd
         TAM = 1600                       # 0,1 s a 16.000
         while True:
+            if self._juega_al_skyrim():
+                # el microfono se lo queda Mantella mientras juega
+                self.audio_vivo = False
+                self.nivel = 0.0
+                time.sleep(3)
+                continue
             try:
                 with sd.InputStream(samplerate=16000, channels=1, dtype="float32",
                                     blocksize=TAM,
@@ -594,6 +631,8 @@ class Berna(tk.Tk):
                         anotar("microfono abierto")
                     self.audio_vivo = True
                     while True:
+                        if self._juega_al_skyrim():
+                            break            # suelta el microfono para el juego
                         datos, _ = st.read(TAM)
                         x = datos.flatten().copy()
                         rms = float(np.sqrt(np.mean(x ** 2)))

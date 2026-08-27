@@ -193,6 +193,23 @@ def _carpeta_existente(v):
     return None if os.path.isdir(v) else "esa carpeta no existe en el disco"
 
 
+# Los codigos que acepta Whisper son de DOS letras. Poner 'es-ES' parece mas
+# correcto y lo tumba entero: 'es-ES is not a valid language code'. Paso de
+# verdad el 27/08 y dejo a Angel sin microfono en el juego.
+IDIOMAS = ("default", "af", "ar", "be", "bg", "bn", "ca", "cs", "cy", "da",
+           "de", "el", "en", "es", "et", "eu", "fa", "fi", "fr", "gl", "he",
+           "hi", "hr", "hu", "id", "is", "it", "ja", "ko", "lt", "lv", "ms",
+           "nl", "no", "pl", "pt", "ro", "ru", "sk", "sl", "sr", "sv", "th",
+           "tr", "uk", "ur", "vi", "zh")
+
+
+def _idioma(v):
+    if str(v).strip() in IDIOMAS:
+        return None
+    return ("tiene que ser un codigo de DOS letras como 'es', no '%s'. Los de "
+            "cuatro tipo 'es-ES' los rechaza Whisper y te quedas sin microfono" % v)
+
+
 def _libre(v):
     return None
 
@@ -202,12 +219,12 @@ AJUSTABLES = {
     "model": (_libre, "el modelo de IA que pone las palabras en boca de los NPC"),
     "llm_api": (_libre, "la direccion del servicio de IA"),
     # el idioma y el oido
-    "language": (_libre, "el idioma en que hablan los NPC"),
+    "language": (_idioma, "el idioma en que hablan los NPC"),
     "stt_service": (_uno_de("Whisper", "Moonshine"),
                     "que motor te entiende cuando hablas (Moonshine SOLO sabe ingles)"),
     "whisper_model_size": (_uno_de("tiny", "base", "small", "medium", "large"),
                            "cuanto se esfuerza Whisper en entenderte"),
-    "stt_language": (_libre, "en que idioma te escucha (default = que lo adivine)"),
+    "stt_language": (_idioma, "en que idioma te escucha (default = que lo adivine)"),
     "audio_threshold": (_numero(0, 1), "a partir de que volumen considera que hablas"),
     "pause_threshold": (_numero(0, 5), "cuanto callas para que de por terminada tu frase"),
     "listen_timeout": (_numero(0, 300), "cuanto te espera antes de rendirse"),
@@ -233,6 +250,9 @@ AJUSTABLES = {
     "vision_enabled": (_uno_de("True", "False"), "que los NPC VEAN lo que hay en pantalla"),
     "vision_llm_api": (_libre, "el servicio que mira las capturas"),
     "vision_model": (_libre, "el modelo que mira las capturas"),
+    "piper_folder": (_carpeta_existente,
+                     "donde esta piper.exe. VACIO deja MUDOS a los NPC"),
+    "lipgen_folder": (_libre, "donde esta el generador de sincronia labial"),
     # las dos trampas del montaje: se pueden cambiar, pero comprobadas
     "game": (_uno_de("Skyrim", "SkyrimVR", "Fallout4", "Fallout4VR"),
              "a que juego se conecta. VIENE MAL DE FABRICA (SkyrimVR)"),
