@@ -1,11 +1,10 @@
 {
-  "version": "1.5.0",
-  "fecha": "2026-08-27",
+  "version": "1.6.0",
+  "fecha": "2026-08-28",
   "novedades": [
-    "Mas listo: usa el mejor cerebro que este disponible y aparta el que se queda sin cuota",
-    "Ya no se atasca cuando su modelo principal se agota",
-    "Se acuerda de mas conversacion y encadena mas pasos seguidos",
-    "Nuevo: puede probarse sus propios cerebros y decirte cual falla"
+    "Avatar nuevo en 3D de verdad: con volumen, luz y perspectiva",
+    "La boca sigue moviendose con la voz y la cabeza gira segun lo que este haciendo",
+    "Se dibuja sin tarjeta grafica y gasta poco: 16 por ciento de un nucleo en reposo"
   ],
   "archivos": {
     "ACTUALIZACIONES-COMO-ACTIVARLO.txt": {
@@ -33,7 +32,7 @@
       "bytes": 24076
     },
     "actualizaciones.py": {
-      "sha256": "1cb39072b81d70f7198e9ecede040e650bb43b3214479613b2c1db1737b28e4d",
+      "sha256": "eabc804017ea32da6a7550b1e6ec1a1fe79decc0e4c7c9b93f3e4449782f13bd",
       "bytes": 16778
     },
     "agenda.py": {
@@ -41,8 +40,8 @@
       "bytes": 13451
     },
     "asistente.py": {
-      "sha256": "af67f8fa1f117d5799f5b7f2969a7ef7e8367d2a5b0f587ca6c08f6b54b6dfa2",
-      "bytes": 84327
+      "sha256": "fbc8f539593d30a6fff8de7eedbfcad316e0ff49dcc67cb195127ed42bccb592",
+      "bytes": 84700
     },
     "autorizar_google.py": {
       "sha256": "7f198d3dc8a994ef73ad20aabc16bba1f4c0f7f59b22c8dd4834fb5330eedfd4",
@@ -99,6 +98,10 @@
     "muneco.py": {
       "sha256": "6bd5e09975d726bc363445cdb8d3249f76e45a260144bae479abacac1c7e978e",
       "bytes": 20635
+    },
+    "muneco3d.py": {
+      "sha256": "db71e0f13a6eaeba1bf6a82652888f9b2878e4d29c6104ec9d828ee21093c6f6",
+      "bytes": 21940
     },
     "operar.py": {
       "sha256": "0756c625cf48e26512020072cd915c71732eef6cb6f5b2a905c4e1b0ecf70f41",

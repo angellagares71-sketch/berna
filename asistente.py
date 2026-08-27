@@ -179,7 +179,15 @@ def leer_archivo(ruta, limite):
 # El muneco vive en su propio modulo desde el 2026-08-26, cuando paso de ser
 # una cabeza flotando a un cuerpo entero con brazos y piernas. La ventana solo
 # necesita saber tres cosas de el: set_estado(), .boca_obj y .mic.
-from muneco import Cara
+# El avatar 3D desde el 2026-08-28. Si numpy o Pillow no estuvieran (o el 3D
+# diera guerra en otro ordenador), se cae al muneco plano de siempre en vez de
+# quedarse sin ventana. Los dos tienen la misma interfaz: set_estado, boca_obj
+# y mic.
+try:
+    from muneco3d import Cara
+except Exception as _e:
+    from muneco import Cara
+    anotar("el avatar 3D no ha cargado, tiro del plano: %s" % _e)
 
 
 class Berna(tk.Tk):
