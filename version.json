@@ -1,8 +1,10 @@
 {
-  "version": "1.6.4",
+  "version": "1.7.0",
   "fecha": "2026-08-28",
   "novedades": [
-    "Las actualizaciones ya no fallan justo despues de publicarse"
+    "Nuevo consejo de IA: varias inteligencias contestan a la vez y se cotejan entre ellas",
+    "Se convoca cuando la pregunta lo merece, no en cada frase, para no fundir la cuota",
+    "Dice cuando las IA se contradicen en vez de disimularlo"
   ],
   "archivos": {
     "ACTUALIZACIONES-COMO-ACTIVARLO.txt": {
@@ -30,7 +32,7 @@
       "bytes": 24076
     },
     "actualizaciones.py": {
-      "sha256": "6a42888fa821547d2e80e40b0886143322058e36f742f1ba8cf21616eb267398",
+      "sha256": "2ebf0497b0c3bc1ff6ab1d0eb67786e1c526e19bb19b20ebc57c5cac4b03e4a2",
       "bytes": 18274
     },
     "agenda.py": {
@@ -53,6 +55,10 @@
       "sha256": "2294480dc13bab617d09b34ddc159360c8f5a37fabc2c988d8c3b61f9898e923",
       "bytes": 15903
     },
+    "consejo.py": {
+      "sha256": "a24bcf93952b9d752cbaa9f3efcc0626f556aa475dda2a599c50c251e41de677",
+      "bytes": 10673
+    },
     "controles.py": {
       "sha256": "b2c473d6ec4ef58d2decd71903bb17830ffd2b505e0d475cb0d6583cba4157af",
       "bytes": 10452
@@ -70,8 +76,8 @@
       "bytes": 25863
     },
     "herramientas.py": {
-      "sha256": "a8233a334376ada49909f57f854b480d1c85275dd2b4cf48355913e776b319c0",
-      "bytes": 90593
+      "sha256": "5a62de4dd54f0664b48e851d2703bb082c0f13f26038ea6635d591f78a5a1c8e",
+      "bytes": 91935
     },
     "instalador.py": {
       "sha256": "be30d1a40d6bbe06da05315d25a45bea2c68ac46560f1cae9180fe531196dcc2",
@@ -137,6 +143,5 @@
       "sha256": "7c831700a294529aea7160a3bfc8612cd6e782bc44c7423ef3df23c4218b0616",
       "bytes": 8792
     }
-  },
-  "commit": "d7bc8283565368c3bf537880c05eb7477ab9746c"
+  }
 }

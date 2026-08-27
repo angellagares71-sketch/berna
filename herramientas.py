@@ -1324,6 +1324,20 @@ ESQUEMAS = [
        {"que_busco": _S("Que hay que localizar, descrito en pocas palabras")},
        ["que_busco"]),
 
+    _t("preguntar_al_consejo",
+       "Le hace la MISMA pregunta a varias inteligencias artificiales a la vez, "
+       "las coteja entre ellas y te da la respuesta buena, diciendo si se "
+       "contradicen. Tarda unos segundos, asi que usalo SOLO cuando la pregunta "
+       "lo merezca: cuentas y presupuestos, decisiones con dinero de por medio, "
+       "cosas donde equivocarse cuesta caro, o cuando Angel diga que te lo "
+       "pienses bien o que lo consultes. Para lo de diario contesta tu solo.",
+       {"pregunta": _S("La pregunta entera, con todos los datos que hagan falta"),
+        "cuantos": _N("Cuantas IA reunir, de 2 a 4. Por defecto 3")}, ["pregunta"]),
+
+    _t("estado_del_consejo",
+       "Dice que inteligencias artificiales estan disponibles hoy para "
+       "consultarlas en grupo y cuales se han quedado sin cuota.", {}, []),
+
     _t("estado_del_cerebro",
        "Prueba tus propios modelos de IA y dice cual funciona hoy y cual se ha "
        "quedado sin cuota. Usalo si Angel dice que vas lento, que fallas o que "
@@ -1612,6 +1626,16 @@ try:
 except Exception as _e:
     PROBLEMAS.append("El modulo del vigilante no ha cargado: %s" % _e)
 
+# el consejo de varias IA
+try:
+    import consejo as _Co
+    _FUNCIONES.update({
+        "preguntar_al_consejo": _Co.consultar_al_consejo,
+        "estado_del_consejo": _Co.estado_del_consejo,
+    })
+except Exception as _e:
+    PROBLEMAS.append("El modulo del consejo no ha cargado: %s" % _e)
+
 # ponerse al dia por internet
 try:
     import actualizaciones as _Ac
@@ -1824,6 +1848,8 @@ ROTULOS = {
     "mantella_parar": "apagando Mantella",
     "jugar_a_skyrim": "arrancandote Skyrim",
     "estado_del_cerebro": "probando sus propios modelos",
+    "preguntar_al_consejo": "consultandolo con varias IA",
+    "estado_del_consejo": "mirando que IA hay disponibles",
     "apagar_la_camara": "apagando la camara",
     "en_que_estoy_ahora": "mirando en que andas",
     "que_he_estado_haciendo": "repasando en que has estado",
@@ -1897,7 +1923,8 @@ GRUPOS = [
                                     "mantella_cambiar_ajuste",
                                     "mantella_conversaciones",
                                     "mantella_arrancar", "mantella_parar"]),
-    ("Memoria y varios", ["estado_del_cerebro","recordar", "ver_recuerdos", "olvidar", "hora_y_fecha",
+    ("Memoria y varios", ["preguntar_al_consejo", "estado_del_consejo",
+                          "estado_del_cerebro","recordar", "ver_recuerdos", "olvidar", "hora_y_fecha",
                           "calcular"]),
 ]
 
