@@ -1,9 +1,10 @@
 {
-  "version": "1.6.1",
+  "version": "1.6.2",
   "fecha": "2026-08-28",
   "novedades": [
-    "Boton de actualizaciones a la vista, debajo de los otros",
-    "Te avisa solo cuando hay version nueva, sin abrir ninguna ventana"
+    "Boton de actualizaciones a la vista, que ademas dice que version tienes",
+    "Te avisa solo cuando hay una nueva, sin abrir ninguna ventana",
+    "Arreglado: al encoger la ventana los botones se colaban detras de la caja de escribir"
   ],
   "archivos": {
     "ACTUALIZACIONES-COMO-ACTIVARLO.txt": {
@@ -31,7 +32,7 @@
       "bytes": 24076
     },
     "actualizaciones.py": {
-      "sha256": "46794ce8ad700350bbd27b1aef2fcf3df290f727438d3e155ac95f1348e4e28b",
+      "sha256": "6683ee2a8037cceb4358e45dc429ffcfddc23ace62881ac14707d54f87e51c06",
       "bytes": 16778
     },
     "agenda.py": {
@@ -39,8 +40,8 @@
       "bytes": 13451
     },
     "asistente.py": {
-      "sha256": "77aea0554fd894b2016f6fd15e2cf277d8c30a7acbfe966d31b970db42c93cf4",
-      "bytes": 86551
+      "sha256": "a64957a383fed0efbe34d597dbf652d56a78027f0975836bc719c1b03fcdf589",
+      "bytes": 86833
     },
     "autorizar_google.py": {
       "sha256": "7f198d3dc8a994ef73ad20aabc16bba1f4c0f7f59b22c8dd4834fb5330eedfd4",

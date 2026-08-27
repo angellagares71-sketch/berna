@@ -195,7 +195,11 @@ class Berna(tk.Tk):
         super().__init__()
         self.cfg = cargar_config()
         self.title("Berna")
-        self.minsize(580, 560)
+        # 640 de alto minimo desde que la columna izquierda lleva cuatro
+        # botones bajo el avatar: por debajo de eso se cuelan por detras de la
+        # caja de escribir y no se ven. Es el mismo fallo que ya paso una vez
+        # con la ventana saliendose de la pantalla.
+        self.minsize(580, 640)
         self._colocar_ventana()
 
         self.historial = []
@@ -354,7 +358,7 @@ class Berna(tk.Tk):
         ancho = max(560, min(1000, sw - 80))
         # 560 de minimo desde que el muneco tiene cuerpo entero: el lienzo
         # mide 368 de alto y por debajo de eso se le cortarian los pies.
-        alto = max(560, min(700, util - 40))
+        alto = max(640, min(720, util - 40))
         x = max(0, (sw - ancho) // 2)
         y = max(0, (util - alto) // 2)
         self.geometry("%dx%d+%d+%d" % (ancho, alto, x, y))

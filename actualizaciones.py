@@ -48,7 +48,7 @@ COPIAS = os.path.join(BASE, "copias")
 # ---------------------------------------------------------------- la version
 # Sube esto cada vez que se publique algo. Es lo que se compara con el
 # version.json del repositorio para saber si hay novedades.
-VERSION = "1.6.1"
+VERSION = "1.6.2"
 FECHA_VERSION = "2026-08-28"
 
 # Solo de aqui se baja nada. Clavado a proposito: ver el punto 1 de arriba.
