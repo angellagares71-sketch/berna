@@ -616,12 +616,16 @@ class Berna(tk.Tk):
         import numpy as np
         import sounddevice as sd
         TAM = 1600                       # 0,1 s a 16.000
+        intentos = 0
         while True:
-            if self._juega_al_skyrim():
-                # el microfono se lo queda Mantella mientras juega
+            # Se le cede el microfono al juego SOLO si Angel no lo esta pidiendo
+            # el. Sin este "and not self.grabando", con el Skyrim abierto el
+            # boton Hablar dejaba de funcionar del todo, que es justo lo que
+            # rompi el 27/08 a las 23:17.
+            if self._juega_al_skyrim() and not self.grabando:
                 self.audio_vivo = False
                 self.nivel = 0.0
-                time.sleep(3)
+                time.sleep(0.4)
                 continue
             try:
                 with sd.InputStream(samplerate=16000, channels=1, dtype="float32",
@@ -630,8 +634,9 @@ class Berna(tk.Tk):
                     if not self.audio_vivo:
                         anotar("microfono abierto")
                     self.audio_vivo = True
+                    intentos = 0
                     while True:
-                        if self._juega_al_skyrim():
+                        if self._juega_al_skyrim() and not self.grabando:
                             break            # suelta el microfono para el juego
                         datos, _ = st.read(TAM)
                         x = datos.flatten().copy()
@@ -643,8 +648,19 @@ class Berna(tk.Tk):
                         self.oido.append((x, rms))
             except Exception as e:
                 self.audio_vivo = False
-                anotar("microfono caido, reintento: %s" % e)
-                time.sleep(2)
+                intentos += 1
+                anotar("microfono caido (intento %d): %s" % (intentos, e))
+                # Reiniciar PortAudio: si el aparato se queda en mal estado, el
+                # siguiente InputStream se puede quedar colgado para siempre.
+                # Paso de verdad el 27/08 a las 20:50 y a las 22:04: se cayo y
+                # NO volvio hasta reiniciar Berna.
+                try:
+                    sd._terminate()
+                    time.sleep(0.5)
+                    sd._initialize()
+                except Exception:
+                    pass
+                time.sleep(min(2 + intentos, 15))
 
     def _calibrar_ruido(self, rms):
         """Aprende cuanto ruido hay en el cuarto, y NO lo olvida entre frases.
@@ -903,12 +919,21 @@ class Berna(tk.Tk):
         if self.whisper is None:
             messagebox.showinfo("Un momento", "Todavia estoy cargando el reconocimiento de voz.")
             return
-        if not self.audio_vivo:
-            messagebox.showerror("Microfono", "No tengo el microfono. Mira que no "
-                                              "lo tenga cogido otro programa.")
-            return
         self.frames = []
         self.grabando = True
+        # Si el microfono estaba cedido al Skyrim, al levantar la bandera el
+        # bucle de audio lo recupera. Se le dan unas decimas.
+        if not self.audio_vivo:
+            for _ in range(20):
+                time.sleep(0.1)
+                if self.audio_vivo:
+                    break
+            if not self.audio_vivo:
+                self.grabando = False
+                messagebox.showerror("Microfono", "No consigo el microfono. Mira "
+                                                  "que no lo tenga cogido otro "
+                                                  "programa.")
+                return
         self.b_mic.configure(text="PARAR")
         self.cara.set_estado("escuchando")
         self._estado("Grabando... habla", "#bb0000")

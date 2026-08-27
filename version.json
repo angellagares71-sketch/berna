@@ -1,10 +1,9 @@
 {
-  "version": "1.4.1",
+  "version": "1.4.2",
   "fecha": "2026-08-27",
   "novedades": [
-    "Arreglado el Skyrim: los NPC estaban mudos porque faltaba la ruta de Piper",
-    "Arreglado el microfono del juego: el idioma estaba mal puesto y Whisper lo rechazaba",
-    "Berna le cede el microfono a Mantella mientras juegas"
+    "Arreglado: con el Skyrim abierto el boton Hablar dejaba de funcionar",
+    "Si el microfono se cae, ahora se recupera solo en vez de quedarse mudo"
   ],
   "archivos": {
     "ACTUALIZACIONES-COMO-ACTIVARLO.txt": {
@@ -32,7 +31,7 @@
       "bytes": 24076
     },
     "actualizaciones.py": {
-      "sha256": "c9e48134d3a0e4679ee26bed37fd8a8c8f0d8df4250f79af5475b6cb14cfba77",
+      "sha256": "a49a1222b546fb60cba429c86aec32dcb7d5ab0eadddb74fc4fa736d0ec5da8a",
       "bytes": 16778
     },
     "agenda.py": {
@@ -40,8 +39,8 @@
       "bytes": 13451
     },
     "asistente.py": {
-      "sha256": "bdc136684a9627e56385728c2343f5140882f75bdb58e0238e0bd3f0337a8e27",
-      "bytes": 81243
+      "sha256": "e21a93c946827a84f85090c8d1597926dc6e900096d71b67fbc2cf827c42a22b",
+      "bytes": 82500
     },
     "autorizar_google.py": {
       "sha256": "7f198d3dc8a994ef73ad20aabc16bba1f4c0f7f59b22c8dd4834fb5330eedfd4",
