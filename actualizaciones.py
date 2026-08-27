@@ -48,7 +48,7 @@ COPIAS = os.path.join(BASE, "copias")
 # ---------------------------------------------------------------- la version
 # Sube esto cada vez que se publique algo. Es lo que se compara con el
 # version.json del repositorio para saber si hay novedades.
-VERSION = "1.6.3"
+VERSION = "1.6.4"
 FECHA_VERSION = "2026-08-28"
 
 # Solo de aqui se baja nada. Clavado a proposito: ver el punto 1 de arriba.
@@ -167,6 +167,22 @@ def _bajar(url, maximo=MAX_BYTES_ARCHIVO):
     if len(r.content) > maximo:
         raise ValueError("ocupa mas de la cuenta (%d bytes)" % len(r.content))
     return r.content
+
+
+
+def _de_donde(repo, manifiesto, nombre):
+    """La direccion de un archivo, anclada al commit si el manifiesto lo dice.
+
+    Pedirlo por la rama (`main`) no vale recien publicado: raw.githubusercontent
+    es eventualmente consistente y puede dar el manifiesto viejo con archivos
+    nuevos, o al reves. Con el commit la direccion es INMUTABLE y no hay mezcla
+    posible. Medido el 28/08: la API decia 1.6.3 y raw seguia dando el
+    version.json de la 1.6.2 aun pidiendole copia fresca.
+    """
+    ancla = str((manifiesto or {}).get("commit") or "").strip()
+    if len(ancla) == 40 and re.match(r"^[0-9a-f]{40}$", ancla):
+        return "%s/%s/%s/%s" % (HOST, repo, ancla, nombre)
+    return "%s/%s/%s/%s" % (HOST, repo, RAMA, nombre)
 
 
 def _manifiesto():
@@ -300,7 +316,7 @@ def instalar_actualizacion(permiso=None):
     # 1) bajarlo todo a un lado, sin tocar la carpeta buena
     bajados = {}
     for nombre in cambios:
-        url = "%s/%s/%s/%s" % (HOST, repo, RAMA, nombre)
+        url = _de_donde(repo, d, nombre)
         try:
             crudo = _bajar(url)
         except Exception as e:
@@ -309,9 +325,10 @@ def instalar_actualizacion(permiso=None):
         firma = str(d["archivos"][nombre]["sha256"]).lower()
         if _sha256_bytes(crudo) != firma:
             _apuntar("ACTUALIZAR", nombre, "la firma no cuadra")
-            return ("El archivo '%s' no coincide con su firma. O se ha bajado "
-                    "mal o alguien lo ha cambiado por el camino. No instalo "
-                    "nada." % nombre)
+            return ("El archivo '%s' no coincide con su firma, asi que no "
+                    "instalo nada. Lo mas normal es que la version se acabe de "
+                    "publicar y GitHub todavia este repartiendola: prueba otra "
+                    "vez en un par de minutos. Si sigue igual, avisa." % nombre)
         bajados[nombre] = crudo
 
     # 2) que todo el codigo que entra COMPILE. Sin esto, una version mala deja

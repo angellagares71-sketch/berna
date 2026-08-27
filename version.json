@@ -1,8 +1,8 @@
 {
-  "version": "1.6.3",
+  "version": "1.6.4",
   "fecha": "2026-08-28",
   "novedades": [
-    "Ya se entera al momento de que hay version nueva, sin esperar a la cache de GitHub"
+    "Las actualizaciones ya no fallan justo despues de publicarse"
   ],
   "archivos": {
     "ACTUALIZACIONES-COMO-ACTIVARLO.txt": {
@@ -30,8 +30,8 @@
       "bytes": 24076
     },
     "actualizaciones.py": {
-      "sha256": "226ed95e217e06566cdb34f4c1743ba05bdfce6e15f37756acac11fbd81b0cb9",
-      "bytes": 17426
+      "sha256": "6a42888fa821547d2e80e40b0886143322058e36f742f1ba8cf21616eb267398",
+      "bytes": 18274
     },
     "agenda.py": {
       "sha256": "5f4584070ab99e19e88ef1c13c044d0983d4bda2d6029cd664206d67469c7297",
