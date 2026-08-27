@@ -1,10 +1,8 @@
 {
-  "version": "1.6.2",
+  "version": "1.6.3",
   "fecha": "2026-08-28",
   "novedades": [
-    "Boton de actualizaciones a la vista, que ademas dice que version tienes",
-    "Te avisa solo cuando hay una nueva, sin abrir ninguna ventana",
-    "Arreglado: al encoger la ventana los botones se colaban detras de la caja de escribir"
+    "Ya se entera al momento de que hay version nueva, sin esperar a la cache de GitHub"
   ],
   "archivos": {
     "ACTUALIZACIONES-COMO-ACTIVARLO.txt": {
@@ -32,8 +30,8 @@
       "bytes": 24076
     },
     "actualizaciones.py": {
-      "sha256": "6683ee2a8037cceb4358e45dc429ffcfddc23ace62881ac14707d54f87e51c06",
-      "bytes": 16778
+      "sha256": "226ed95e217e06566cdb34f4c1743ba05bdfce6e15f37756acac11fbd81b0cb9",
+      "bytes": 17426
     },
     "agenda.py": {
       "sha256": "5f4584070ab99e19e88ef1c13c044d0983d4bda2d6029cd664206d67469c7297",

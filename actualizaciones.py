@@ -48,7 +48,7 @@ COPIAS = os.path.join(BASE, "copias")
 # ---------------------------------------------------------------- la version
 # Sube esto cada vez que se publique algo. Es lo que se compara con el
 # version.json del repositorio para saber si hay novedades.
-VERSION = "1.6.2"
+VERSION = "1.6.3"
 FECHA_VERSION = "2026-08-28"
 
 # Solo de aqui se baja nada. Clavado a proposito: ver el punto 1 de arriba.
@@ -146,9 +146,20 @@ def _version_como_numeros(v):
 
 # ------------------------------------------------------------ mirar si hay
 def _bajar(url, maximo=MAX_BYTES_ARCHIVO):
+    """Se baja un archivo del repositorio, SIN pasar por la cache.
+
+    raw.githubusercontent guarda copia unos cinco minutos. Eso da dos
+    problemas: recien publicada una version, Berna sigue diciendo que esta al
+    dia; y peor, podria bajarse un version.json nuevo con archivos viejos, y
+    entonces las firmas no cuadran y la actualizacion se aborta sola diciendo
+    que alguien ha tocado los archivos. Se le pide copia fresca siempre.
+    """
     import requests
-    r = requests.get(url, timeout=ESPERA,
-                     headers={"User-Agent": "Berna/%s" % VERSION})
+    fresco = "%s%scache=%d" % (url, "&" if "?" in url else "?", int(time.time()))
+    r = requests.get(fresco, timeout=ESPERA,
+                     headers={"User-Agent": "Berna/%s" % VERSION,
+                              "Cache-Control": "no-cache",
+                              "Pragma": "no-cache"})
     if r.status_code == 404:
         raise ValueError("no existe (404)")
     if r.status_code != 200:
