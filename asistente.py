@@ -276,6 +276,44 @@ class Berna(tk.Tk):
 
         threading.Thread(target=trabajar, daemon=True).start()
 
+    def _mirar_version_callado(self):
+        """Mira si hay version nueva SIN molestar, y lo dice en el boton.
+
+        Va en segundo plano y no saca ninguna ventana: si hay algo nuevo, el
+        boton se pone en naranja con el numero. Enterarse no deberia costar
+        una interrupcion.
+        """
+        def trabajar():
+            try:
+                import actualizaciones as Ac
+                aviso = Ac.buscar_actualizaciones()
+                hay = "HAY UNA VERSION NUEVA" in aviso
+                nueva = ""
+                if hay:
+                    for l in aviso.splitlines():
+                        if "hay publicada la" in l:
+                            nueva = l.split("hay publicada la")[-1].strip(" .,")
+                            break
+                self.after(0, lambda: self._pintar_version(hay, nueva))
+            except Exception:
+                pass
+
+        threading.Thread(target=trabajar, daemon=True).start()
+
+    def _pintar_version(self, hay, nueva):
+        try:
+            import actualizaciones as Ac
+            mia = Ac.VERSION
+        except Exception:
+            mia = "?"
+        try:
+            if hay:
+                self.b_act.configure(text="ACTUALIZAR a la %s" % (nueva or "nueva"))
+            else:
+                self.b_act.configure(text="Version %s, al dia" % mia)
+        except Exception:
+            pass
+
     def _buscar_actualizacion(self):
         import actualizaciones as Ac
 
@@ -287,6 +325,7 @@ class Berna(tk.Tk):
             return aviso + "\n\n" + Ac.instalar_actualizacion(permiso=self._pedir_permiso)
 
         self._en_segundo_plano(hacerlo, "Mirando si hay actualizaciones")
+        self.after(9000, self._mirar_version_callado)
 
     def _decir_version(self):
         import actualizaciones as Ac
@@ -355,6 +394,13 @@ class Berna(tk.Tk):
         self.b_ojo = ttk.Button(sentidos, text="Pendiente de ti", takefocus=False,
                                 command=self._toggle_vigilancia)
         self.b_ojo.pack(fill="x", pady=1)
+        # El de actualizar va aparte y separado: los tres de arriba son
+        # interruptores (encendido/apagado) y este es una accion. Mezclarlos
+        # confunde.
+        self.b_act = ttk.Button(sentidos, text="Actualizaciones",
+                                takefocus=False, command=self._buscar_actualizacion)
+        self.b_act.pack(fill="x", pady=(5, 1))
+        self.after(4000, self._mirar_version_callado)
         self.lbl_sentidos = ttk.Label(sentidos, text="", foreground="#888888",
                                       font=("Segoe UI", 8), justify="center",
                                       wraplength=150)

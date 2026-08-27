@@ -146,7 +146,7 @@ class _Malla(object):
 class Cara(tk.Canvas):
     """Mismo trato por fuera que el muneco plano: set_estado, boca_obj y mic."""
 
-    AN, AL = 214, 368
+    AN, AL = 214, 318
     SS = 2                              # doble resolucion para el antialiasing
     FONDO = (238, 243, 250)
 
