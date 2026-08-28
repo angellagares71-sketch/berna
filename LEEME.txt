@@ -617,3 +617,56 @@ LAS CLAVES: SON DOS Y NO SE MEZCLAN
 
   Si sacas una clave nueva, dictasela a Berna y el te la
   guarda en su sitio.
+
+
+BERNA EN EL MOVIL
+  Berna vive en este ordenador y no se puede meter en un
+  telefono: tiene cuerpo, camara, manos y voz, y todo eso es
+  de Windows. Lo que si viaja es su cabeza.
+
+  Arranca "Berna-Movil.bat" y deja esa ventana negra abierta.
+  Levanta una pagina web con el mismo cerebro y las mismas
+  150 herramientas. Luego abres en el navegador del movil la
+  direccion que te sale escrita en esa ventana.
+
+  El movil tiene que estar en el mismo wifi que el ordenador.
+
+  EL INTERRUPTOR "TOCAR EL PC"
+  Arriba a la derecha de la pagina. Apagado (por defecto),
+  Berna puede mirar, buscar y leer, pero no escribe archivos
+  ni abre programas ni mueve el raton: son 40 de las 150
+  herramientas y todas fallan a proposito.
+  Encendido, puede hacerlo todo, sin preguntar cada vez.
+  Dejalo apagado salvo que lo necesites.
+
+  LA LLAVE
+  La direccion lleva al final "?k=" y unas letras. Es la
+  llave: sin ella la pagina no abre. Esta en config.json,
+  en "clave_movil". Si se la ensenas a alguien, esa persona
+  puede hablar con Berna y leer los archivos de este PC.
+  Para cambiarla, borra esa linea de config.json y vuelve a
+  arrancar: se inventa otra.
+
+  NO LO ABRAS A INTERNET tal cual. Esto esta pensado para tu
+  casa. Berna lee tus archivos y puede ejecutar cosas: puesto
+  de cara a internet, es la llave de tu ordenador.
+
+  DESDE TERMUX (la terminal del movil)
+  Con Berna-Movil.bat abierto, pega esto en Termux UNA vez.
+  La direccion y la llave te las dice la ventana negra:
+
+    curl -s "http://IP:8733/berna.sh?k=LLAVE" -o $PREFIX/bin/berna
+    chmod +x $PREFIX/bin/berna
+
+  Se baja el cliente del propio Berna, ya configurado. A partir
+  de ahi, en Termux:
+
+    berna que hora es        una pregunta suelta
+    berna                    conversacion, "adios" para salir
+    berna -m abre el bloc    con permiso para tocar el PC
+
+  Solo necesita curl, que Termux ya trae. No hace falta jq ni
+  python: la respuesta viene en texto pelado.
+
+  El -m es el mismo interruptor que el de la pagina web, pero
+  por orden suelta: solo vale para esa pregunta.

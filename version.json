@@ -1,10 +1,8 @@
 {
-  "version": "1.7.0",
+  "version": "1.7.1",
   "fecha": "2026-08-28",
   "novedades": [
-    "Nuevo consejo de IA: varias inteligencias contestan a la vez y se cotejan entre ellas",
-    "Se convoca cuando la pregunta lo merece, no en cada frase, para no fundir la cuota",
-    "Dice cuando las IA se contradicen en vez de disimularlo"
+    "Arreglado: Windows bloqueaba una libreria y Berna se quedaba sin oido"
   ],
   "archivos": {
     "ACTUALIZACIONES-COMO-ACTIVARLO.txt": {
@@ -14,6 +12,10 @@
     "Asistente.bat": {
       "sha256": "5d0b718fe5392e2d350ce4799660b8492965e1a0cf7e8095e47ab19388cbcd0a",
       "bytes": 87
+    },
+    "Berna-Movil.bat": {
+      "sha256": "80b902d1649a4ba199cd1b0616ede43b2ff95afcda8693f961b70186f281db33",
+      "bytes": 173
     },
     "CORREO-COMO-ACTIVARLO.txt": {
       "sha256": "98e4bd9523d8ff22607e5eb49205cc8202ae9c6bb06230a25f45431053d8e7eb",
@@ -28,11 +30,11 @@
       "bytes": 5056
     },
     "LEEME.txt": {
-      "sha256": "41201b780ad7a87d62346ff4d7f02df210f551ffc6ce9ca261eefbf78e186ae1",
-      "bytes": 24076
+      "sha256": "f18535e148d525d334dba0cc51d87c3d14ed927e3983c03cab0f8b455feb0fe7",
+      "bytes": 26142
     },
     "actualizaciones.py": {
-      "sha256": "2ebf0497b0c3bc1ff6ab1d0eb67786e1c526e19bb19b20ebc57c5cac4b03e4a2",
+      "sha256": "8586ea773a5b2f5cec343b2a5412f2f9aef4b5d9d06b82a06591641a5f7f2ea7",
       "bytes": 18274
     },
     "agenda.py": {
@@ -40,8 +42,8 @@
       "bytes": 13451
     },
     "asistente.py": {
-      "sha256": "a64957a383fed0efbe34d597dbf652d56a78027f0975836bc719c1b03fcdf589",
-      "bytes": 86833
+      "sha256": "0bf46a7e4ad8b022e6f11be52ced3769d6f5f5f015b8ff0904e73e67ca78afc4",
+      "bytes": 87869
     },
     "autorizar_google.py": {
       "sha256": "7f198d3dc8a994ef73ad20aabc16bba1f4c0f7f59b22c8dd4834fb5330eedfd4",
@@ -99,6 +101,10 @@
       "sha256": "967ac5663a23aadab10329c740f48c4bab54c79775bfc297f67dc1171dabe923",
       "bytes": 20159
     },
+    "movil.py": {
+      "sha256": "01626f2ee895fd0926b1a6bccccda2629e51c53b9c79752045d32e48f257b4a4",
+      "bytes": 21467
+    },
     "muneco.py": {
       "sha256": "6bd5e09975d726bc363445cdb8d3249f76e45a260144bae479abacac1c7e978e",
       "bytes": 20635
@@ -143,6 +149,5 @@
       "sha256": "7c831700a294529aea7160a3bfc8612cd6e782bc44c7423ef3df23c4218b0616",
       "bytes": 8792
     }
-  },
-  "commit": "6bbb6945b0e95556bcf64bc957c7ebfcdbe0d365"
+  }
 }

@@ -32,6 +32,39 @@ def anotar(texto):
     except Exception:
         pass
 
+
+def apanar_pyav():
+    """Sustituye PyAV por uno de mentira si Windows lo tiene bloqueado.
+
+    Devuelve True si ha hecho falta el apaño. Ver la explicacion larga en
+    el aviso que se le da a Angel: es el Control de aplicaciones de Windows
+    bloqueando una libreria sin firmar, y faster_whisper no la necesita para
+    lo que Berna hace.
+    """
+    import sys as _s
+    import types as _t
+    try:
+        import av  # noqa: F401
+        return False
+    except Exception:
+        pass
+    falso = _t.ModuleType("av")
+    falso.__version__ = "0.0.0-apano"
+
+    class _ErrorDeAv(Exception):
+        pass
+
+    falso.AVError = _ErrorDeAv
+    for sub in ("error", "audio", "video", "container", "codec"):
+        m = _t.ModuleType("av." + sub)
+        if sub == "error":
+            m.AVError = _ErrorDeAv
+        setattr(falso, sub, m)
+        _s.modules["av." + sub] = m
+    _s.modules["av"] = falso
+    return True
+
+
 PASO_BOCA = 0.045      # segundos por fotograma de sincronia labial
 MAX_RONDAS = 18        # cuantas veces seguidas puede usar herramientas
 # Cuanto se aparta un cerebro que ha fallado. La cuota de Google se cuenta por
@@ -509,6 +542,8 @@ class Berna(tk.Tk):
             self.voz = PiperVoice.load(ruta)
             self.voz_nombre = self.cfg["voz"]
             self.after(0, self._estado, "Cargando oido (Whisper)...")
+            if apanar_pyav():
+                anotar("PyAV bloqueado por Windows: se usa el apaño (ver LEEME)")
             from faster_whisper import WhisperModel
             self.whisper = WhisperModel(self.cfg["whisper_tam"], device="cpu", compute_type="int8")
             self.after(0, self._estado, "Listo", "#0a7a4a")
