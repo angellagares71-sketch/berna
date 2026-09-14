@@ -245,6 +245,119 @@ BERNA PROGRAMA POR TI                          NUEVO
   YA TIENES DOS HECHOS DE PRUEBA: 'dias_fin_ano' y
   'letras_grandes'. Pidele que te los ejecute y los ves.
 
+BERNA TE ARREGLA LOS PROGRAMAS QUE YA TIENES  NUEVO
+                                          TE PIDE PERMISO
+  Lo de arriba es hacer programas nuevos. Esto es otra
+  cosa: meterle mano a uno que YA existe, sea suyo o sea
+  tuyo. El estudio de musica, por ejemplo.
+
+  COMO SE LE PIDE
+    "en el estudio de musica, sube el limite a 120 minutos"
+    "cambiale el texto del boton de crear cancion"
+    "mira el archivo tal y dime que hace la linea 300"
+    "eso que has cambiado no me gusta, dejalo como estaba"
+
+  COMO TRABAJA, y por que asi
+    1. MIRA el archivo de verdad antes de tocarlo. No se
+       fia de lo que recuerda.
+    2. Cambia SOLO el trozo que hace falta, no reescribe
+       el archivo entero. Si reescribiera un archivo de
+       dos mil lineas se dejaria cosas por el camino: eso
+       es lo que pasa siempre y por eso no lo hace.
+    3. Antes de tocar hace una COPIA DE SEGURIDAD al lado,
+       sin preguntar. Siempre.
+    4. Si el archivo es de Python y el cambio lo rompe, lo
+       DESHACE ELLA SOLA, lee el error y lo vuelve a
+       intentar bien. Nunca te deja un programa roto.
+
+  SI NO TE GUSTA EL CAMBIO
+    Le dices "deshaz eso" y devuelve el archivo a como
+    estaba. Las copias se llaman igual que el archivo con
+    un .bak-berna-fecha detras, por si lo quieres a mano.
+
+  LO QUE NO VA A HACER
+    Tocar nada de Windows ni de Archivos de programa. Y si
+    el texto que busca aparece dos veces en el archivo se
+    para y pregunta, en vez de cambiar el que no era.
+
+LA OPCION CODE: BERNA PROGRAMANDO EN SERIO     NUEVO
+                                          TE PIDE PERMISO
+  Del 09/09/2026. Arriba estaba lo de escribir un programa
+  y lo de arreglar un archivo. Esto es todo lo que va en
+  medio, que es donde de verdad se programa. Son 50
+  herramientas nuevas y se usan solas: tu pides lo que
+  quieres y ella decide cual toca.
+
+  Se nota mas si en la ventana pones el selector en CODEX,
+  que es su modo de trabajo: contesta mas corto, encadena
+  las herramientas sin ir preguntando y te da el resultado.
+
+  1) ENTENDER ANTES DE TOCAR
+     Ya no lee archivos enteros de mil lineas a lo bruto.
+       "que hay en la carpeta del estudio de musica?"
+       "busca 'crear_cancion' por todo C:\Asistente"
+       "sacame el indice de musica.py"
+       "donde se define la funcion elegir?"
+       "quien usa esa funcion?" (esto antes de cambiarla,
+        que es como se sabe a quien le vas a romper algo)
+
+  2) CUANDO ALGO PETA
+       "pegame este error y dime que pasa"  -> te dice cual
+        es el fallo de verdad y TE ENSENA las lineas
+        culpables, con la mala marcada.
+       "prueba el programa metiendole estas respuestas" ->
+        para programas que preguntan cosas por teclado, que
+        antes se quedaban colgados esperando.
+       "por que va tan lento?"  -> lo mide y dice por donde
+        se le va el tiempo.
+       "repasale el codigo"     -> saca los fallos que no
+        petan pero muerden luego.
+
+  3) QUE SE COMPRUEBE SOLO
+     Le puede escribir pruebas al programa y pasarlas cada
+     vez que lo toca:
+       "hazle pruebas al gestor de transporte"
+       "pasale las pruebas, a ver si sigue bien"
+
+  4) ENTREGARLO
+       "hazle el LEEME"        -> lo rehace mirando el codigo
+       "metelo en un zip"      -> al escritorio, para mandarlo
+       "hazme un .exe"         -> se abre sin tener Python
+                                  (tarda unos minutos y pesa)
+       "apunta lo que necesita" -> para llevarlo a otro PC
+
+  5) GUARDAR VERSIONES (git)
+     Esto es la red de seguridad de verdad: guarda fotos del
+     proyecto entero y puedes volver a cualquiera.
+       "empieza a llevar el control de cambios de esta carpeta"
+       "que hay sin guardar?"
+       "guarda una version: arreglado el boton de cancion"
+       "ensename el historial"
+       "deshaz lo que no esta guardado"
+     NO reescribe la historia nunca: nada de borrar versiones
+     ya guardadas. Y si le pides subirlo a internet, te avisa
+     de que eso queda publicado y de que mires que no haya
+     claves dentro.
+
+  RED DE SEGURIDAD DEL CODIGO
+     Los cambios de varios archivos son todo o nada: primero
+     comprueba todos y, si uno quedaria roto, no toca ninguno.
+     Cada escritura sustituye el archivo entero de una sola vez,
+     y dos cambios rapidos ya no pueden pisar la misma copia.
+     Git tambien separa bien los archivos elegidos: guardar uno
+     no arrastra otro que estuviera preparado de antes.
+
+  6) CUATRO UTILES SUELTOS
+       "esta bien este JSON?"     "ordename este JSON"
+       "prueba esta expresion"    "pasame esto a base64"
+
+  LO QUE NO VA A HACER
+    Lo mismo de siempre y no se relaja: nada que borre
+    Windows, toque el registro o espie el teclado, aunque
+    insistas. Y todo lo que ejecuta o escribe te lo pregunta
+    antes, ensenandote QUE archivos toca. Lo de solo mirar
+    (buscar, indices, historial) no te molesta con ventanas.
+
 SKYRIM Y SUS NPC PARLANTES                     NUEVO
                                           TE PIDE PERMISO
   Berna te lleva el Skyrim con Mantella, que es lo que hace
@@ -585,6 +698,10 @@ ARCHIVOS
   muneco.py ....... el muneco con cuerpo que se mueve
   estilos.py ...... los acentos y las personalidades
   taller.py ....... escribir programas, probarlos y arreglarlos
+  taller_extra.py . probarlos con datos, medirlos y entregarlos
+  editor.py ....... cambiar un trozo de un archivo que ya existe
+  codigo.py ....... entender un proyecto: buscar, indices, errores
+  control_version.py  guardar versiones con git y volver atras
   mantella.py ..... el Skyrim y sus NPC parlantes
   actualizaciones.py  ponerse al dia por internet
   vigilante.py .... estar pendiente de lo que haces
@@ -625,8 +742,8 @@ BERNA EN EL MOVIL
   de Windows. Lo que si viaja es su cabeza.
 
   Arranca "Berna-Movil.bat" y deja esa ventana negra abierta.
-  Levanta una pagina web con el mismo cerebro y las mismas
-  150 herramientas. Luego abres en el navegador del movil la
+  Levanta una pagina web con el mismo cerebro y sus mas de 200
+  herramientas. Luego abres en el navegador del movil la
   direccion que te sale escrita en esa ventana.
 
   El movil tiene que estar en el mismo wifi que el ordenador.
@@ -634,7 +751,7 @@ BERNA EN EL MOVIL
   EL INTERRUPTOR "TOCAR EL PC"
   Arriba a la derecha de la pagina. Apagado (por defecto),
   Berna puede mirar, buscar y leer, pero no escribe archivos
-  ni abre programas ni mueve el raton: son 40 de las 150
+  ni abre programas ni mueve el raton: son decenas de
   herramientas y todas fallan a proposito.
   Encendido, puede hacerlo todo, sin preguntar cada vez.
   Dejalo apagado salvo que lo necesites.

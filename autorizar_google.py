@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Abre el navegador para que Angel autorice a Berna en su cuenta de Google."""
-import sys, os
+import sys
 sys.path.insert(0, r"C:\Asistente")
 import cuentas as C
 

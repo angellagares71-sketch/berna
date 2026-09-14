@@ -34,6 +34,8 @@ import json
 import datetime
 import unicodedata
 
+from persistencia import guardar_json_atomico
+
 BASE = os.path.dirname(os.path.abspath(__file__))
 FICHERO = os.path.join(BASE, "recordatorios.json")
 
@@ -67,10 +69,7 @@ def _cargar():
 
 
 def _guardar(lista):
-    tmp = FICHERO + ".tmp"
-    with open(tmp, "w", encoding="utf-8") as f:
-        json.dump(lista[-MAX_AVISOS:], f, indent=1, ensure_ascii=False)
-    os.replace(tmp, FICHERO)
+    guardar_json_atomico(FICHERO, lista[-MAX_AVISOS:], indent=1)
 
 
 def _fmt(dt):

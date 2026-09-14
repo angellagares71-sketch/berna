@@ -17,6 +17,8 @@ QUE HACE ESTO Y QUE NO
 """
 import os, re, json, datetime
 
+from persistencia import guardar_json_atomico
+
 BASE = os.path.dirname(os.path.abspath(__file__))
 F_PERFIL = os.path.join(BASE, "perfil.json")
 F_OPORT = os.path.join(BASE, "oportunidades.json")
@@ -70,8 +72,7 @@ def _leer(ruta, por_defecto):
 
 
 def _escribir(ruta, datos):
-    with open(ruta, "w", encoding="utf-8") as f:
-        json.dump(datos, f, indent=2, ensure_ascii=False)
+    guardar_json_atomico(ruta, datos)
 
 
 def _sin_tildes(s):

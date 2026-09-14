@@ -2,7 +2,7 @@
 r"""
 Las manos de Berna para hacer lo que Angel no sabe hacer a mano.
 
-La idea: cuando Claude (o cualquiera) le dice a Angel "abre PowerShell y pega
+La idea: cuando Codex, ChatGPT, Claude o cualquier asistente autorizado le dice a Angel "abre PowerShell y pega
 esto", Angel ya no tiene que pelearse con la consola. Se lo dicta a Berna y
 Berna lo ejecuta, le enseña que va a hacer, lo hace y le cuenta como fue.
 Tambien puede recoger tareas dejadas por escrito en C:\Asistente\tareas.
@@ -209,7 +209,7 @@ def ejecutar_orden(comando, para_que="", admin=False, carpeta="",
              + (" COMO ADMINISTRADOR" if admin else "") + ":\n\n"
              + comando[:1500] + ("\n[...]" if len(comando) > 1500 else "")
              + (("\n\nPara que: " + str(para_que)) if para_que else "")
-             + "\n\nDile que SI solo si esto te lo ha pedido Claude o lo has "
+             + "\n\nDile que SI solo si esto te lo ha pedido Codex, ChatGPT, Claude o lo has "
                "escrito tu. Le dejas?")
     if permiso is None or not permiso(aviso):
         _apuntar("SIN PERMISO", comando, "Angel ha dicho que no")
@@ -275,7 +275,7 @@ def ver_tareas_pendientes():
     p = _pendientes()
     if not p:
         return ("No hay ninguna tarea pendiente en C:\\Asistente\\tareas. Ahi es "
-                "donde Claude deja por escrito las cosas que hay que ejecutar.")
+                "donde Codex deja por escrito las cosas que hay que ejecutar.")
     lineas = ["Hay %d cosa(s) pendientes de ejecutar:" % len(p)]
     for r in p:
         d = _descripcion(r)
@@ -370,7 +370,7 @@ def hacer_tarea(nombre="", minutos=MINUTOS, permiso=None):
 
 
 def resultado_de_tarea(nombre=""):
-    """Relee lo que solto una tarea, por si Angel se lo tiene que copiar a Claude."""
+    """Relee lo que solto una tarea, por si Angel se lo tiene que copiar a Codex."""
     _preparar()
     salidas = sorted(glob.glob(os.path.join(HECHAS, "*.salida.txt")),
                      key=os.path.getmtime, reverse=True)
@@ -393,7 +393,7 @@ def resultado_de_tarea(nombre=""):
 
 
 def registro_de_ejecuciones(cuantas=10):
-    """Lo ultimo que se ha ejecutado, para que Angel se lo pueda enseñar a Claude."""
+    """Lo ultimo que se ha ejecutado, para que Angel se lo pueda enseñar a Codex."""
     _preparar()
     if not os.path.isfile(REGISTRO):
         return "Todavia no he ejecutado nada, el registro esta vacio."

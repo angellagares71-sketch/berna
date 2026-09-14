@@ -116,6 +116,9 @@ ANTES DE EMPEZAR, LEE ESTO
     cd C:\Asistente
     venv\Scripts\python.exe publicar_actualizacion.py 1.2.0 "Lo que trae" "Y otra cosa"
 
+  O, mas facil: doble clic en C:\Asistente\Publicar Berna.bat,
+  que te pregunta el numero y lo que trae antes de subir nada.
+
   El numero sube siempre: 1.2.0, luego 1.2.1, luego 1.3.0...
   Lo que va entre comillas es lo que van a leer los demas
   cuando les salga el aviso, asi que escribelo en cristiano.

@@ -8,10 +8,12 @@ haga falta: Berna arranca el juego, arranca Mantella, mira el log, TRADUCE el
 fallo a cristiano y, cuando es cosa del modelo, prueba modelos y se queda con
 el mejor.
 
-LAS RUTAS, que no son las obvias:
-  - El programa:  C:\Modding\MO2\mods\Mantella\SKSE\Plugins\MantellaSoftware\Mantella.exe
-  - El config.ini NO esta en la carpeta del mod: se genera en
-    C:\Users\alaga\Documents\My Games\Mantella\config.ini
+LAS RUTAS, que no son las obvias (actualizadas el 28/08/2026, el montaje se
+mudo de C:\Modding\MO2 a C:\Games\SkyrimIA):
+  - El programa:  C:\Games\SkyrimIA\ModOrganizer2\mods\Mantella\SKSE\Plugins\MantellaSoftware\Mantella.exe
+  - El config.ini NO esta en la carpeta del mod, y AQUI TAMPOCO esta donde
+    Mantella lo pone por defecto: a este montaje se le dio carpeta propia,
+    C:\Games\SkyrimIA\MantellaUserFolder\config.ini
   - La clave SI va en la carpeta del mod: GPT_SECRET_KEY.txt (hoy es la de
     Google, no la de OpenRouter; ojo con confundirlas).
 
@@ -40,18 +42,46 @@ import os, re, json, time, shutil, subprocess, datetime, unicodedata
 BASE = os.path.dirname(os.path.abspath(__file__))
 CASA = os.path.expanduser("~")
 SIN_VENTANA = getattr(subprocess, "CREATE_NO_WINDOW", 0x08000000)
+# El arranque completo SI quiere ventana: va cantando por donde va, tarda dos
+# o tres minutos, y el servidor de voz necesita una consola de verdad.
+NUEVA_CONSOLA = getattr(subprocess, "CREATE_NEW_CONSOLE", 0x00000010)
 
 # ------------------------------------------------------------------- rutas
-CARPETA_MOD_DEFECTO = r"C:\Modding\MO2\mods\Mantella"
-DOCS = os.path.join(CASA, "Documents", "My Games", "Mantella")
+#
+# CAMBIADAS EL 28-08-2026. El montaje se mudo entero de C:\Modding\MO2 a
+# C:\Games\SkyrimIA, y ademas a Mantella se le dio una carpeta propia para sus
+# datos (MantellaUserFolder) en vez de la de "Documentos\My Games\Mantella"
+# que usa por defecto. Mientras esto apunto al sitio viejo, las diez
+# herramientas de este modulo miraban carpetas que no existian: decian
+# siempre que no encontraban el config.ini ni el log.
+#
+# Se puede mover sin tocar codigo: las claves mantella_carpeta y
+# mantella_datos de config.json mandan sobre lo de aqui.
+CARPETA_MOD_DEFECTO = r"C:\Games\SkyrimIA\ModOrganizer2\mods\Mantella"
+DOCS_DEFECTO = r"C:\Games\SkyrimIA\MantellaUserFolder"
+
+
+def _docs():
+    """La carpeta donde Mantella deja su config.ini, su log y sus charlas."""
+    try:
+        with open(os.path.join(BASE, "config.json"), "r", encoding="utf-8") as f:
+            d = (json.load(f).get("mantella_datos") or "").strip()
+        if d and os.path.isdir(d):
+            return d
+    except Exception:
+        pass
+    return DOCS_DEFECTO
+
+
+DOCS = _docs()
 CONFIG = os.path.join(DOCS, "config.ini")
 LOG = os.path.join(DOCS, "logging.log")
 DATOS = os.path.join(DOCS, "data")
-LANZADOR = os.path.join(CASA, "Desktop", "Skyrim", "JUGAR Skyrim con Mantella.bat")
+LANZADOR = r"C:\Games\SkyrimIA\Jugar-SkyrimIA.ps1"
 
 # El juego, por si hay que arrancarlo a mano
-MO2 = r"C:\Modding\MO2\ModOrganizer.exe"
-JUEGO = r"C:\Games\SteamLibrary\steamapps\common\Skyrim Special Edition"
+MO2 = r"C:\Games\SkyrimIA\ModOrganizer2\ModOrganizer.exe"
+JUEGO = r"C:\Games\SkyrimIA\ModOrganizer2\mods"
 
 # Cuanto se espera como maximo en cada cosa. Leccion de buscar_en_contenido:
 # el bucle de herramientas es sincrono y cuelga la ventana entera, asi que
@@ -95,13 +125,43 @@ def _apuntar(que, detalle, resultado):
 
 
 # ------------------------------------------------------------- el config.ini
+def tiene_bom():
+    """True si el config.ini empieza por BOM, que lo deja INSERVIBLE.
+
+    Mantella lee su config.ini con configparser en utf-8 pelado. Si el fichero
+    empieza por BOM (los tres bytes EF BB BF), la primera linea deja de ser
+    "[Game]" y pasa a ser "﻿[Game]", configparser lanza
+    MissingSectionHeaderError y Mantella **se traga el error y tira con los
+    valores de fabrica**: se cree que juega a SkyrimVR y pide una clave de
+    OpenRouter que aqui no hace falta. No avisa de que ha ignorado el fichero.
+
+    Paso el 28-08-2026: al bajar audio_threshold de 0.07 a 0.01 para los Sony
+    nuevos, quien escribio el fichero le puso BOM (en PowerShell 5.1,
+    `Set-Content -Encoding utf8` lo pone siempre). El ajuste no llego a
+    aplicarse NUNCA y ademas se anulo el config entero, con dos dias de
+    trabajo dentro.
+    """
+    try:
+        with open(CONFIG, "rb") as f:
+            return f.read(3) == b"\xef\xbb\xbf"
+    except Exception:
+        return False
+
+
 def _leer_config():
-    """Devuelve (lineas, codificacion). El fichero no siempre es utf-8."""
+    """Devuelve (lineas, codificacion). El fichero no siempre es utf-8.
+
+    Se lee con utf-8-sig, que QUITA el BOM si lo hay, y se devuelve siempre
+    "utf-8" como codificacion de escritura para que no se vuelva a poner. Con
+    utf-8 a secas el BOM se colaba como un caracter mas al principio de la
+    primera linea y volvia al disco en cada escritura: el fichero se quedaba
+    roto para siempre y Berna era quien lo mantenia roto.
+    """
     with open(CONFIG, "rb") as f:
         crudo = f.read()
-    for cod in ("utf-8", "cp1252", "latin-1"):
+    for cod in ("utf-8-sig", "cp1252", "latin-1"):
         try:
-            return crudo.decode(cod).splitlines(True), cod
+            return crudo.decode(cod).splitlines(True), "utf-8"
         except Exception:
             continue
     return crudo.decode("utf-8", "replace").splitlines(True), "utf-8"
@@ -297,6 +357,20 @@ def _servidor_vivo():
 
 
 # --------------------------------------------------------------- la clave
+def _cerebro_local():
+    """True si el modelo corre en este PC, en cuyo caso NO hace falta clave.
+
+    Angel lo tiene asi desde el 28/08/2026: koboldcpp sirviendo un Llama 3.1
+    en el puerto 5001. Sale gratis y funciona sin internet.
+    """
+    api = _sin_tildes(_valor("llm_api"))
+    if any(x in api for x in ("koboldcpp", "kobold", "local", "llama.cpp",
+                              "textgen", "ollama", "lm studio", "lmstudio")):
+        return True
+    # Tambien vale cualquier direccion que apunte a esta misma maquina.
+    return "127.0.0.1" in api or "localhost" in api
+
+
 def _clave():
     try:
         with open(_archivo_clave(), "r", encoding="utf-8") as f:
@@ -330,6 +404,18 @@ def mantella_estado():
 
     pr = _procesos()
     l = ["ESTADO DE MANTELLA (la IA de los NPC de Skyrim)", ""]
+
+    # Lo primero de todo, porque si pasa esto lo demas que se lea del fichero
+    # es MENTIRA: aqui pondra lo que diga el config.ini, pero Mantella no lo
+    # ha leido y esta tirando con los valores de fabrica.
+    if tiene_bom():
+        l.append("*** OJO, ESTO PRIMERO ***")
+        l.append("  El config.ini empieza por BOM y Mantella NO LO ESTA")
+        l.append("  LEYENDO. Se cree que juegas a SkyrimVR y pide una clave de")
+        l.append("  OpenRouter que no hace falta. Todo lo que ponga aqui abajo")
+        l.append("  es lo que dice el fichero, no lo que Mantella esta usando.")
+        l.append("  Se arregla con mantella_quitar_bom().")
+        l.append("")
 
     l.append("CORRIENDO AHORA:")
     l.append("  Mantella: " + ("SI, encendido" if pr["mantella"] else "no, apagado"))
@@ -366,8 +452,16 @@ def mantella_estado():
     if carp and not os.path.isdir(carp):
         fallos.append("'skyrim_mod_folder' apunta a %s, que no existe. Con esto "
                       "los NPC repiten la misma frase en bucle" % carp)
-    if not k:
+    if not k and not _cerebro_local():
         fallos.append("no hay clave en %s" % _archivo_clave())
+    elif not k:
+        # Con el modelo corriendo en el propio PC no hace falta clave ninguna.
+        # Sin esta salvedad, Berna cantaba "FALLO GORDO: no hay clave" cada vez
+        # y mandaba a Angel a buscar un problema que no existe. Paso el
+        # 28/08/2026, cuando el montaje se paso a koboldcpp en el puerto 5001.
+        avisos.append("no hay clave, pero da igual: el cerebro (%s) corre en "
+                      "este mismo ordenador y no la necesita"
+                      % _valor("llm_api", "local"))
     elif "generativelanguage.googleapis" in _valor("llm_api") and not (
             k.startswith("AQ.") or k.startswith("AIza")):
         fallos.append("el cerebro es Google pero la clave no parece de Google (%s). "
@@ -550,6 +644,37 @@ def mantella_revisar_fallos(lineas=400):
     return "\n".join(l)
 
 
+def mantella_quitar_bom():
+    """Quita el BOM del config.ini de Mantella, que lo deja inservible.
+
+    Ver tiene_bom() para el porque. Hace copia de seguridad antes y no toca
+    nada mas del fichero: solo se le quitan los tres primeros bytes.
+
+    Despues hay que REINICIAR Mantella, porque el config solo se lee al
+    arrancar: mientras siga en marcha seguira creyendose que juega a SkyrimVR.
+    """
+    if not os.path.isfile(CONFIG):
+        return "No encuentro el config.ini de Mantella en %s." % CONFIG
+    if not tiene_bom():
+        return ("El config.ini NO tiene BOM, asi que por ahi esta bien. Si "
+                "Mantella sigue diciendo que juega a SkyrimVR o pidiendo una "
+                "clave de OpenRouter, es otra cosa.")
+    try:
+        with open(CONFIG, "rb") as f:
+            crudo = f.read()
+        sello = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+        copia = CONFIG + ".bak-berna-" + sello
+        shutil.copy2(CONFIG, copia)
+        with open(CONFIG, "wb") as f:
+            f.write(crudo[3:])
+    except Exception as e:
+        return "No he podido arreglarlo: %s" % e
+    return ("Arreglado: le he quitado el BOM al config.ini (copia en %s).\n\n"
+            "Ahora hay que REINICIAR Mantella para que lo lea, porque el "
+            "config solo se mira al arrancar. Lo mas comodo es cerrar la IA de "
+            "Skyrim y volver a arrancarla." % os.path.basename(copia))
+
+
 # ================================================= 3. AUDITORIA DE LOS AJUSTES
 def mantella_revisar_ajustes():
     """Repasa el config.ini entero buscando cosas mejorables. Solo mira."""
@@ -561,6 +686,15 @@ def mantella_revisar_ajustes():
         return _valor(k, d)
 
     hallazgos = []   # (gravedad, que pasa, que hacer)
+
+    # Este va el primero a proposito: si hay BOM, Mantella no esta leyendo
+    # NADA de este fichero y el resto de hallazgos, aunque sean ciertos sobre
+    # el papel, no explican lo que esta pasando en el juego.
+    if tiene_bom():
+        hallazgos.append(("GORDO", "el config.ini empieza por BOM y Mantella "
+                          "lo esta ignorando ENTERO (se cree que juega a "
+                          "SkyrimVR y pide clave de OpenRouter)",
+                          "usar mantella_quitar_bom() y reiniciar Mantella"))
 
     if v("game") == "SkyrimVR":
         hallazgos.append(("GORDO", "el juego esta puesto como SkyrimVR",
@@ -1188,6 +1322,179 @@ def mantella_parar(permiso=None):
         return "No he podido cerrarlo: %s" % e
 
 
+def _escucha_puerto(puerto):
+    """True si hay algo escuchando en ese puerto de esta maquina."""
+    import socket
+    try:
+        with socket.create_connection(("127.0.0.1", int(puerto)), 0.6):
+            return True
+    except Exception:
+        return False
+
+
+def _microfono_abierto():
+    """Cuando Windows dejo a Mantella abrir el microfono por ultima vez.
+
+    Es el juez de paz del diagnostico: si esta fecha NO se mueve mientras
+    Angel habla, el problema no esta en el audio, esta en que Mantella ni
+    siquiera intenta escuchar. Y eso, en la practica, siempre ha sido la
+    entrada por texto del MCM. Vale la pena porque no depende de creerse el
+    log: lo dice Windows.
+    """
+    try:
+        import winreg
+    except Exception:
+        return ""
+    ruta = (r"SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager"
+            r"\ConsentStore\microphone\NonPackaged")
+    mejor = 0
+    try:
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, ruta) as k:
+            i = 0
+            while True:
+                try:
+                    sub = winreg.EnumKey(k, i)
+                except OSError:
+                    break
+                i += 1
+                if "mantella" not in sub.lower():
+                    continue
+                with winreg.OpenKey(k, sub) as sk:
+                    for v in ("LastUsedTimeStop", "LastUsedTimeStart"):
+                        try:
+                            ft = winreg.QueryValueEx(sk, v)[0]
+                        except Exception:
+                            continue
+                        if isinstance(ft, int) and ft > mejor:
+                            mejor = ft
+    except Exception:
+        return ""
+    if not mejor:
+        return ""
+    # FILETIME: cienmilesimas de microsegundo desde 1601. A segundos desde 1970.
+    try:
+        return time.strftime("%Y-%m-%d %H:%M:%S",
+                             time.localtime(mejor / 10000000.0 - 11644473600))
+    except Exception:
+        return ""
+
+
+def mantella_no_me_oye():
+    """Por que no te oye o no te da el turno, con UN solo siguiente paso.
+
+    Esto NO es un volcado del log: es el orden de descarte que costo dos dias
+    enteros (26 y 27 de agosto de 2026). El orden importa, y esta puesto de
+    mas probable a menos. Sin permiso: solo mira, no cambia nada.
+    """
+    if not os.path.isfile(LOG):
+        return ("No hay log de Mantella todavia, asi que no ha llegado ni a "
+                "arrancar. Lo primero es arrancar Skyrim con IA.")
+
+    try:
+        with open(LOG, "rb") as f:
+            crudo = f.read()
+    except Exception as e:
+        return "No he podido leer el log: %s" % e
+    texto = None
+    for cod in ("utf-8", "cp1252", "cp850"):
+        try:
+            texto = crudo.decode(cod)
+            break
+        except Exception:
+            continue
+    if texto is None:
+        texto = crudo.decode("utf-8", "replace")
+    cola = texto.splitlines()[-800:]
+
+    def ultima(marca):
+        for l in reversed(cola):
+            if marca in l:
+                m = re.match(r"^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})", l)
+                return m.group(1) if m else "sin hora"
+        return ""
+
+    servicios = [(5001, "el modelo de lenguaje"), (8020, "la voz"),
+                 (4999, "Mantella")]
+    caidos = [n for p, n in servicios if not _escucha_puerto(p)]
+    colgado = _escucha_puerto(4999) and not _servidor_vivo()
+
+    hablo = ultima("Player said")
+    turno = ultima("Listening")
+    paso = ultima("Text passed to NPC")
+    espera = ultima("Waiting for player to select an NPC")
+    micro = _microfono_abierto()
+    umbral = _valor("audio_threshold", "?")
+    jugando = bool(_procesos()["skyrim"])
+
+    datos = ["LO QUE VEO:",
+             "  servicios caidos: %s" % (", ".join(caidos) if caidos else "ninguno"),
+             "  el juego: %s" % ("abierto" if jugando else "cerrado"),
+             "  te oyo por ultima vez: %s" % (hablo or "nunca en este log"),
+             "  te dio el turno para hablar: %s" % (turno or "NUNCA"),
+             "  Windows le abrio el microfono: %s" % (micro or "no consta"),
+             "  umbral de voz: %s" % umbral]
+
+    # ESTE ORDEN ES EL DIAGNOSTICO. No reordenar sin un motivo muy bueno.
+    if colgado:
+        paso_sig = ("Mantella esta colgado: tiene el puerto abierto pero no "
+                    "contesta. Pasa cuando intenta usar un microfono que ya no "
+                    "esta, por ejemplo si se desconectan los auriculares a "
+                    "media partida.\n"
+                    "SIGUIENTE PASO: pararlo y volverlo a arrancar. Ofrecete a "
+                    "hacerlo tu, que son segundos.")
+    elif caidos:
+        paso_sig = ("Falta por levantar: %s. Sin eso no hay nada que "
+                    "diagnosticar: si falta el modelo o la voz, el personaje "
+                    "no puede contestar aunque te oiga perfectamente.\n"
+                    "SIGUIENTE PASO: arrancar Skyrim con IA otra vez. Lo que ya "
+                    "este en marcha no se duplica." % ", ".join(caidos))
+    elif not jugando:
+        paso_sig = ("Los servicios estan bien; lo que no esta es el juego.\n"
+                    "SIGUIENTE PASO: abrir Skyrim.")
+    elif not espera and not paso:
+        paso_sig = ("Mantella no ha llegado a hablar con ningun personaje "
+                    "todavia.\n"
+                    "SIGUIENTE PASO: dentro del juego, mira a un personaje y "
+                    "pulsa la tecla de hablar. Si al mirarlo no pasa nada, es "
+                    "que Mantella no esta enganchado a la partida.")
+    elif not turno:
+        paso_sig = ("AQUI ESTA EL FALLO. Mantella escribe la voz del personaje "
+                    "pero el juego no la lee, asi que para el juego el NPC "
+                    "nunca termina de hablar y no te devuelve el turno. Por eso "
+                    "no te pide que hables nunca.\n"
+                    "SIGUIENTE PASO, y es el que lo arregla casi siempre: "
+                    "GUARDA LA PARTIDA EN UNA RANURA NUEVA Y CARGA ESA PARTIDA. "
+                    "Es lo que recomiendan los autores del mod cuando se han "
+                    "cambiado ficheros, y el 27 de agosto lo arreglo al primer "
+                    "intento.\n"
+                    "Si con eso sigue igual, entonces si: en el juego, tecla "
+                    "Escape, configuracion de mods, Mantella, y comprueba que "
+                    "la ENTRADA POR TEXTO ESTA DESACTIVADA. Mientras esa opcion "
+                    "este puesta, Mantella no abre el microfono nunca, y eso no "
+                    "se puede cambiar desde fuera del juego.")
+    elif not hablo:
+        paso_sig = ("Te da el turno pero no te oye: el problema es el "
+                    "microfono o el umbral, no el mod.\n"
+                    "SIGUIENTE PASO: subir el microfono de Windows al maximo y, "
+                    "si aun asi nada, bajar el umbral (ahora esta en %s). "
+                    "Ofrecete a cambiarlo tu con mantella_cambiar_ajuste."
+                    % umbral)
+    else:
+        paso_sig = ("El ciclo completo funciona: te da el turno, te oye y se lo "
+                    "pasa al personaje. La ultima vez fue %s.\n"
+                    "SIGUIENTE PASO: ninguno, esto esta bien. Si aun asi no "
+                    "suena la voz del personaje, es cosa del altavoz de "
+                    "Windows, no del mod." % hablo)
+
+    return ("\n".join(datos) + "\n\n" + paso_sig +
+            "\n\nNO menciones nunca los errores de out.lip ni de FaceFXWrapper "
+            "si los ves: salen en cada frase, son normales en este montaje y "
+            "solo afectan al movimiento de la boca.\n"
+            "Dile a Angel SOLO el siguiente paso, en dos o tres frases y sin "
+            "leerle la lista de datos. Si es algo que puedes hacer tu, "
+            "ofrecetelo.")
+
+
 def jugar_a_skyrim(con_mantella=True, permiso=None):
     """Le monta a Angel la partida entera: Steam, MO2 con SKSE y Mantella."""
     pasos = []
@@ -1195,23 +1502,35 @@ def jugar_a_skyrim(con_mantella=True, permiso=None):
         return ("No encuentro ni el lanzador del escritorio ni el Mod Organizer, "
                 "asi que no se por donde arrancarle el juego.")
 
-    aviso = ("Berna va a arrancar SKYRIM.\n\nAbre Steam si hace falta, lanza el "
-             "juego con SKSE desde Mod Organizer%s.\n\nTarda un par de minutos en "
-             "estar dentro.\n\nLe dejas?"
-             % (" y enciende Mantella para que los NPC hablen" if con_mantella else ""))
+    aviso = ("Berna va a arrancar SKYRIM.\n\nLevanta el modelo de lenguaje, el "
+             "servidor de voz%s, y luego abre el juego con SKSE desde Mod "
+             "Organizer.\n\nTarda entre dos y tres minutos y se come casi toda "
+             "la tarjeta grafica.\n\nLe dejas?"
+             % (" y Mantella, que es lo que hace hablar a los NPC"
+                if con_mantella else ""))
     if permiso is None or not permiso(aviso):
         _apuntar("SIN PERMISO", "jugar a Skyrim", "Angel ha dicho que no")
         return "Angel no me ha dado permiso, no he arrancado el juego."
 
     pr = _procesos()
+    uso_lanzador = False
     if pr["skyrim"]:
         pasos.append("Skyrim ya estaba abierto")
     else:
         try:
             if os.path.isfile(LANZADOR):
-                subprocess.Popen(["cmd", "/c", "start", "", LANZADOR],
-                                 cwd=os.path.dirname(LANZADOR), creationflags=SIN_VENTANA)
-                pasos.append("lanzado con el acceso del escritorio")
+                # OJO: el lanzador es un .ps1, y con "start" Windows lo abriria
+                # en el bloc de notas en vez de ejecutarlo. Hay que llamar a
+                # PowerShell. Y se le da consola propia a proposito: va
+                # contando por donde va y hace falta ver si algo no sube.
+                subprocess.Popen(["powershell", "-NoProfile",
+                                  "-ExecutionPolicy", "Bypass",
+                                  "-File", LANZADOR],
+                                 cwd=os.path.dirname(LANZADOR),
+                                 creationflags=NUEVA_CONSOLA)
+                pasos.append("lanzado el arranque completo: el modelo, la voz, "
+                             "Mantella y el juego, en ese orden")
+                uso_lanzador = True
             else:
                 subprocess.Popen([MO2, "moshortcut://:SKSE"], cwd=JUEGO,
                                  creationflags=SIN_VENTANA)
@@ -1219,7 +1538,11 @@ def jugar_a_skyrim(con_mantella=True, permiso=None):
         except Exception as e:
             return "No he podido arrancar el juego: %s" % e
 
-    if con_mantella:
+    # El lanzador ya enciende Mantella, y ademas el modelo de lenguaje y el
+    # servidor de voz, que sin esos dos los NPC no dicen ni mu. Asi que cuando
+    # se ha usado el lanzador no hay que arrancar Mantella otra vez por
+    # nuestra cuenta: se duplicaria.
+    if con_mantella and not uso_lanzador:
         if pr["mantella"]:
             pasos.append("Mantella ya estaba encendido")
         elif os.path.isfile(_exe()):

@@ -32,7 +32,9 @@ LO QUE NO HACE, Y ES A PROPOSITO
   diario se pierde al cerrar. Nada de esto se manda a ningun sitio salvo la
   foto puntual de la que se habla arriba.
 """
-import os, re, json, time, ctypes, threading, unicodedata, collections
+import os, json, time, ctypes, threading, unicodedata, collections
+
+from persistencia import actualizar_json_atomico
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 u32 = ctypes.windll.user32
@@ -307,8 +309,7 @@ def dejar_de_vigilar():
         if not cfg.get("vigilar_pantalla", False):
             return "Ya estaba apagada, no estoy mirando lo que haces."
         cfg["vigilar_pantalla"] = False
-        with open(ruta, "w", encoding="utf-8") as f:
-            json.dump(cfg, f, indent=2, ensure_ascii=False)
+        actualizar_json_atomico(ruta, {"vigilar_pantalla": False})
         return ("Dejo de estar pendiente de lo que haces. Para que vuelva, "
                 "Angel tiene que pulsar el boton 'Pendiente de ti' de mi "
                 "ventana; yo solo no puedo volver a encenderme. Diselo.")

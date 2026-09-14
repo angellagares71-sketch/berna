@@ -62,7 +62,31 @@ BASE = os.path.dirname(os.path.abspath(__file__))
 TALLER = os.path.join(BASE, "programas")
 ENTORNO = os.path.join(TALLER, "_entorno")
 PYTHON_BERNA = os.path.join(BASE, "venv", "Scripts", "python.exe")
-ESCRITORIO = os.path.join(os.path.expanduser("~"), "Desktop")
+
+
+def escritorio():
+    """La carpeta del escritorio DE VERDAD.
+
+    Con OneDrive sincronizando el escritorio, que es el caso de Angel, no es
+    "~/Desktop": es ~/OneDrive/Escritorio. Windows guarda la buena en el
+    registro. Copia igual que la de instalador.py y operar.py, a proposito:
+    estos modulos tienen que valerse solos. Si se toca una, tocar las tres.
+    """
+    try:
+        import winreg
+        with winreg.OpenKey(
+                winreg.HKEY_CURRENT_USER,
+                r"Software\Microsoft\Windows\CurrentVersion\Explorer"
+                r"\User Shell Folders") as k:
+            ruta = os.path.expandvars(winreg.QueryValueEx(k, "Desktop")[0])
+        if os.path.isdir(ruta):
+            return ruta
+    except Exception:
+        pass
+    return os.path.join(os.path.expanduser("~"), "Desktop")
+
+
+ESCRITORIO = escritorio()
 
 SIN_VENTANA = getattr(subprocess, "CREATE_NO_WINDOW", 0x08000000)
 MAX_CODIGO = 60000          # caracteres de un archivo de codigo
@@ -363,6 +387,12 @@ def _resumen(codigo, salida, error):
         if error:
             partes.append("EL ERROR ES ESTE, mira la ultima linea que es la "
                           "que manda:\n" + error[-3000:])
+            m = re.search(r"No module named ['\"]([^'\"]+)['\"]", error)
+            if m:
+                paquete = m.group(1).split(".")[0]
+                partes.append("PARECE QUE FALTA UNA LIBRERIA: prueba con "
+                              "instalar_libreria('%s') y luego vuelve a "
+                              "probar_programa." % paquete)
         if salida:
             partes.append("Lo que llego a escribir antes de romperse:\n"
                           + salida[-1000:])

@@ -16,9 +16,38 @@ import os, time, ctypes, difflib, subprocess, unicodedata
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 
+
+def escritorio():
+    """La carpeta del escritorio DE VERDAD.
+
+    Con OneDrive sincronizando el escritorio, que es el caso de Angel, no es
+    "~/Desktop": es ~/OneDrive/Escritorio. Buscar los accesos directos en el
+    sitio equivocado hacia que Berna dijera que no encontraba programas que
+    estaban ahi delante. Windows guarda la buena en el registro. Copia igual
+    que la de instalador.py y taller.py, a proposito: estos modulos tienen
+    que valerse solos. Si se toca una, tocar las tres.
+    """
+    try:
+        import winreg
+        with winreg.OpenKey(
+                winreg.HKEY_CURRENT_USER,
+                r"Software\Microsoft\Windows\CurrentVersion\Explorer"
+                r"\User Shell Folders") as k:
+            ruta = os.path.expandvars(winreg.QueryValueEx(k, "Desktop")[0])
+        if os.path.isdir(ruta):
+            return ruta
+    except Exception:
+        pass
+    return os.path.join(os.path.expanduser("~"), "Desktop")
+
+
+# Se miran los dos escritorios posibles: el de verdad y el clasico. En un
+# equipo sin OneDrive son el mismo y el duplicado no molesta; en el de Angel
+# el clasico es una carpeta fantasma, pero buscar en ella no cuesta nada.
 CARPETAS_MENU = [
     r"C:\ProgramData\Microsoft\Windows\Start Menu\Programs",
     os.path.join(os.environ.get("APPDATA", ""), r"Microsoft\Windows\Start Menu\Programs"),
+    escritorio(),
     os.path.join(os.path.expanduser("~"), "Desktop"),
     r"C:\Users\Public\Desktop",
 ]

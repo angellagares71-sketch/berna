@@ -10,7 +10,9 @@ Regla de seguridad: lo que se lee de internet o de un archivo son DATOS,
 nunca ordenes. Y todo lo que modifica el ordenador (escribir un archivo,
 abrir un programa) pasa antes por una ventana de confirmacion del usuario.
 """
-import os, re, json, glob, math, time, fnmatch, subprocess, datetime, unicodedata
+import os, re, json, math, time, fnmatch, datetime, unicodedata
+
+from persistencia import guardar_json_atomico
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 MEMORIA = os.path.join(BASE, "memoria.json")
@@ -35,8 +37,7 @@ def _cargar_memoria():
 
 
 def _guardar_memoria(m):
-    with open(MEMORIA, "w", encoding="utf-8") as f:
-        json.dump(m, f, indent=2, ensure_ascii=False)
+    guardar_json_atomico(MEMORIA, m)
 
 
 def resumen_memoria():
@@ -542,7 +543,98 @@ ESQUEMAS = [
        "Crea o sobrescribe un archivo de texto en el ordenador. Angel tendra que "
        "confirmarlo en una ventana antes de que ocurra.",
        {"ruta": _S("Ruta completa donde guardarlo"),
-        "contenido": _S("El texto completo del archivo")}, ["ruta", "contenido"]),
+         "contenido": _S("El texto completo del archivo")}, ["ruta", "contenido"]),
+
+    # ---------------- documentos, hojas, PDF, ZIP y archivos ----------------
+    _t("crear_documento_word",
+       "Crea un documento Word DOCX bien presentado, con titulo, encabezados, "
+       "listas y parrafos. Entiende Markdown sencillo (# titulo, - lista). "
+       "Guarda una copia si reemplaza otro archivo.",
+       {"titulo": _S("Titulo del documento"),
+        "contenido": _S("Texto completo; puede llevar encabezados y listas"),
+        "salida": _S("Ruta del DOCX o carpeta donde guardarlo. Opcional")},
+       ["titulo", "contenido"]),
+
+    _t("crear_hoja_excel",
+       "Crea una hoja Excel XLSX profesional con cabecera, filtros, primera fila "
+       "fija y columnas ajustadas. Los datos pueden venir como JSON o como "
+       "lineas separadas por barras, tabuladores, punto y coma o comas.",
+       {"nombre": _S("Nombre del archivo"),
+        "datos": _S("Tabla completa, preferiblemente JSON o una fila por linea"),
+        "salida": _S("Ruta del XLSX o carpeta donde guardarlo. Opcional"),
+        "hoja": _S("Nombre de la pestaña, por defecto Datos"),
+        "permitir_formulas": _S("si solo cuando Angel pida formulas de Excel")},
+       ["nombre", "datos"]),
+
+    _t("actualizar_celda_excel",
+       "Cambia una celda concreta de una hoja Excel existente y guarda una copia "
+       "anterior automaticamente.",
+       {"ruta": _S("Ruta completa del XLSX"),
+        "celda": _S("Celda, por ejemplo B7"),
+        "valor": _S("Nuevo texto, numero o formula"),
+        "hoja": _S("Nombre de la pestaña. Opcional")}, ["ruta", "celda", "valor"]),
+
+    _t("crear_pdf_texto",
+       "Crea un PDF paginado a partir de un titulo y un texto. Util para informes, "
+       "cartas y documentos que deben poder abrirse en cualquier equipo.",
+       {"titulo": _S("Titulo del PDF"), "contenido": _S("Texto completo"),
+        "salida": _S("Ruta del PDF o carpeta donde guardarlo. Opcional")},
+       ["titulo", "contenido"]),
+
+    _t("extraer_paginas_pdf",
+       "Saca paginas concretas de un PDF y crea otro PDF, sin tocar el original.",
+       {"ruta": _S("Ruta del PDF original"),
+        "paginas": _S("Paginas desde 1, por ejemplo 1-3,5,8"),
+        "salida": _S("Ruta del nuevo PDF. Opcional")}, ["ruta", "paginas"]),
+
+    _t("dividir_pdf",
+       "Divide un PDF en un archivo independiente por cada pagina.",
+       {"ruta": _S("Ruta del PDF"),
+        "destino": _S("Carpeta donde dejar las paginas. Opcional")}, ["ruta"]),
+
+    _t("crear_zip",
+       "Comprime archivos o carpetas en un ZIP. Acepta varias rutas, una por linea "
+       "o separadas por punto y coma.",
+       {"rutas": _S("Rutas de lo que hay que comprimir"),
+        "salida": _S("Ruta del ZIP. Opcional")}, ["rutas"]),
+
+    _t("extraer_zip",
+       "Extrae un ZIP con proteccion contra rutas peligrosas, enlaces y archivos "
+       "descomprimidos desmesurados.",
+       {"ruta": _S("Ruta del ZIP"),
+        "destino": _S("Carpeta donde abrirlo. Opcional")}, ["ruta"]),
+
+    _t("copiar_archivo_o_carpeta",
+       "Copia un archivo o una carpeta conservando el original. Guarda una copia "
+       "anterior si reemplaza un archivo.",
+       {"origen": _S("Ruta que hay que copiar"),
+        "destino": _S("Ruta o carpeta de destino")}, ["origen", "destino"]),
+
+    _t("mover_archivo_o_carpeta",
+       "Mueve o renombra un archivo o carpeta. Nunca reemplaza un destino que ya "
+       "exista y pide permiso porque el original cambia de sitio.",
+       {"origen": _S("Ruta actual"), "destino": _S("Ruta nueva")},
+       ["origen", "destino"]),
+
+    _t("crear_carpeta", "Crea una carpeta nueva en el ordenador.",
+       {"ruta": _S("Ruta completa de la carpeta")}, ["ruta"]),
+
+    _t("informacion_archivo",
+       "Muestra tamaño, fecha y huella SHA-256 de un archivo, o cantidad y tamaño "
+       "total de una carpeta.", {"ruta": _S("Ruta que hay que revisar")}, ["ruta"]),
+
+    _t("buscar_duplicados",
+       "Busca archivos exactamente duplicados dentro de una carpeta comparando "
+       "tamaño y SHA-256. Solo informa: nunca borra nada.",
+       {"carpeta": _S("Carpeta donde buscar"),
+        "max_archivos": _N("Limite de archivos a revisar, por defecto 5000")},
+       ["carpeta"]),
+
+    _t("comparar_archivos",
+       "Compara dos archivos. Si son de texto enseña las diferencias; si son "
+       "binarios compara sus huellas SHA-256.",
+       {"primero": _S("Ruta del primer archivo"),
+        "segundo": _S("Ruta del segundo archivo")}, ["primero", "segundo"]),
 
     _t("abrir_en_windows",
        "Abre un archivo, una carpeta, un programa o una direccion web con Windows. "
@@ -774,7 +866,7 @@ ESQUEMAS = [
 
     _t("ejecutar_orden",
        "EJECUTA de verdad un comando en el ordenador de Angel (PowerShell). Es "
-       "para cuando Claude, un manual o un tecnico le dicen a Angel 'pega esto "
+       "para cuando Codex, ChatGPT, Claude, un manual o un tecnico le dicen a Angel 'pega esto "
        "en la consola' y el no sabe: se lo dictas aqui tal cual y lo haces tu. "
        "Sirve para instalar programas y paquetes, mover o renombrar archivos en "
        "lote, configurar cosas, arreglar el PC o mirar como esta por dentro. "
@@ -792,8 +884,8 @@ ESQUEMAS = [
 
     _t("ver_tareas_pendientes",
        "Mira si le han dejado a Angel trabajo por escrito en la carpeta "
-       "C:\\Asistente\\tareas (ahi es donde Claude deja lo que hay que ejecutar). "
-       "Usalo cuando Angel diga que Claude le ha dejado algo, que tiene algo "
+       "C:\\Asistente\\tareas (ahi es donde Codex deja lo que hay que ejecutar). "
+       "Usalo cuando Angel diga que Codex, ChatGPT o Claude le ha dejado algo, que tiene algo "
        "pendiente, o pregunte que hay que hacer.",
        {}, []),
 
@@ -805,7 +897,7 @@ ESQUEMAS = [
 
     _t("resultado_de_tarea",
        "Vuelve a leer lo que solto una tarea ya ejecutada, para poder decirselo "
-       "a Angel o para que el se lo copie a Claude.",
+       "a Angel o para que el se lo copie a Codex.",
        {"nombre": _S("Nombre de la tarea. Vacio para la ultima")}, []),
 
     _t("registro_de_ejecuciones",
@@ -1015,8 +1107,9 @@ ESQUEMAS = [
         "archivo": _S("Que archivo. Vacio para el principal")}, ["programa"]),
 
     _t("instalar_libreria",
-       "Instala una libreria de Python que necesite un programa tuyo. Va a un "
-       "entorno aparte para no romperte a ti. Angel lo confirma.",
+       "Instala una libreria de Python que necesite un programa tuyo. Usalo "
+       "cuando probar_programa diga ModuleNotFoundError, ImportError o que falta "
+       "un paquete. Va a un entorno aparte para no romperte a ti. Angel lo confirma.",
        {"nombre": _S("El nombre del paquete, por ejemplo pandas")}, ["nombre"]),
 
     _t("publicar_programa",
@@ -1029,6 +1122,391 @@ ESQUEMAS = [
 
     _t("borrar_programa", "Borra un programa tuyo entero. Angel lo confirma.",
        {"programa": _S("Cual")}, ["programa"]),
+
+    # ---------------- entender un proyecto de codigo ----------------
+    _t("arbol_de_carpeta",
+       "El mapa de una carpeta: que carpetas y que archivos tiene y como estan "
+       "repartidos. Es lo PRIMERO que haces cuando te ponen delante un proyecto "
+       "que no conoces, antes de abrir ningun archivo.",
+       {"ruta": _S("La carpeta, por ejemplo C:\\Asistente"),
+        "hondo": _N("Cuantos niveles bajar, por defecto 3"),
+        "todos": _S("si, para ver tambien lo oculto y las carpetas de trabajo")},
+       ["ruta"]),
+
+    _t("buscar_en_proyecto",
+       "Busca un texto por TODOS los archivos de una carpeta y te dice archivo y "
+       "numero de linea. Es tu buscador: usalo antes de tocar nada para saber "
+       "donde esta lo que hay que cambiar. buscar_en_archivo mira uno solo; este "
+       "mira el proyecto entero.",
+       {"carpeta": _S("Donde buscar"),
+        "texto": _S("Lo que buscas, tal cual sale en el codigo"),
+        "archivos": _S("Solo en cierto tipo, por ejemplo '*.py' o 'py,js'. "
+                       "Vacio para todo el codigo"),
+        "tope": _N("Cuantos resultados como mucho, por defecto 60")},
+       ["carpeta", "texto"]),
+
+    _t("mapa_de_codigo",
+       "El indice de un archivo de codigo: sus clases, sus funciones, que hace "
+       "cada una y EN QUE LINEA esta. Usalo en archivos grandes en vez de leerlos "
+       "enteros: miras el indice y luego pides solo el trozo con ver_archivo.",
+       {"ruta": _S("Ruta completa del archivo")}, ["ruta"]),
+
+    _t("donde_esta_definido",
+       "Encuentra en que archivo y en que linea se CREA una funcion, una clase o "
+       "un ajuste. Es el 'ir a la definicion' de toda la vida.",
+       {"carpeta": _S("El proyecto donde buscar"),
+        "nombre": _S("El nombre de la funcion, clase o variable")},
+       ["carpeta", "nombre"]),
+
+    _t("quien_usa",
+       "Todos los sitios donde se LLAMA a una funcion o se usa una variable. "
+       "Usalo SIEMPRE antes de cambiar o renombrar algo, para ver a quien le vas "
+       "a romper el codigo.",
+       {"carpeta": _S("El proyecto"),
+        "nombre": _S("Que rastreas"),
+        "tope": _N("Cuantos sitios como mucho, por defecto 60")},
+       ["carpeta", "nombre"]),
+
+    _t("contar_lineas",
+       "Cuanto codigo hay en un proyecto, de que lenguajes y cuales son los "
+       "archivos mas gordos. Para hacerse una idea del tamano antes de meterse.",
+       {"carpeta": _S("El proyecto")}, ["carpeta"]),
+
+    _t("revisar_proyecto",
+       "Repasa un proyecto entero SIN EJECUTAR NADA: dice que archivos de Python "
+       "no compilan y que cosas quedaron a medias (TODO, FIXME). Rapido y sin "
+       "ningun riesgo.",
+       {"carpeta": _S("El proyecto")}, ["carpeta"]),
+
+    _t("explicar_error",
+       "Le pegas un error de Python entero (el traceback) y te dice cual es el "
+       "fallo de verdad y TE ENSENA LAS LINEAS de codigo que lo provocan. Usalo "
+       "en cuanto veas un traceback, tuyo o que te pegue Angel, antes de ponerte "
+       "a adivinar.",
+       {"error": _S("El error entero, con todas sus lineas"),
+        "carpeta": _S("Donde esta el programa, por si las rutas no cuadran")},
+       ["error"]),
+
+    _t("reemplazar_en_varios",
+       "Cambia el mismo texto en TODOS los archivos de una carpeta de golpe. Es "
+       "como se renombra una funcion de verdad: donde se define y en los quince "
+       "sitios donde se llama. Ensena antes que archivos toca y hace copia de "
+       "cada uno. Angel lo confirma.",
+       {"carpeta": _S("El proyecto"),
+        "buscar": _S("El texto exacto que hay ahora"),
+        "poner": _S("Por lo que hay que cambiarlo"),
+        "archivos": _S("Solo en cierto tipo, por ejemplo '*.py'. Vacio para todo")},
+       ["carpeta", "buscar", "poner"]),
+
+    _t("insertar_en_archivo",
+       "ANADE un trozo nuevo a un archivo sin reescribirlo entero: una funcion "
+       "nueva, un import, una linea en una lista. editar_archivo cambia lo que "
+       "hay; este pone lo que no habia. Angel lo confirma.",
+       {"ruta": _S("Ruta completa del archivo"),
+        "texto": _S("Lo que hay que meter, tal cual va a quedar"),
+        "despues_de": _S("Un trozo UNICO del archivo tras el que va"),
+        "antes_de": _S("O un trozo unico delante del que va"),
+        "al_final": _S("si, para ponerlo al final del archivo")},
+       ["ruta", "texto"]),
+
+    _t("copias_de_archivo",
+       "Las copias de seguridad que hay de un archivo y de cuando son. Usalo si "
+       "Angel dice que algo se ha estropeado y quiere volver atras.",
+       {"ruta": _S("Ruta completa del archivo")}, ["ruta"]),
+
+    _t("cambios_desde_la_copia",
+       "Que cambio entre una copia de seguridad y como esta el archivo ahora, "
+       "linea a linea. Para contarle a Angel exactamente que se ha tocado.",
+       {"ruta": _S("Ruta completa del archivo"),
+        "copia": _S("Nombre de la copia. Vacio para la ultima")}, ["ruta"]),
+
+    _t("restaurar_copia",
+       "Devuelve un archivo a una copia de seguridad concreta, no solo a la "
+       "ultima. Angel lo confirma.",
+       {"ruta": _S("Ruta completa del archivo"),
+        "copia": _S("Nombre de la copia. Vacio para la ultima")}, ["ruta"]),
+
+    _t("validar_json",
+       "Dice si un JSON esta bien escrito y, si no, por donde se rompe. Usalo "
+       "antes de dar por bueno un archivo de ajustes.",
+       {"texto": _S("El JSON pegado, si lo tienes a mano"),
+        "ruta": _S("O la ruta de un archivo .json")}, []),
+
+    _t("formatear_json",
+       "Deja un archivo JSON ordenado y con sangria para poder leerlo. Los datos "
+       "no cambian. Angel lo confirma.",
+       {"ruta": _S("Ruta del archivo .json")}, ["ruta"]),
+
+    _t("probar_expresion",
+       "Prueba una expresion regular sobre un texto y te dice que caza y que no, "
+       "grupo a grupo. Usalo ANTES de meter un regex en el codigo.",
+       {"patron": _S("La expresion regular"),
+        "texto": _S("El texto de ejemplo donde probarla")}, ["patron", "texto"]),
+
+    _t("convertir_texto",
+       "Convierte un texto: base64, hex, url, md5, sha1, sha256, mayusculas, "
+       "minusculas, sin tildes, slug para nombre de archivo, o contar caracteres.",
+       {"texto": _S("El texto"),
+        "a": _S("A que: base64, debase64, hex, dehex, url, deurl, md5, sha1, "
+                "sha256, mayusculas, minusculas, sin_tildes, slug, contar")},
+       ["texto"]),
+
+    # ---------------- probar, medir y entregar programas ----------------
+    _t("probar_con_datos",
+       "Ejecuta un programa tuyo DANDOLE lo que escribiria un usuario y los "
+       "argumentos que haga falta. Es lo que hay que usar cuando el programa "
+       "hace input() o pide cosas por teclado: con probar_programa a secas se "
+       "queda colgado esperando.",
+       {"programa": _S("Cual"),
+        "entrada": _S("Lo que teclearia el usuario, una respuesta por linea"),
+        "argumentos": _S("Argumentos de la linea de ordenes, separados por espacios"),
+        "archivo": _S("Que archivo lanzar. Vacio para el principal"),
+        "segundos": _N("Cuanto le dejas correr, por defecto 25")}, ["programa"]),
+
+    _t("ejecutar_python",
+       "Prueba unas pocas lineas de Python al vuelo, sin montar un programa "
+       "entero. Para comprobar como se comporta algo, que devuelve una libreria "
+       "o si una idea funciona. Angel lo confirma y ve el codigo antes.",
+       {"codigo": _S("El trozo de Python a probar"),
+        "segundos": _N("Tope de tiempo, por defecto 20")}, ["codigo"]),
+
+    _t("crear_prueba",
+       "Escribe un archivo de pruebas automaticas para un programa tuyo, para "
+       "que se compruebe solo y te avise si rompes algo mas adelante.",
+       {"programa": _S("De que programa"),
+        "codigo": _S("El codigo de la prueba. Vacio para dejar un esqueleto"),
+        "nombre": _S("Nombre del archivo, por defecto test_principal.py")},
+       ["programa"]),
+
+    _t("pasar_pruebas",
+       "Lanza las pruebas automaticas de un programa y dice cuales pasan y "
+       "cuales no. Hazlo despues de cada arreglo gordo, antes de decirle a Angel "
+       "que esta listo.",
+       {"programa": _S("Cual")}, ["programa"]),
+
+    _t("revisar_estilo",
+       "Busca los fallos que NO petan pero muerden luego: imports que no se usan, "
+       "un except que se traga los errores, funciones enormes, tabuladores "
+       "mezclados. No ejecuta nada, asi que es gratis y sin riesgo.",
+       {"programa": _S("Un programa tuyo del taller"),
+        "ruta": _S("O la ruta de un archivo .py cualquiera del ordenador")}, []),
+
+    _t("medir_velocidad",
+       "Ejecuta un programa midiendo y dice EN QUE se le va el tiempo, funcion "
+       "por funcion. Usalo cuando Angel diga que algo va lento, en vez de "
+       "adivinar por donde. Angel lo confirma.",
+       {"programa": _S("Cual"),
+        "archivo": _S("Que archivo. Vacio para el principal"),
+        "segundos": _N("Tope de tiempo, por defecto 60")}, ["programa"]),
+
+    _t("librerias_instaladas",
+       "Que librerias de Python hay instaladas en el entorno del taller. Miralo "
+       "antes de instalar nada, por si ya esta.",
+       {"buscar": _S("Filtrar por nombre. Vacio para verlas todas")}, []),
+
+    _t("quitar_libreria",
+       "Desinstala una libreria del entorno del taller. Angel lo confirma.",
+       {"nombre": _S("El paquete")}, ["nombre"]),
+
+    _t("guardar_requisitos",
+       "Apunta en requisitos.txt lo que necesita un programa para funcionar, "
+       "leyendo sus import. Es lo que permite llevarselo a otro ordenador.",
+       {"programa": _S("Cual")}, ["programa"]),
+
+    _t("instalar_requisitos",
+       "Instala de una vez todas las librerias que pide el requisitos.txt de un "
+       "programa. Angel lo confirma.",
+       {"programa": _S("Cual")}, ["programa"]),
+
+    _t("estado_del_taller",
+       "Como esta tu taller: que Python usa, si tiene entorno propio, cuantos "
+       "programas hay, cuanto ocupan y cuanto sitio queda en el disco.", {}, []),
+
+    _t("copiar_programa",
+       "Duplica un programa tuyo con otro nombre, para probar cambios gordos sin "
+       "romper el que ya funciona. Angel lo confirma.",
+       {"programa": _S("Cual copias"),
+        "nuevo_nombre": _S("Como se llama la copia")}, ["programa", "nuevo_nombre"]),
+
+    _t("renombrar_programa",
+       "Le cambia el nombre a un programa tuyo. Angel lo confirma.",
+       {"programa": _S("Cual"), "nuevo_nombre": _S("El nombre nuevo")},
+       ["programa", "nuevo_nombre"]),
+
+    _t("importar_programa",
+       "Se trae al taller un programa o un archivo de codigo que ya existe en el "
+       "ordenador, para poder trabajarlo con tus herramientas. El original no se "
+       "toca. Angel lo confirma.",
+       {"ruta": _S("Ruta del archivo o de la carpeta"),
+        "nombre": _S("Con que nombre lo metes. Vacio para el que ya tiene")},
+       ["ruta"]),
+
+    _t("borrar_archivo_de_programa",
+       "Quita UN archivo suelto de un programa tuyo, no el programa entero. "
+       "Angel lo confirma.",
+       {"programa": _S("De cual"), "archivo": _S("Que archivo")},
+       ["programa", "archivo"]),
+
+    _t("abrir_carpeta_del_programa",
+       "Le abre a Angel en pantalla la carpeta de un programa tuyo, para que vea "
+       "los archivos con sus propios ojos. Angel lo confirma.",
+       {"programa": _S("Cual")}, ["programa"]),
+
+    _t("documentar_programa",
+       "Rehace el LEEME.txt de un programa con lo que de verdad hace ahora: sus "
+       "archivos, sus funciones y como se arranca. Hazlo cuando termines un "
+       "programa o despues de cambiarlo mucho.",
+       {"programa": _S("Cual")}, ["programa"]),
+
+    _t("empaquetar_programa",
+       "Mete un programa tuyo en un zip y te lo deja en el escritorio, listo "
+       "para mandarlo por correo o llevarselo en un pen. Angel lo confirma.",
+       {"programa": _S("Cual")}, ["programa"]),
+
+    _t("hacer_ejecutable",
+       "Convierte un programa de Python en un .exe que se abre con doble clic sin "
+       "tener Python instalado, y te lo deja en el escritorio. Tarda varios "
+       "minutos y el archivo sale grande. Angel lo confirma.",
+       {"programa": _S("Cual"),
+        "archivo": _S("Que archivo es el que arranca. Vacio para el principal")},
+       ["programa"]),
+
+    _t("abrir_web_del_programa",
+       "Levanta un servidor web en el ordenador para ver un programa de paginas "
+       "como se ve de verdad (http en vez de doble clic), y lo abre en el "
+       "navegador. Angel lo confirma.",
+       {"programa": _S("Cual"),
+        "puerto": _N("Puerto, por defecto 8765")}, ["programa"]),
+
+    _t("parar_web_del_programa",
+       "Apaga el servidor web que habias levantado para probar una pagina.",
+       {"programa": _S("Cual. Vacio para pararlos todos")}, []),
+
+    _t("probar_api",
+       "Llama a una direccion de internet y te dice exactamente que contesta: el "
+       "codigo, las cabeceras y el cuerpo. Usalo ANTES de escribir el codigo que "
+       "habla con un servidor, para ver que formato devuelve. Leer es libre; "
+       "mandar datos (POST, PUT, DELETE) lo confirma Angel.",
+       {"url": _S("La direccion entera, con http:// o https://"),
+        "metodo": _S("GET, POST, PUT, PATCH, DELETE. Por defecto GET"),
+        "cuerpo": _S("Los datos que mandas, normalmente un JSON"),
+        "cabeceras": _S("Cabeceras, una por linea, con formato 'Nombre: valor'")},
+       ["url"]),
+
+    # ---------------- control de cambios con git ----------------
+    _t("git_estado",
+       "Que hay cambiado en un proyecto y todavia sin guardar, y en que rama "
+       "estas. Lo primero que miras al ponerte con un proyecto que lleva git.",
+       {"carpeta": _S("El proyecto. Vacio para C:\\Asistente")}, []),
+
+    _t("git_cambios",
+       "Linea a linea, que se ha tocado desde el ultimo guardado. Miralo antes "
+       "de guardar, para saber que estas guardando.",
+       {"carpeta": _S("El proyecto"),
+        "archivo": _S("Solo un archivo. Vacio para todos"),
+        "desde": _S("Comparar contra un guardado concreto, por su codigo corto")},
+       []),
+
+    _t("git_historial",
+       "Los ultimos guardados de un proyecto: cuando, quien y que se hizo.",
+       {"carpeta": _S("El proyecto"),
+        "cuantos": _N("Cuantos, por defecto 15"),
+        "archivo": _S("Solo la historia de un archivo")}, []),
+
+    _t("git_ramas", "Que ramas tiene el proyecto y en cual estas.",
+       {"carpeta": _S("El proyecto")}, []),
+
+    _t("git_empezar",
+       "Empieza a llevar el control de cambios (git) en una carpeta, para poder "
+       "guardar versiones y volver atras. Deja tambien un .gitignore para que no "
+       "se cuelen claves ni el entorno de Python. Angel lo confirma.",
+       {"carpeta": _S("La carpeta del proyecto")}, []),
+
+    _t("git_guardar",
+       "Guarda una version de como esta el proyecto ahora, con un mensaje que "
+       "explique que has cambiado. Hazlo cada vez que termines algo que funcione. "
+       "Angel lo confirma.",
+       {"carpeta": _S("El proyecto"),
+        "mensaje": _S("En una frase, que has cambiado"),
+        "archivos": _S("Solo ciertos archivos, uno por linea. Vacio para todo")},
+       ["mensaje"]),
+
+    _t("git_deshacer",
+       "Tira los cambios que AUN NO se han guardado y vuelve al ultimo guardado. "
+       "Lo ya guardado no se toca nunca. Angel lo confirma con un aviso claro.",
+       {"carpeta": _S("El proyecto"),
+        "archivo": _S("Solo un archivo. Vacio para todos")}, []),
+
+    _t("git_rama",
+       "Crea una rama nueva para trastear sin romper lo que funciona, o se cambia "
+       "a otra que ya exista. Angel lo confirma.",
+       {"carpeta": _S("El proyecto"),
+        "nombre": _S("Como se llama la rama"),
+        "crear": _S("si, para crearla nueva")}, ["nombre"]),
+
+    _t("git_bajar",
+       "Trae de internet los cambios del repositorio (pull). Angel lo confirma.",
+       {"carpeta": _S("El proyecto")}, []),
+
+    _t("git_subir",
+       "Sube a internet lo que has guardado (push). OJO: lo que se sube queda "
+       "publicado. Angel lo confirma viendo a donde va.",
+       {"carpeta": _S("El proyecto")}, []),
+
+    _t("git_clonar",
+       "Se trae de internet un proyecto entero para poder mirarlo o trabajarlo. "
+       "Angel lo confirma.",
+       {"url": _S("La direccion, por ejemplo https://github.com/alguien/cosa.git"),
+        "destino": _S("Donde dejarlo. Vacio para C:\\Asistente\\programas")},
+       ["url"]),
+
+    # ---------------- tocar codigo que ya existe ----------------
+    _t("ver_archivo",
+       "Te ensena un trozo de CUALQUIER archivo del ordenador CON LOS NUMEROS "
+       "DE LINEA. Es lo primero que tienes que hacer antes de cambiar nada: "
+       "no se edita a ciegas. Para archivos grandes pide el trozo que te "
+       "interese con desde y lineas.",
+       {"ruta": _S("Ruta completa del archivo"),
+        "desde": _N("Por que linea empiezo, por defecto la 1"),
+        "lineas": _N("Cuantas lineas quieres, por defecto 200")}, ["ruta"]),
+
+    _t("buscar_en_archivo",
+       "Dice en que lineas de un archivo aparece un texto, y te ensena las "
+       "lineas de alrededor. Usalo para encontrar el trozo que hay que "
+       "cambiar antes de llamar a editar_archivo.",
+       {"ruta": _S("Ruta completa del archivo"),
+        "texto": _S("Lo que buscas dentro del archivo"),
+        "alrededor": _N("Cuantas lineas de contexto, por defecto 2")},
+       ["ruta", "texto"]),
+
+    _t("editar_archivo",
+       "Cambia UN TROZO de un archivo que ya existe: le dices el texto exacto "
+       "que hay ahora y por que hay que cambiarlo. ESTA ES LA HERRAMIENTA "
+       "PARA ARREGLAR O MEJORAR PROGRAMAS QUE YA ESTAN HECHOS, los de Angel o "
+       "los tuyos. NUNCA uses escribir_archivo para eso: reescribir entero un "
+       "archivo grande acaba siempre en trozos perdidos. "
+       "El texto que busques tiene que ser UNICO en el archivo (si no, se "
+       "niega); copia unas lineas de arriba y de abajo para que lo sea, con "
+       "sus espacios del principio tal cual. Hace copia de seguridad sola, y "
+       "si es Python y queda roto lo deshace sola y te devuelve el error.",
+       {"ruta": _S("Ruta completa del archivo"),
+        "buscar": _S("El texto exacto que hay AHORA, copiado tal cual, con "
+                     "sus espacios y sus saltos de linea"),
+        "poner": _S("Por lo que hay que cambiarlo. Vacio para borrarlo"),
+        "todas": _S("true solo si de verdad quieres cambiar TODAS las veces "
+                    "que aparezca. Por defecto false")},
+       ["ruta", "buscar", "poner"]),
+
+    _t("deshacer_edicion",
+       "Devuelve un archivo a como estaba antes de tu ultima edicion. Usalo "
+       "si Angel dice que se ha estropeado algo o que no le gusta el cambio.",
+       {"ruta": _S("Ruta completa del archivo")}, ["ruta"]),
+
+    _t("comprobar_codigo",
+       "Dice si un archivo de Python compila, sin ejecutarlo. Rapido y sin "
+       "riesgo. Usalo despues de tocar un programa gordo que no puedes "
+       "ejecutar entero.",
+       {"ruta": _S("Ruta completa del archivo .py o .pyw")}, ["ruta"]),
 
     _t("actualizar_carpeta_del_pen",
        "Deja la carpeta 'Instalar Berna' del escritorio con la ultima version "
@@ -1140,9 +1618,261 @@ ESQUEMAS = [
        "Pulsa una tecla o una combinacion: intro, tab, esc, supr, f5, ctrl+s, "
        "ctrl+c, alt+tab, win+d, flechas. Para moverte por menus y formularios "
        "sin tocar el raton.",
-       {"teclas": _S("Por ejemplo ctrl+s, intro, tab o abajo"),
+       {"teclas": _S("Por ejemplo intro, tab, abajo, f5, num7, bloqnum, "
+                     "'subir volumen' o altgr+5. OJO: Windows esta EN ESPANOL, "
+                     "asi que en los programas de siempre guardar es ctrl+g (no "
+                     "ctrl+s), abrir es ctrl+a, seleccionar todo es ctrl+e y "
+                     "buscar es ctrl+b; en Chrome y Office valen los ingleses. "
+                     "Si un atajo no hace nada, no insistas: usa usar_menu"),
         "veces": _N("Cuantas veces seguidas, por defecto 1"),
         "ventana": _S("Titulo de la ventana. Vacio para la de delante")}, ["teclas"]),
+
+    _t("hacer_secuencia",
+       "HAZ VARIAS COSAS SEGUIDAS DE UNA VEZ. Es la forma buena de hacer una "
+       "tarea entera con el teclado y el raton: una accion por linea, y te "
+       "devuelve que ha pasado en cada paso. Usala SIEMPRE que la tarea lleve "
+       "mas de dos pulsaciones, en vez de ir llamando de una en una. Acciones: "
+       "'enfocar: titulo', 'escribir: lo que sea', 'teclas: ctrl+g', "
+       "'pinchar: Aceptar', 'campo: Nombre = Juan', 'clic: 640,480', "
+       "'doble: 640,480', 'derecho: 640,480', 'rueda: -5', "
+       "'arrastrar: 10,20 > 300,400', 'esperar: 0.5', 'mantener: mayus 2'. "
+       "Si un paso falla se para ahi y te lo dice.",
+       {"pasos": _S("Una accion por linea. Ejemplo de tres lineas: "
+                    "'enfocar: Bloc de notas', luego 'escribir: Hola', "
+                    "luego 'teclas: ctrl+g'"),
+        "ventana": _S("Titulo de la ventana donde hacerlo todo. Opcional")},
+       ["pasos"]),
+
+    _t("crear_cancion",
+       "COMPONE UNA CANCION ENTERA en LMMS, del estilo que te digan, y la deja "
+       "lista para escuchar. No es un ritmo suelto: lleva su bateria, su bajo, "
+       "sus acordes y su melodia, con entrada, estribillo y final. La comprueba "
+       "sola renderizandola, y deja tambien un mp3 al lado para oirla sin abrir "
+       "nada. Usala cuando Angel pida una cancion, un tema, una base, un ritmo, "
+       "una maqueta, un instrumental o musica de cualquier estilo. "
+       # Los nombres de los estilos van AQUI y no solo en el parametro: el
+       # cerebro busca las herramientas por las palabras de esta descripcion,
+       # asi que si "rumba" no sale aqui, a "ponme una rumba" no se le ofrece
+       # esta herramienta y Berna contesta que no sabe (visto el 02-09-2026).
+       "Estilos: reggaeton perreo dembow, trap drill, hiphop rap, house, "
+       "techno tecno, dance edm makina bakalao, drum and bass jungle, "
+       "breakbeat, rock, metal heavy, punk, pop, balada romantica lenta, "
+       "bolero, rumba flamenco sevillanas, cumbia, salsa mambo latino, "
+       "reggae ska, funk, disco, lofi chill relajado, blues, vals. "
+       "TAMBIEN MEZCLA DOS ESTILOS: dile 'rumba con rap', 'flamenco con "
+       "trap', 'salsa y drum and bass', 'bolero + techno'. El PRIMERO pone "
+       "la musica (escala, acordes e instrumentos) y el SEGUNDO pone el "
+       "groove (bateria, velocidad y swing), asi que el orden importa y "
+       "ella te cuenta que ha cogido de cada uno.",
+       {"estilo": _S("El estilo: reggaeton, rumba, rock, techno, balada, trap, "
+                     "cumbia, bolero... O DOS mezclados, tal cual lo diga "
+                     "Angel: 'rumba con rap', 'flamenco con trap'. Si no sabes "
+                     "cual hay, pide primero estilos_de_musica"),
+        "nombre": _S("Como se va a llamar la cancion. Opcional"),
+        "compases": _N("Cuanto dura, de 4 a 96. Por defecto 32, medio minuto largo"),
+        "tono": _S("La nota en la que va, por ejemplo do, la, mi. Opcional"),
+        "bpm": _N("Pulsaciones por minuto, si Angel la quiere mas rapida o mas "
+                  "lenta de lo normal del estilo. Opcional"),
+        "abrir": _S("si para abrirla en LMMS al terminar. Por defecto si")},
+       ["estilo"]),
+
+    _t("reaper_abrir",
+       "Abre REAPER, el estudio de grabacion de verdad (no LMMS). Usalo antes "
+       "de tocar nada en REAPER si no esta ya abierto.", {}, []),
+
+    _t("reaper_crear_pista",
+       "Crea una pista nueva en REAPER, con nombre y con un instrumento. Sin "
+       "decir instrumento, pone un sintetizador basico (ReaSynth), que trae "
+       "REAPER de fabrica. Usala para empezar a montar algo en REAPER.",
+       {"nombre": _S("Como se llama la pista. Opcional"),
+        "instrumento": _S("El instrumento, si Angel tiene alguno VST "
+                          "instalado y dice su nombre exacto. Opcional")},
+       []),
+
+    _t("reaper_poner_bpm",
+       "Cambia el tempo (las pulsaciones por minuto) del proyecto de REAPER.",
+       {"bpm": _N("Las pulsaciones por minuto")}, ["bpm"]),
+
+    _t("reaper_tocar_notas",
+       "METE UNA MELODIA DE VERDAD EN REAPER, nota a nota: esto es TOCAR "
+       "REAPER, no solo abrirlo. Se escribe una nota por linea: el nombre de "
+       "la nota (do, re, mi, fa, sol, la, si, con # o b y el numero de "
+       "octava, como do4 o fa#3), cuando empieza y cuanto dura, en pulsos. "
+       "Por ejemplo, para 'Cumpleanos feliz' (una linea por nota): "
+       "sol3 0 0.75 / sol3 0.75 0.25 / la3 1 1 / sol3 2 1 / do4 3 1 / si3 4 2. "
+       "Usala siempre que Angel pida tocar, componer o meter una melodia en "
+       "REAPER. Si no hay ninguna pista, crea una sola con el sintetizador "
+       "basico.",
+       {"melodia": _S("Una nota por linea: nota, cuando empieza y cuanto "
+                      "dura en pulsos, y el volumen si se quiere (0-127)"),
+        "pista": _N("En que pista meterla, contando desde 0. Por defecto la "
+                   "ultima que haya"),
+        "bpm": _N("El tempo, si se quiere cambiar. Por defecto el que ya "
+                 "tenga el proyecto")},
+       ["melodia"]),
+
+    _t("reaper_transporte",
+       "Reproduce, para o vuelve al principio en REAPER, para escuchar lo "
+       "que se ha metido. No pide permiso: es solo escuchar.",
+       {"accion": _S("reproducir, parar o inicio")}, ["accion"]),
+
+    _t("reaper_estado",
+       "Mira que hay en REAPER ahora mismo: cuantas pistas, sus nombres, el "
+       "tempo y si esta sonando. Usalo antes de tocar nada, para saber donde "
+       "esta parado.", {}, []),
+
+    _t("reaper_guardar_proyecto",
+       "Guarda el proyecto de REAPER con un nombre, en Documentos, REAPER "
+       "Media, Proyectos de Berna.",
+       {"nombre": _S("Como se va a llamar el proyecto")}, ["nombre"]),
+
+    _t("reaper_renderizar",
+       "Convierte lo que hay en REAPER en un archivo de audio de verdad "
+       "(un .wav), para poder escucharlo sin abrir REAPER o mandarselo a "
+       "alguien. Lo comprueba solo, escuchando el nivel.",
+       {"nombre": _S("Como se va a llamar el archivo")}, []),
+
+    _t("reaper_crear_cancion",
+       "COMPONE UNA CANCION ENTERA DENTRO DE REAPER: bateria (con muestras de "
+       "audio reales, no un instrumento programado), bajo, acordes y melodia, "
+       "en varias pistas, con el mismo criterio musical que crear_cancion (la "
+       "clave de son de la salsa, la cadencia andaluza del flamenco, el "
+       "tumbao, el bombeo del bajo con el bombo). Usala cuando Angel pida una "
+       "cancion, un tema o una base DENTRO DE REAPER en concreto, para poder "
+       "seguir editandola, grabando encima o mezclandola alli. Los estilos "
+       "son los mismos que crear_cancion: reggaeton, rumba, flamenco, salsa, "
+       "trap, rock, techno, house, drum and bass, salsa, cumbia, funk, "
+       "reggae, disco, lofi, blues, pop, balada, bolero, vals, metal, punk. "
+       "Si no sabes cuales hay, pide estilos_de_musica.",
+       {"estilo": _S("El estilo de la cancion"),
+        "nombre": _S("Como se va a llamar. Opcional"),
+        "compases": _N("Cuanto dura, en compases. Por defecto 16"),
+        "tono": _S("La nota en la que va, por ejemplo do, la, mi. Opcional"),
+        "bpm": _N("Pulsaciones por minuto, si se quiere distinto del "
+                 "habitual del estilo. Opcional")},
+       ["estilo"]),
+
+    _t("reaper_poner_mezcla_profesional",
+       "Le pone al proyecto de REAPER un compresor y un limitador de verdad "
+       "en el Master (ReaComp y ReaLimit, los que trae REAPER), para que "
+       "suene mezclado y no a golpes sueltos: mas presente, sin que se pegue "
+       "al techo y con la dinamica entre partes emparejada. "
+       "reaper_crear_cancion ya lo pone solo; usa esto si Angel ha hecho algo "
+       "a mano con reaper_tocar_notas y quiere que suene mejor.",
+       {}, []),
+
+    _t("reaper_ejecutar_accion",
+       "Ejecuta cualquier accion de REAPER por su numero, para lo que no "
+       "tiene su propia herramienta (deshacer, hacer zoom, exportar MIDI...). "
+       "El numero se saca en REAPER con Actions > Show action list, boton "
+       "derecho, Copy selected action command ID.",
+       {"accion": _N("El numero de la accion")}, ["accion"]),
+
+    _t("crear_cancion_ia",
+       "PIDE UNA CANCION DE VERDAD a la inteligencia artificial de musica de "
+       "Google, con su produccion y CON VOZ CANTANDO si se quiere. Suena como "
+       "lo que se escucha hoy, no como una maqueta. Usala cuando Angel pida una "
+       "cancion 'de verdad', 'profesional', 'como las de la radio', con voz o "
+       "con letra, o cuando se queje de que lo que compones en LMMS suena a "
+       "politono. Cuesta unos centimos y necesita internet. Si lo que quiere es "
+       "una base para trastear el mismo en LMMS, entonces usa crear_cancion.",
+       {"peticion": _S("Como la quiere, en cristiano: el estilo, el animo, los "
+                       "instrumentos, de que va. Cuanto mas concreto, mejor sale"),
+        "letra": _S("La letra que tiene que cantar, si Angel la ha dado. Opcional"),
+        "completa": _S("si para una cancion entera de un par de minutos (8 "
+                       "centimos), no para un trozo de medio minuto (4). Por "
+                       "defecto si"),
+        "con_voz": _S("si para que lleve voz cantando, no para instrumental. "
+                      "Por defecto si"),
+        "nombre": _S("Como se va a llamar el archivo. Opcional"),
+        "abrir": _S("si para ponersela nada mas tenerla. Por defecto no")},
+       ["peticion"]),
+
+    _t("crear_cancion_local",
+       "COMPONE UNA CANCION DENTRO DEL PROGRAMA MUSICA IA. Es como "
+       "crear_cancion_ia pero GRATIS, SIN LIMITE de canciones, sin internet, y "
+       "lo que sale se puede PUBLICAR Y VENDER, que crear_cancion_ia no "
+       "permite. Usala cuando Angel pida una cancion de verdad y no quiera "
+       "pagar, cuando pida muchas seguidas, o cuando quiera publicar algo. "
+       "PERO AVISALE SIEMPRE DE LO QUE TARDA: este portatil no tiene grafica y "
+       "lo hace con el procesador, unos 5,4 segundos por cada segundo de "
+       "musica. Medio minuto son casi 3 minutos de espera; una cancion entera "
+       "de 3 minutos son 16. Si tiene prisa, usa crear_cancion_ia (cuesta "
+       "centimos pero tarda un minuto). Si lo que quiere es una base para "
+       "trastear el mismo en LMMS, usa crear_cancion.",
+        {"estilo": _S("Uno de los 116 estilos de la IA local, por ejemplo "
+                      "regueton, rap flamenco, trap, hip hop, break beat, "
+                      "house, salsa, bachata, rock, jazz o banda sonora. "
+                      "Entiende nombres con o sin tilde. Si no sabes cuales "
+                      "hay, pide estilos_de_musica_ia"),
+        "peticion": _S("Detalles de como la quiere, para afinar el estilo: el "
+                       "animo, los instrumentos, de que va. Opcional"),
+        "segundos": _S("Cuanto tiene que durar, de 10 a 300. Por defecto 40. "
+                       "OJO que cada segundo son 5,4 de espera"),
+        "nombre": _S("Como se va a llamar el archivo. Opcional"),
+        "con_voz": _S("si para que lleve voz cantando. Por defecto no"),
+        "letra": _S("LA LETRA QUE SE VA A CANTAR. Si Angel quiere una cancion "
+                    "con voz y no te ha dado letra, ESCRIBELA TU antes de "
+                    "llamar aqui: el modelo no se la inventa solo. Que sea "
+                    "tuya y original, nunca de una cancion que exista. Las "
+                    "etiquetas [Verse] y [Chorus] las pongo yo si no estan"),
+        "bpm": _N("Velocidad exacta, si Angel la pide. Opcional"),
+        "tono": _S("Tono, por ejemplo A minor, C major o Automatico. Opcional"),
+        "motor": _S("Rapido para probar ideas o Alta calidad para el mejor "
+                     "acabado. Rapido por defecto; usa Alta calidad solo si "
+                     "Angel la pide o prioriza el resultado sobre la espera"),
+        "calidad": _S("Rapida, Media o Alta dentro del motor elegido"),
+        "voz": _S("ia para que la elija el motor, femenina, masculina, duo, "
+                   "coro o instrumental"),
+        "acabado": _S("natural, intimo, radio, directo o cinematografico"),
+        "variaciones": _N("Cuantas versiones hacer para elegir la mejor, de 1 a 4"),
+        "idioma": _S("Idioma de la voz: es, en, it, fr, de, pt, ja, ko o zh"),
+        "semilla": _N("Numero para repetir el mismo tipo de voz y resultado. "
+                      "-1 significa al azar"),
+        "pensar": _S("si para que planifique mejor estructura y arreglo. "
+                     "Por defecto si"),
+        "abrir": _S("si para ponersela nada mas tenerla. Por defecto no")},
+       []),
+
+    _t("abrir_estudio_musica_ia",
+       "Abre el programa Musica IA de escritorio, o trae al frente la ventana "
+       "si ya estaba abierto. Usalo cuando Angel diga 'abre Musica IA', no "
+       "abras REAPER ni LMMS.", {}, []),
+
+    _t("estado_musica_ia",
+       "Mira si el programa Musica IA esta abierto, componiendo, terminado o "
+       "si tuvo un fallo. Usalo cuando Angel pregunte como va su cancion.", {}, []),
+
+    _t("biblioteca_musica_ia",
+       "Lista las ultimas canciones creadas por el programa Musica IA, con "
+       "archivo, BPM, tono y nota de calidad cuando exista.",
+       {"limite": _N("Cuantas canciones mostrar, de 1 a 50. Por defecto 10")}, []),
+
+    _t("estilos_de_musica_ia",
+       "Dice los 116 estilos que sabe hacer la IA de musica de este ordenador, "
+       "ordenados en 13 familias. Usalo si Angel pregunta que puede pedirle a "
+       "la IA local o si te pide un estilo que no reconoces.", {}, []),
+
+    _t("estilos_de_musica",
+       "Dice que estilos de musica sabe componer Berna, con su ritmo y su "
+       "caracter. Usalo si Angel pregunta que sabes hacer o si te pide un "
+       "estilo que no reconoces.", {}, []),
+
+    _t("usar_menu",
+       "Recorre el menu de un programa y pulsa la opcion: 'Archivo > Guardar', "
+       "'Editar > Buscar'. USALO CUANDO UN ATAJO NO HAGA NADA, que pasa mucho: "
+       "este Windows esta en espanol y en los programas de siempre guardar es "
+       "ctrl+g y no ctrl+s. Por el menu no hay que adivinar nada.",
+       {"ruta": _S("El camino separado por >, por ejemplo 'Archivo > Guardar'"),
+        "ventana": _S("Titulo de la ventana. Vacio para la de delante")},
+       ["ruta"]),
+
+    _t("mantener_tecla",
+       "Deja una tecla PULSADA unos segundos, en vez de darle un toque: correr "
+       "en un juego con mayus, bajar por un documento con avpag, adelantar un "
+       "video con la flecha derecha.",
+       {"tecla": _S("Cual, por ejemplo mayus, espacio, abajo o avpag"),
+        "segundos": _N("Cuanto rato, de 0,05 a 10. Por defecto 1")}, ["tecla"]),
 
     _t("clic_raton",
        "Pincha en un punto de la pantalla. Las coordenadas son las de la "
@@ -1151,7 +1881,9 @@ ESQUEMAS = [
        {"x": _N("Distancia desde el borde izquierdo, en puntos"),
         "y": _N("Distancia desde arriba, en puntos"),
         "boton": _S("izquierdo, derecho o central. Por defecto izquierdo"),
-        "doble": _S("si, para hacer doble clic")}, []),
+        "doble": _S("si, para hacer doble clic"),
+        "con": _S("Tecla que dejar pulsada mientras: ctrl para anadir a una "
+                  "seleccion, mayus para coger un rango, alt. Opcional")}, []),
 
     _t("mover_raton", "Lleva el raton a un punto sin pinchar.",
        {"x": _N("Desde el borde izquierdo"), "y": _N("Desde arriba")}, ["x", "y"]),
@@ -1186,6 +1918,13 @@ ESQUEMAS = [
        "Repasa toda la configuracion de Mantella buscando cosas mal puestas y "
        "cosas mejorables, y te dice como se arregla cada una. Usalo cuando "
        "Angel pida mejorar Mantella o que le saques mas partido.",
+       {}, []),
+
+    _t("mantella_quitar_bom",
+       "Arregla el config.ini de Mantella cuando empieza por BOM, que hace que "
+       "Mantella lo ignore entero y se crea que juega a SkyrimVR y que necesita "
+       "una clave de OpenRouter. Usalo si Angel dice que los NPC no hablan, que "
+       "le pide una clave que no hace falta, o si mantella_estado avisa del BOM.",
        {}, []),
 
     _t("mantella_modelos_disponibles",
@@ -1227,9 +1966,11 @@ ESQUEMAS = [
        {"personaje": _S("Nombre del NPC para leer sus recuerdos. Vacio para ver la lista")},
        []),
 
-    _t("mantella_arrancar",
-       "Enciende Mantella para que los NPC de Skyrim hablen. Angel tendra que "
-       "confirmarlo.", {}, []),
+    _t("mantella_no_me_oye",
+       "Averigua POR QUE no funciona hablar con los NPC y da UN solo siguiente "
+       "paso. Usalo SIEMPRE que Angel se queje de que un personaje no le "
+       "contesta, de que no le oye, de que no puede hablarle o de que no le da "
+       "el turno. Dile solo el siguiente paso, no la lista de datos.", {}, []),
 
     _t("mantella_parar",
        "Apaga Mantella. Hace falta apagarlo y volverlo a encender para que coja "
@@ -1305,7 +2046,9 @@ ESQUEMAS = [
        "acierta seguro. Solo si esto no encuentra nada tiras de coordenadas.",
        {"texto": _S("Lo que pone en el boton o enlace"),
         "ventana": _S("Titulo de la ventana. Vacio para la de delante"),
-        "doble": {"type": "boolean", "description": "Doble clic"}}, ["texto"]),
+        "doble": {"type": "boolean", "description": "Doble clic"},
+        "con": _S("Tecla que dejar pulsada mientras: ctrl para anadir a una "
+                  "seleccion, mayus para coger un rango. Opcional")}, ["texto"]),
 
     _t("escribir_en",
        "Pone el cursor en el cuadro de texto que se llame asi y escribe dentro. "
@@ -1533,6 +2276,28 @@ try:
 except Exception as _e:
     PROBLEMAS.append("El modulo de papeles no ha cargado: %s" % _e)
 
+# documentos Word, hojas Excel, PDF, ZIP y gestion segura de archivos
+try:
+    import oficina as _Of
+    _FUNCIONES.update({
+        "crear_documento_word": _Of.crear_documento_word,
+        "crear_hoja_excel": _Of.crear_hoja_excel,
+        "actualizar_celda_excel": _Of.actualizar_celda_excel,
+        "crear_pdf_texto": _Of.crear_pdf_texto,
+        "extraer_paginas_pdf": _Of.extraer_paginas_pdf,
+        "dividir_pdf": _Of.dividir_pdf,
+        "crear_zip": _Of.crear_zip,
+        "extraer_zip": _Of.extraer_zip,
+        "copiar_archivo_o_carpeta": _Of.copiar_archivo_o_carpeta,
+        "mover_archivo_o_carpeta": _Of.mover_archivo_o_carpeta,
+        "crear_carpeta": _Of.crear_carpeta,
+        "informacion_archivo": _Of.informacion_archivo,
+        "buscar_duplicados": _Of.buscar_duplicados,
+        "comparar_archivos": _Of.comparar_archivos,
+    })
+except Exception as _e:
+    PROBLEMAS.append("El modulo de oficina no ha cargado: %s" % _e)
+
 # el taller: escribir programas, probarlos y arreglarlos
 try:
     import taller as _Ta
@@ -1548,6 +2313,93 @@ try:
     })
 except Exception as _e:
     PROBLEMAS.append("El modulo del taller no ha cargado: %s" % _e)
+
+# el editor: tocar codigo que ya existe, por trozos y con red debajo
+try:
+    import editor as _Ed
+    _FUNCIONES.update({
+        "ver_archivo": _Ed.ver_archivo,
+        "buscar_en_archivo": _Ed.buscar_en_archivo,
+        "editar_archivo": _Ed.editar_archivo,
+        "deshacer_edicion": _Ed.deshacer_edicion,
+        "comprobar_codigo": _Ed.comprobar_codigo,
+    })
+except Exception as _e:
+    PROBLEMAS.append("El modulo del editor no ha cargado: %s" % _e)
+
+# los ojos para el codigo: entender un proyecto antes de tocarlo
+try:
+    import codigo as _Co
+    _FUNCIONES.update({
+        "arbol_de_carpeta": _Co.arbol_de_carpeta,
+        "buscar_en_proyecto": _Co.buscar_en_proyecto,
+        "mapa_de_codigo": _Co.mapa_de_codigo,
+        "donde_esta_definido": _Co.donde_esta_definido,
+        "quien_usa": _Co.quien_usa,
+        "contar_lineas": _Co.contar_lineas,
+        "revisar_proyecto": _Co.revisar_proyecto,
+        "explicar_error": _Co.explicar_error,
+        "reemplazar_en_varios": _Co.reemplazar_en_varios,
+        "insertar_en_archivo": _Co.insertar_en_archivo,
+        "copias_de_archivo": _Co.copias_de_archivo,
+        "cambios_desde_la_copia": _Co.cambios_desde_la_copia,
+        "restaurar_copia": _Co.restaurar_copia,
+        "validar_json": _Co.validar_json,
+        "formatear_json": _Co.formatear_json,
+        "probar_expresion": _Co.probar_expresion,
+        "convertir_texto": _Co.convertir_texto,
+    })
+except Exception as _e:
+    PROBLEMAS.append("El modulo de codigo no ha cargado: %s" % _e)
+
+# la segunda planta del taller: probar de verdad, medir, empaquetar, entregar
+try:
+    import taller_extra as _Tx
+    _FUNCIONES.update({
+        "probar_con_datos": _Tx.probar_con_datos,
+        "ejecutar_python": _Tx.ejecutar_python,
+        "crear_prueba": _Tx.crear_prueba,
+        "pasar_pruebas": _Tx.pasar_pruebas,
+        "revisar_estilo": _Tx.revisar_estilo,
+        "medir_velocidad": _Tx.medir_velocidad,
+        "librerias_instaladas": _Tx.librerias_instaladas,
+        "quitar_libreria": _Tx.quitar_libreria,
+        "guardar_requisitos": _Tx.guardar_requisitos,
+        "instalar_requisitos": _Tx.instalar_requisitos,
+        "estado_del_taller": _Tx.estado_del_taller,
+        "copiar_programa": _Tx.copiar_programa,
+        "renombrar_programa": _Tx.renombrar_programa,
+        "importar_programa": _Tx.importar_programa,
+        "borrar_archivo_de_programa": _Tx.borrar_archivo_de_programa,
+        "abrir_carpeta_del_programa": _Tx.abrir_carpeta_del_programa,
+        "documentar_programa": _Tx.documentar_programa,
+        "empaquetar_programa": _Tx.empaquetar_programa,
+        "hacer_ejecutable": _Tx.hacer_ejecutable,
+        "abrir_web_del_programa": _Tx.abrir_web_del_programa,
+        "parar_web_del_programa": _Tx.parar_web_del_programa,
+        "probar_api": _Tx.probar_api,
+    })
+except Exception as _e:
+    PROBLEMAS.append("La segunda planta del taller no ha cargado: %s" % _e)
+
+# git: guardar versiones del trabajo y poder volver atras
+try:
+    import control_version as _Cv
+    _FUNCIONES.update({
+        "git_estado": _Cv.git_estado,
+        "git_cambios": _Cv.git_cambios,
+        "git_historial": _Cv.git_historial,
+        "git_ramas": _Cv.git_ramas,
+        "git_empezar": _Cv.git_empezar,
+        "git_guardar": _Cv.git_guardar,
+        "git_deshacer": _Cv.git_deshacer,
+        "git_rama": _Cv.git_rama,
+        "git_bajar": _Cv.git_bajar,
+        "git_subir": _Cv.git_subir,
+        "git_clonar": _Cv.git_clonar,
+    })
+except Exception as _e:
+    PROBLEMAS.append("El modulo de git no ha cargado: %s" % _e)
 
 # la carpeta de instalacion para el pen
 try:
@@ -1603,6 +2455,9 @@ try:
         "rueda_raton": _Ma.rueda_raton,
         "pinchar_en": _Ma.pinchar_en,
         "escribir_en": _Ma.escribir_en,
+        "mantener_tecla": _Ma.mantener_tecla,
+        "hacer_secuencia": _Ma.hacer_secuencia,
+        "usar_menu": _Ma.usar_menu,
     })
 except Exception as _e:
     PROBLEMAS.append("El modulo de manos no ha cargado: %s" % _e)
@@ -1649,24 +2504,127 @@ except Exception as _e:
     PROBLEMAS.append("El modulo de actualizaciones no ha cargado: %s" % _e)
 
 # Skyrim y Mantella (la IA que hace hablar a los NPC)
+#
+# SE PUEDE APAGAR ENTERO sin tocar codigo: basta con poner
+# "mantella_activado": false en config.json. Entonces Berna no carga nada de
+# esto y se queda sin las nueve herramientas de Skyrim, como si el modulo no
+# existiera. Hay un acceso directo en el escritorio que lo enciende y lo apaga,
+# "Mantella en Berna".
+#
+# Por que existe el interruptor: Mantella solo sirve mientras se juega, y el
+# resto del tiempo son nueve herramientas de mas que Berna tiene que mirar en
+# cada frase. Ademas, Berna escucha siempre por el mismo microfono que usa
+# Mantella dentro del juego, asi que poder apagar una de las dos sin desmontar
+# nada es util.
+def _mantella_encendido():
+    try:
+        with open(os.path.join(BASE, "config.json"), "r", encoding="utf-8") as f:
+            return bool(json.load(f).get("mantella_activado", True))
+    except Exception:
+        # Si el config no se puede leer, se deja encendido: es como estaba
+        # antes de que existiera el interruptor.
+        return True
+
+
 try:
+    if not _mantella_encendido():
+        raise RuntimeError("apagado a proposito en config.json "
+                           "(mantella_activado: false)")
     import mantella as _Mn
     _FUNCIONES.update({
         "mantella_estado": _Mn.mantella_estado,
         "mantella_revisar_fallos": _Mn.mantella_revisar_fallos,
         "mantella_revisar_ajustes": _Mn.mantella_revisar_ajustes,
+        "mantella_quitar_bom": _Mn.mantella_quitar_bom,
         "mantella_modelos_disponibles": _Mn.mantella_modelos_disponibles,
         "mantella_probar_modelo": _Mn.mantella_probar_modelo,
         "mantella_elegir_mejor_modelo": _Mn.mantella_elegir_mejor_modelo,
         "mantella_cambiar_ajuste": _Mn.mantella_cambiar_ajuste,
         "mantella_conversaciones": _Mn.mantella_conversaciones,
-        "mantella_arrancar": _Mn.mantella_arrancar,
+        "mantella_no_me_oye": _Mn.mantella_no_me_oye,
+        # mantella_arrancar se quito de la lista el 28-08-2026: encender solo
+        # Mantella no sirve de nada, porque sin el modelo de lenguaje y sin el
+        # servidor de voz los NPC siguen mudos, y Angel se quedaba pensando que
+        # estaba roto. Para arrancar esta jugar_a_skyrim, que levanta los tres.
+        # La funcion sigue en mantella.py por si algun dia hace falta.
         "mantella_parar": _Mn.mantella_parar,
         "jugar_a_skyrim": _Mn.jugar_a_skyrim,
         "estado_del_cerebro": _Mn.estado_del_cerebro,
     })
 except Exception as _e:
-    PROBLEMAS.append("El modulo de Mantella no ha cargado: %s" % _e)
+    if not _mantella_encendido():
+        # Apagado a proposito, no es una averia: no se avisa como si lo fuera.
+        # Pero SI hay que quitar sus herramientas de la lista que ve Berna; si
+        # no, seguiria ofreciendolas y al usarlas diria "no existe esa
+        # herramienta", que es peor que no tenerlas.
+        _fuera = {"mantella_estado", "mantella_revisar_fallos",
+                  "mantella_revisar_ajustes", "mantella_quitar_bom",
+                  "mantella_modelos_disponibles",
+                  "mantella_probar_modelo", "mantella_elegir_mejor_modelo",
+                  "mantella_cambiar_ajuste", "mantella_conversaciones",
+                  "mantella_no_me_oye", "mantella_parar", "jugar_a_skyrim",
+                  # OJO, esta no es de Skyrim: mira la cuota del cerebro de la
+                  # propia Berna. Vive en mantella.py por casualidad (alli
+                  # estaba ya la fontaneria para hablar con Google), asi que al
+                  # apagar el modulo cae tambien. Si algun dia molesta, se
+                  # saca a su propio fichero.
+                  "estado_del_cerebro"}
+        ESQUEMAS = [_e2 for _e2 in ESQUEMAS
+                    if _e2["function"]["name"] not in _fuera]
+    else:
+        PROBLEMAS.append("El modulo de Mantella no ha cargado: %s" % _e)
+
+# REAPER: el estudio de grabacion de verdad
+try:
+    import reaper_ctl as _Rp
+    _FUNCIONES.update({
+        "reaper_abrir": _Rp.reaper_abrir,
+        "reaper_crear_pista": _Rp.reaper_crear_pista,
+        "reaper_poner_bpm": _Rp.reaper_poner_bpm,
+        "reaper_tocar_notas": _Rp.reaper_tocar_notas,
+        "reaper_transporte": _Rp.reaper_transporte,
+        "reaper_estado": _Rp.reaper_estado,
+        "reaper_guardar_proyecto": _Rp.reaper_guardar_proyecto,
+        "reaper_renderizar": _Rp.renderizar_a_audio,
+        "reaper_ejecutar_accion": _Rp.reaper_ejecutar_accion,
+        "reaper_crear_cancion": _Rp.reaper_crear_cancion,
+        "reaper_poner_mezcla_profesional": _Rp.reaper_poner_mezcla_profesional,
+    })
+except Exception as _e:
+    PROBLEMAS.append("El modulo de REAPER no ha cargado: %s" % _e)
+
+# canciones hechas por la IA de musica de Google
+try:
+    import cancion_ia as _Ci
+    _FUNCIONES.update({"crear_cancion_ia": _Ci.crear_cancion_ia})
+except Exception as _e:
+    PROBLEMAS.append("El modulo de canciones con IA no ha cargado: %s" % _e)
+
+# canciones hechas por la IA que corre en este mismo ordenador (gratis, sin
+# limite y con licencia para publicar). Vive en C:\ACEStep con su propio
+# Python, porque exige 3.12 y Berna va con 3.14; por eso se le llama como
+# programa aparte en vez de importarlo.
+try:
+    import musica_ia_local as _Il
+    _FUNCIONES.update({
+        "crear_cancion_local": _Il.crear_cancion_local,
+        "estilos_de_musica_ia": _Il.estilos_de_musica_ia,
+        "abrir_estudio_musica_ia": _Il.abrir_estudio_musica_ia,
+        "estado_musica_ia": _Il.estado_musica_ia,
+        "biblioteca_musica_ia": _Il.biblioteca_musica_ia,
+    })
+except Exception as _e:
+    PROBLEMAS.append("El modulo de IA local de musica no ha cargado: %s" % _e)
+
+# componer canciones en LMMS
+try:
+    import musica as _Mu
+    _FUNCIONES.update({
+        "crear_cancion": _Mu.crear_cancion,
+        "estilos_de_musica": _Mu.estilos_de_musica,
+    })
+except Exception as _e:
+    PROBLEMAS.append("El modulo de musica no ha cargado: %s" % _e)
 
 # la voz cantando
 try:
@@ -1686,6 +2644,11 @@ NECESITAN_VOZ = {"cantar"}
 NECESITAN_OIDO = {"transcribir"}
 
 NECESITAN_PERMISO = {"escribir_archivo", "abrir_en_windows", "google_crear_evento",
+                     "crear_documento_word", "crear_hoja_excel",
+                     "actualizar_celda_excel", "crear_pdf_texto",
+                     "extraer_paginas_pdf", "dividir_pdf", "crear_zip",
+                     "extraer_zip", "copiar_archivo_o_carpeta",
+                     "mover_archivo_o_carpeta", "crear_carpeta",
                      "abrir_programa", "cerrar_programa",
                      "ejecutar_orden", "hacer_tarea",
                      "instalar_programa", "descargar_archivo", "abrir_pagina_web",
@@ -1693,6 +2656,7 @@ NECESITAN_PERMISO = {"escribir_archivo", "abrir_en_windows", "google_crear_event
                      # las manos: si el modo manos esta encendido no vuelven a
                      # preguntar, pero necesitan la ventana por si esta apagado
                      "ordenar_fotos", "hacer_presupuesto", "unir_pdfs", "fotos_a_pdf",
+                     "editar_archivo", "deshacer_edicion",
                      "crear_programa", "probar_programa", "instalar_libreria",
                      "publicar_programa", "borrar_programa",
                      "recordar_a_esta_persona", "olvidar_a_persona", "hacer_foto",
@@ -1700,13 +2664,35 @@ NECESITAN_PERMISO = {"escribir_archivo", "abrir_en_windows", "google_crear_event
                      "pulsar_teclas", "clic_raton", "mover_raton",
                      "arrastrar_raton", "rueda_raton",
                      "pinchar_en", "escribir_en",
+                     "mantener_tecla", "hacer_secuencia", "usar_menu",
+                     # componer escribe archivos y abre LMMS
+                     "crear_cancion", "crear_cancion_ia", "crear_cancion_local",
+                     "abrir_estudio_musica_ia",
+                     "reaper_abrir", "reaper_crear_pista", "reaper_poner_bpm",
+                     "reaper_tocar_notas", "reaper_guardar_proyecto",
+                     "reaper_renderizar", "reaper_ejecutar_accion",
+                     "reaper_crear_cancion", "reaper_poner_mezcla_profesional",
                      # Mantella: mirar el montaje es libre, TOCARLO no. Cambiar
                      # un ajuste o arrancarle un programa es de las suyas.
                      "mantella_cambiar_ajuste", "mantella_elegir_mejor_modelo",
-                     "mantella_arrancar", "mantella_parar", "jugar_a_skyrim",
+                     "mantella_parar", "jugar_a_skyrim",
                      # actualizarse es cambiarse el propio codigo: siempre con
                      # la ventana delante, y enseñando que archivos cambian
-                     "instalar_actualizacion", "deshacer_actualizacion"}
+                     "instalar_actualizacion", "deshacer_actualizacion",
+                     # tocar codigo de varios archivos a la vez es lo mas gordo
+                     # que hace: la ventana enseña ANTES cuantos archivos entran
+                     "reemplazar_en_varios", "insertar_en_archivo",
+                     "restaurar_copia", "formatear_json",
+                     # ejecutar y entregar programas
+                     "probar_con_datos", "ejecutar_python", "pasar_pruebas",
+                     "medir_velocidad", "quitar_libreria", "instalar_requisitos",
+                     "copiar_programa", "renombrar_programa", "importar_programa",
+                     "borrar_archivo_de_programa", "abrir_carpeta_del_programa",
+                     "empaquetar_programa", "hacer_ejecutable",
+                     "abrir_web_del_programa", "probar_api",
+                     # git: leer es libre, cambiar la carpeta o publicar no
+                     "git_empezar", "git_guardar", "git_deshacer", "git_rama",
+                     "git_bajar", "git_subir", "git_clonar"}
 
 # lo que se le enseña al usuario mientras la herramienta trabaja
 ROTULOS = {
@@ -1726,6 +2712,20 @@ ROTULOS = {
     "olvidar": "olvidando un dato",
     "leer_excel": "leyendo una hoja de calculo",
     "buscar_en_contenido": "rebuscando dentro de tus archivos",
+    "crear_documento_word": "preparando un documento Word",
+    "crear_hoja_excel": "preparando una hoja de calculo",
+    "actualizar_celda_excel": "actualizando una hoja de calculo",
+    "crear_pdf_texto": "preparando un PDF",
+    "extraer_paginas_pdf": "sacando paginas de un PDF",
+    "dividir_pdf": "separando las paginas de un PDF",
+    "crear_zip": "comprimiendo archivos",
+    "extraer_zip": "abriendo un archivo ZIP",
+    "copiar_archivo_o_carpeta": "copiando archivos",
+    "mover_archivo_o_carpeta": "moviendo archivos",
+    "crear_carpeta": "creando una carpeta",
+    "informacion_archivo": "revisando un archivo",
+    "buscar_duplicados": "buscando archivos duplicados",
+    "comparar_archivos": "comparando archivos",
     "google_ver_correos": "mirando tu correo",
     "google_buscar_correo": "buscando en tu correo",
     "google_leer_correo": "leyendo un correo",
@@ -1807,6 +2807,61 @@ ROTULOS = {
     "publicar_programa": "dejandotelo en el escritorio",
     "listar_programas_creados": "repasando lo que ha programado",
     "borrar_programa": "borrando un programa",
+    "arbol_de_carpeta": "mirando que hay en la carpeta",
+    "buscar_en_proyecto": "buscando por todo el proyecto",
+    "mapa_de_codigo": "sacando el indice del archivo",
+    "donde_esta_definido": "buscando donde se define",
+    "quien_usa": "mirando quien lo usa",
+    "contar_lineas": "midiendo el proyecto",
+    "revisar_proyecto": "repasando el proyecto entero",
+    "explicar_error": "leyendo el error a fondo",
+    "reemplazar_en_varios": "cambiandolo en varios archivos",
+    "insertar_en_archivo": "anadiendo un trozo al archivo",
+    "copias_de_archivo": "mirando las copias de seguridad",
+    "cambios_desde_la_copia": "comparando con la copia",
+    "restaurar_copia": "volviendo a una copia de antes",
+    "validar_json": "comprobando el JSON",
+    "formatear_json": "ordenando el JSON",
+    "probar_expresion": "probando la expresion",
+    "convertir_texto": "convirtiendo el texto",
+    "probar_con_datos": "probando el programa con datos",
+    "ejecutar_python": "probando un trozo de codigo",
+    "crear_prueba": "escribiendo una prueba",
+    "pasar_pruebas": "pasando las pruebas",
+    "revisar_estilo": "repasando el codigo",
+    "medir_velocidad": "midiendo por donde va lento",
+    "librerias_instaladas": "mirando que librerias tiene",
+    "quitar_libreria": "quitando una libreria",
+    "guardar_requisitos": "apuntando lo que necesita",
+    "instalar_requisitos": "instalando lo que necesita",
+    "estado_del_taller": "mirando como esta su taller",
+    "copiar_programa": "duplicando el programa",
+    "renombrar_programa": "cambiandole el nombre",
+    "importar_programa": "trayendose el programa al taller",
+    "borrar_archivo_de_programa": "quitando un archivo",
+    "abrir_carpeta_del_programa": "abriendote la carpeta",
+    "documentar_programa": "escribiendo el LEEME",
+    "empaquetar_programa": "metiendolo en un zip",
+    "hacer_ejecutable": "haciendo el .exe, esto tarda",
+    "abrir_web_del_programa": "levantando el servidor web",
+    "parar_web_del_programa": "parando el servidor web",
+    "probar_api": "preguntandole al servidor",
+    "git_estado": "mirando que hay sin guardar",
+    "git_cambios": "mirando que ha cambiado",
+    "git_historial": "repasando el historial",
+    "git_ramas": "mirando las ramas",
+    "git_empezar": "empezando el control de cambios",
+    "git_guardar": "guardando una version",
+    "git_deshacer": "deshaciendo los cambios",
+    "git_rama": "cambiando de rama",
+    "git_bajar": "bajando los cambios",
+    "git_subir": "subiendo el trabajo",
+    "git_clonar": "trayendose el proyecto",
+    "ver_archivo": "leyendo el archivo",
+    "buscar_en_archivo": "buscando dentro del archivo",
+    "editar_archivo": "cambiando el codigo",
+    "deshacer_edicion": "devolviendo el archivo a como estaba",
+    "comprobar_codigo": "comprobando que el codigo no esta roto",
     "actualizar_carpeta_del_pen": "actualizando la carpeta del pen",
     "cambiar_acento": "cambiando de acento",
     "cambiar_caracter": "cambiando de personalidad",
@@ -1834,17 +2889,39 @@ ROTULOS = {
     "rueda_raton": "moviendo la rueda del raton",
     "ver_controles": "mirando que botones hay",
     "pinchar_en": "pulsando un boton",
+    "mantener_tecla": "manteniendo una tecla",
+    "hacer_secuencia": "haciendo varias cosas seguidas",
+    "usar_menu": "buscando la opcion en el menu",
+    "crear_cancion": "componiendo tu cancion",
+    "crear_cancion_ia": "encargandole tu cancion a la IA de musica",
+    "crear_cancion_local": "haciendo tu cancion con la IA de tu ordenador (tarda)",
+    "abrir_estudio_musica_ia": "abriendo el programa Musica IA",
+    "estado_musica_ia": "mirando como va Musica IA",
+    "biblioteca_musica_ia": "mirando tus canciones de Musica IA",
+    "reaper_abrir": "abriendo REAPER",
+    "reaper_crear_pista": "creando una pista en REAPER",
+    "reaper_poner_bpm": "cambiando el tempo en REAPER",
+    "reaper_tocar_notas": "tocando una melodia en REAPER",
+    "reaper_transporte": "moviendo el transporte de REAPER",
+    "reaper_estado": "mirando que hay en REAPER",
+    "reaper_guardar_proyecto": "guardando el proyecto de REAPER",
+    "reaper_renderizar": "renderizando el proyecto de REAPER",
+    "reaper_ejecutar_accion": "ejecutando una accion de REAPER",
+    "reaper_crear_cancion": "componiendo una cancion entera en REAPER",
+    "reaper_poner_mezcla_profesional": "poniendole mezcla profesional a REAPER",
+    "estilos_de_musica": "repasando los estilos que me se",
     "escribir_en": "escribiendo en un cuadro",
     "donde_esta_en_pantalla": "buscando algo en la pantalla",
     "mantella_estado": "mirando como esta Mantella",
     "mantella_revisar_fallos": "leyendo el registro de Mantella",
     "mantella_revisar_ajustes": "repasando los ajustes de Mantella",
+    "mantella_quitar_bom": "arreglando el config.ini de Mantella",
     "mantella_modelos_disponibles": "mirando que modelos hay para los NPC",
     "mantella_probar_modelo": "probando un modelo con los NPC",
     "mantella_elegir_mejor_modelo": "buscando el mejor cerebro para los NPC",
     "mantella_cambiar_ajuste": "cambiando un ajuste de Mantella",
     "mantella_conversaciones": "mirando con quien has hablado en Skyrim",
-    "mantella_arrancar": "encendiendo Mantella",
+    "mantella_no_me_oye": "buscando por que no te oye Skyrim",
     "mantella_parar": "apagando Mantella",
     "jugar_a_skyrim": "arrancandote Skyrim",
     "estado_del_cerebro": "probando sus propios modelos",
@@ -1868,7 +2945,11 @@ GRUPOS = [
     ("Mirar cosas", ["mirar_pantalla", "mirar_imagen", "mirar_ultima_captura",
                      "hacer_captura"]),
     ("Tus archivos", ["buscar_archivos", "buscar_en_contenido", "listar_carpeta",
-                      "leer_archivo_del_pc", "leer_excel", "escribir_archivo"]),
+                      "leer_archivo_del_pc", "leer_excel", "escribir_archivo",
+                      "copiar_archivo_o_carpeta", "mover_archivo_o_carpeta",
+                      "crear_carpeta", "informacion_archivo",
+                      "buscar_duplicados", "comparar_archivos",
+                      "crear_zip", "extraer_zip"]),
     ("Tu ordenador", ["abrir_programa", "cerrar_programa", "listar_programas",
                       "ventanas_abiertas", "estado_del_pc", "control_volumen",
                       "control_multimedia", "portapapeles_leer",
@@ -1894,10 +2975,53 @@ GRUPOS = [
                                 "sacar_fotogramas", "transcribir",
                                 "revisar_carpeta_de_medios"]),
     ("Volar el dron", ["puedo_volar", "mejor_hora_para_volar", "hora_dorada"]),
-    ("Papeles y cobrar", ["hacer_presupuesto", "unir_pdfs", "fotos_a_pdf"]),
+    ("Documentos y hojas", ["crear_documento_word", "crear_hoja_excel",
+                             "actualizar_celda_excel", "crear_pdf_texto",
+                             "extraer_paginas_pdf", "dividir_pdf",
+                             "unir_pdfs", "fotos_a_pdf"]),
+    ("Papeles y cobrar", ["hacer_presupuesto", "crear_documento_word",
+                           "crear_hoja_excel", "crear_pdf_texto"]),
     ("Programar cosas para ti", ["crear_programa", "escribir_codigo",
-                                 "probar_programa", "publicar_programa",
+                                 "probar_programa", "ver_codigo",
+                                 "instalar_libreria", "publicar_programa",
                                  "listar_programas_creados"]),
+    ("Entender un proyecto de codigo", ["arbol_de_carpeta", "buscar_en_proyecto",
+                                        "mapa_de_codigo", "donde_esta_definido",
+                                        "quien_usa", "contar_lineas",
+                                        "revisar_proyecto", "explicar_error"]),
+    ("Cambiar codigo con red debajo", ["ver_archivo", "buscar_en_archivo",
+                                       "editar_archivo", "insertar_en_archivo",
+                                       "reemplazar_en_varios", "comprobar_codigo",
+                                       "deshacer_edicion", "copias_de_archivo",
+                                       "cambios_desde_la_copia",
+                                       "restaurar_copia"]),
+    ("Probar y medir lo que programas", ["probar_programa", "probar_con_datos",
+                                         "ejecutar_python", "crear_prueba",
+                                         "pasar_pruebas", "revisar_estilo",
+                                         "medir_velocidad", "probar_api",
+                                         "abrir_web_del_programa",
+                                         "parar_web_del_programa"]),
+    ("Librerias y entorno del taller", ["instalar_libreria", "librerias_instaladas",
+                                        "quitar_libreria", "guardar_requisitos",
+                                        "instalar_requisitos",
+                                        "estado_del_taller"]),
+    ("Entregar un programa terminado", ["documentar_programa",
+                                        "publicar_programa",
+                                        "empaquetar_programa", "hacer_ejecutable",
+                                        "copiar_programa", "renombrar_programa",
+                                        "importar_programa",
+                                        "borrar_archivo_de_programa",
+                                        "abrir_carpeta_del_programa"]),
+    ("Guardar versiones con git", ["git_estado", "git_cambios", "git_historial",
+                                   "git_ramas", "git_empezar", "git_guardar",
+                                   "git_deshacer", "git_rama", "git_bajar",
+                                   "git_subir", "git_clonar"]),
+    ("Utiles de programador", ["validar_json", "formatear_json",
+                               "probar_expresion", "convertir_texto",
+                               "comparar_archivos", "calcular"]),
+    ("Tareas de Codex", ["ver_tareas_pendientes", "hacer_tarea",
+                         "resultado_de_tarea", "registro_de_ejecuciones",
+                         "ejecutar_orden"]),
     ("Llevartelo a otro sitio", ["actualizar_carpeta_del_pen"]),
     ("Estar pendiente de ti", ["en_que_estoy_ahora", "que_he_estado_haciendo",
                                "estado_de_la_vigilancia", "dejar_de_vigilar"]),
@@ -1910,19 +3034,38 @@ GRUPOS = [
                              "personas_que_conozco", "poner_nombre_a_persona",
                              "olvidar_a_persona", "hacer_foto",
                              "apagar_la_camara"]),
-    ("Tocar el teclado y el raton", ["modo_manos", "ver_controles", "pinchar_en",
+    ("Tocar el teclado y el raton", ["modo_manos", "hacer_secuencia",
+                                     "usar_menu",
+                                     "ver_controles", "pinchar_en",
                                      "escribir_en", "escribir_texto",
-                                     "pulsar_teclas", "clic_raton",
+                                     "pulsar_teclas", "mantener_tecla",
+                                     "clic_raton",
                                      "arrastrar_raton", "rueda_raton",
                                      "enfocar_ventana", "parar_manos"]),
     ("Cantar", ["cantar", "melodias_disponibles"]),
-    ("Skyrim y sus NPC parlantes", ["jugar_a_skyrim", "mantella_estado",
+    ("Componer musica y usar Musica IA", ["crear_cancion", "crear_cancion_ia",
+                                 "crear_cancion_local", "estilos_de_musica",
+                                 "estilos_de_musica_ia",
+                                 "abrir_estudio_musica_ia",
+                                 "estado_musica_ia", "biblioteca_musica_ia",
+                                 "abrir_programa"]),
+    ("Tocar y grabar en REAPER", ["reaper_abrir", "reaper_crear_pista",
+                                  "reaper_poner_bpm", "reaper_tocar_notas",
+                                  "reaper_crear_cancion",
+                                  "reaper_transporte", "reaper_estado",
+                                  "reaper_guardar_proyecto",
+                                  "reaper_renderizar",
+                                  "reaper_ejecutar_accion",
+                                  "reaper_poner_mezcla_profesional"]),
+    ("Skyrim y sus NPC parlantes", ["jugar_a_skyrim", "mantella_no_me_oye",
+                                    "mantella_estado",
                                     "mantella_revisar_fallos",
                                     "mantella_revisar_ajustes",
+                                    "mantella_quitar_bom",
                                     "mantella_elegir_mejor_modelo",
                                     "mantella_cambiar_ajuste",
                                     "mantella_conversaciones",
-                                    "mantella_arrancar", "mantella_parar"]),
+                                    "mantella_parar"]),
     ("Memoria y varios", ["preguntar_al_consejo", "estado_del_consejo",
                           "estado_del_cerebro","recordar", "ver_recuerdos", "olvidar", "hora_y_fecha",
                           "calcular"]),
@@ -1971,6 +3114,9 @@ def ejecutar(nombre, args, permiso=None, cantar=None, oido=None):
             args = dict(args)
             args["reproducir"] = cantar[0] if cantar else None
             args["voz"] = cantar[1] if cantar else None
+        if nombre in NECESITAN_OIDO:
+            args = dict(args)
+            args["oido"] = oido
         return str(fn(**args))
     except TypeError as e:
         return "Me has pasado mal los argumentos de %s: %s" % (nombre, e)

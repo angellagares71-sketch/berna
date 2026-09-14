@@ -35,6 +35,8 @@ LOS DOS MODELOS
 """
 import os, json, time, datetime
 
+from persistencia import actualizar_json_atomico, guardar_json_atomico
+
 BASE = os.path.dirname(os.path.abspath(__file__))
 CARAS = os.path.join(BASE, "caras.json")
 MODELOS = os.path.join(BASE, "modelos")
@@ -103,10 +105,7 @@ def _cargar():
 
 
 def _guardar(d):
-    tmp = CARAS + ".tmp"
-    with open(tmp, "w", encoding="utf-8") as f:
-        json.dump(d, f, indent=1, ensure_ascii=False)
-    os.replace(tmp, CARAS)
+    guardar_json_atomico(CARAS, d, indent=1)
 
 
 def _buscar_persona(d, nombre):
@@ -235,8 +234,7 @@ def apagar_camara():
         if not cfg.get("camara_activada", True):
             return "La camara ya estaba apagada."
         cfg["camara_activada"] = False
-        with open(ruta, "w", encoding="utf-8") as f:
-            json.dump(cfg, f, indent=2, ensure_ascii=False)
+        actualizar_json_atomico(ruta, {"camara_activada": False})
         _apuntar("CAMARA APAGADA", "se lo ha pedido Angel")
         return ("Camara apagada. No voy a poder mirar nada hasta que Angel la "
                 "vuelva a encender con el boton 'Camara' de mi ventana; yo solo "

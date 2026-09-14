@@ -41,7 +41,42 @@ import filecmp
 import subprocess
 
 BASE = os.path.dirname(os.path.abspath(__file__))
-ESCRITORIO = os.path.join(os.path.expanduser("~"), "Desktop")
+
+
+def escritorio():
+    """La carpeta del escritorio DE VERDAD.
+
+    NO vale os.path.expanduser("~") + "\\Desktop". Con OneDrive sincronizando
+    el escritorio -- que es el caso de Angel -- el escritorio real es
+    C:\\Users\\alaga\\OneDrive\\Escritorio, y "~/Desktop" ni siquiera existe...
+    hasta que un os.makedirs lo CREA. Eso es justo lo que llevaba pasando:
+    la sincronizacion de fin de sesion volcaba 373 MB a una carpeta fantasma
+    que Angel no ve, mientras el kit que si ve en su escritorio se quedaba
+    con la Berna del 26 de agosto. Si llegaba a pinchar aquel INSTALAR.bat,
+    se cargaba la Berna buena con una vieja.
+
+    Windows guarda la ruta buena en el registro y la respeta aunque OneDrive
+    la haya movido. Si por lo que sea no se pudiera leer, se cae a la de
+    siempre, que en un equipo sin OneDrive es la correcta.
+
+    Esta funcion esta repetida en taller.py y en operar.py a proposito: esos
+    modulos y este tienen que poder funcionar sueltos, sin importar a Berna.
+    """
+    try:
+        import winreg
+        with winreg.OpenKey(
+                winreg.HKEY_CURRENT_USER,
+                r"Software\Microsoft\Windows\CurrentVersion\Explorer"
+                r"\User Shell Folders") as k:
+            ruta = os.path.expandvars(winreg.QueryValueEx(k, "Desktop")[0])
+        if os.path.isdir(ruta):
+            return ruta
+    except Exception:
+        pass
+    return os.path.join(os.path.expanduser("~"), "Desktop")
+
+
+ESCRITORIO = escritorio()
 DESTINO = os.path.join(ESCRITORIO, "Instalar Berna")
 PROGRAMA = os.path.join(DESTINO, "Programa")
 PAQUETES = os.path.join(DESTINO, "Paquetes")
@@ -52,20 +87,31 @@ PYTHON_DIR = os.path.join(DESTINO, "Python")
 CACHE_HF = os.path.join(os.path.expanduser("~"), ".cache", "huggingface")
 
 # Lo que se copia tal cual (carpetas enteras)
-CARPETAS = ["voces", "modelos"]
+# "sonidos" lleva el banco de instrumentos grabados (141 MB). Sin el, en
+# otro ordenador las canciones sonarian a sintetizador otra vez.
+CARPETAS = ["voces", "modelos", "sonidos"]
 
 # Lo que NUNCA sale de este ordenador
 NUNCA = {"caras.json", "berna.log", "google", "venv", "__pycache__",
          "tareas", "config.json",
          # la herramienta de publicar es de Angel, no del producto
-         "publicar_actualizacion.py", "Enlazar-con-GitHub.bat"}
+         "publicar_actualizacion.py", "Enlazar-con-GitHub.bat",
+         # y su boton: en otro ordenador no hay publicador y solo daria error
+         "Publicar Berna.bat",
+         # el enganche de Claude Code que pone al dia ESTA carpeta del pen
+         # desde este ordenador; en otro no tiene nada que sincronizar
+         "sincronizar-al-terminar.bat"}
 
 # Los datos suyos, que van a la carpeta aparte
 PRIVADOS = ["config.json", "memoria.json", "perfil.json",
             "oportunidades.json", "vigilancias.json"]
 
+# clave_movil (02-09-2026): es la contrasena con la que el movil se engancha
+# a Berna. Se colaba tal cual en el config del programa, o sea que viajaba en
+# el pen aunque se borrase TUS-DATOS-PRIVADOS, que es justo lo que el LEEME
+# promete que no pasa. Al dueno le sigue llegando: va en su carpeta privada.
 CLAVES = ["clave_api", "clave_gemini", "clave_busqueda", "imap_password",
-          "imap_usuario", "imap_servidor"]
+          "imap_usuario", "imap_servidor", "clave_movil"]
 
 cuenta = {"copiados": 0, "iguales": 0, "carpetas": 0}
 
@@ -108,10 +154,13 @@ def volcar_programa():
     for c in CARPETAS:
         _copiar_arbol(os.path.join(BASE, c), os.path.join(PROGRAMA, c))
         cuenta["carpetas"] += 1
-    # el buzon de tareas va vacio, pero con su explicacion
-    guia = os.path.join(BASE, "tareas", "COMO-FUNCIONA.txt")
-    if os.path.exists(guia):
-        _copiar(guia, os.path.join(PROGRAMA, "tareas", "COMO-FUNCIONA.txt"))
+    # el buzon de tareas va vacio, pero con sus explicaciones
+    tareas_dir = os.path.join(BASE, "tareas")
+    if os.path.isdir(tareas_dir):
+        for nombre in ("COMO-FUNCIONA.txt", "_COMO_CODEX_DEJA_TAREAS.txt"):
+            guia = os.path.join(tareas_dir, nombre)
+            if os.path.exists(guia):
+                _copiar(guia, os.path.join(PROGRAMA, "tareas", nombre))
 
 
 def limpiar_sobras():
@@ -121,6 +170,12 @@ def limpiar_sobras():
     `instalador.py`, el viejo se quedo alli tirado. Un modulo fantasma en la
     carpeta de instalacion es un modulo que se instala en el ordenador nuevo,
     y con suerte solo estorba.
+
+    Tambien quita lo que se ha metido en NUNCA despues de haberse copiado
+    (14-09-2026, "Publicar Berna.bat"): sigue existiendo en C:\\Asistente, asi
+    que sin esto se quedaba en el pen para siempre. Solo los .py/.txt/.bat,
+    que son los que copia volcar_programa; el config.json del pen lo escribe
+    config_sin_claves a proposito y no se toca.
     """
     if not os.path.isdir(PROGRAMA):
         return []
@@ -130,7 +185,8 @@ def limpiar_sobras():
         for f in files:
             ruta = os.path.join(raiz, f)
             rel = os.path.relpath(ruta, PROGRAMA)
-            if os.path.exists(os.path.join(BASE, rel)):
+            vetado = rel in NUNCA and rel.endswith((".py", ".txt", ".bat"))
+            if os.path.exists(os.path.join(BASE, rel)) and not vetado:
                 continue
             os.remove(ruta)
             fuera.append(rel)
@@ -147,6 +203,12 @@ def config_sin_claves():
     for k in CLAVES:
         if k in cfg:
             cfg[k] = ""
+    # El microfono elegido a mano son unos cascos concretos de ESTE ordenador.
+    # En otro no estan enchufados, y Berna se quedaba buscando un aparato que
+    # no existe en vez de coger el que hubiera. En blanco lo busca sola.
+    for k in ("microfono", "altavoz"):
+        if cfg.get(k):
+            cfg[k] = None if k == "microfono" else ""
     destino = os.path.join(PROGRAMA, "config.json")
     nuevo = json.dumps(cfg, indent=2, ensure_ascii=False)
     viejo = ""
@@ -185,48 +247,99 @@ def volcar_privados():
         f.write(AVISO_PRIVADO)
 
 
+MINIMO_PAQUETES = 20
+
+
 def requisitos():
-    r = subprocess.run([os.path.join(BASE, "venv", "Scripts", "python.exe"),
-                        "-m", "pip", "freeze"],
-                       capture_output=True, text=True, timeout=180)
-    lista = (r.stdout or "").strip()
+    """Guarda la lista de piezas que hay que instalar.
+
+    OJO: esto rompio a Berna el 30-ago-2026 y se llevo la instalacion entera.
+    Antes se guardaba lo que soltara `pip freeze` SIN MIRARLO. El 28-ago el
+    venv estaba a medias, `pip freeze` no devolvio nada, y aqui se escribio un
+    requisitos.txt VACIO. Dos dias despues INSTALAR.bat hizo lo suyo: borrar el
+    venv, crearlo de nuevo y pedirle a pip que instale ese fichero, o sea nada.
+    Berna arranco sin numpy, sin piper y sin sounddevice: sorda y muda.
+    Un fichero de dos bytes se llevo por delante todo lo instalado.
+
+    Por eso ahora NO se guarda si la lista viene vacia, si pip ha fallado o si
+    trae menos de MINIMO_PAQUETES: mas vale un requisitos.txt viejo que uno
+    vacio. Ademas se deja copia .bak del anterior y se devuelve el motivo,
+    que sale en el informe.
+    """
     destino = os.path.join(DESTINO, "requisitos.txt")
+    try:
+        r = subprocess.run([os.path.join(BASE, "venv", "Scripts", "python.exe"),
+                            # "freeze" a secas escribe "paquete @ file:///C:/Users/..."
+                            # cuando se instalo desde las ruedas de Paquetes, y ese
+                            # requisitos.txt solo vale en este ordenador. "list" da
+                            # siempre nombre==version.
+                            "-m", "pip", "list", "--format=freeze"],
+                           capture_output=True, text=True, timeout=180)
+    except Exception as e:
+        return False, 0, "no he podido preguntarle a pip (%s); dejo el de antes" % e
+    if r.returncode != 0:
+        return False, 0, ("pip ha fallado (codigo %d); dejo el de antes"
+                          % r.returncode)
+    lista = (r.stdout or "").strip()
+    n = len(lista.splitlines()) if lista else 0
+    if n < MINIMO_PAQUETES:
+        return False, n, ("la lista venia con %d paquetes, menos de %d: huele a "
+                          "entorno roto, NO la guardo" % (n, MINIMO_PAQUETES))
     viejo = ""
     if os.path.exists(destino):
-        with open(destino, "r", encoding="utf-8") as f:
+        with open(destino, "r", encoding="utf-8-sig") as f:
             viejo = f.read().strip()
     if lista != viejo:
+        if viejo:
+            try:
+                shutil.copy2(destino, destino + ".bak")
+            except OSError:
+                pass
         with open(destino, "w", encoding="utf-8") as f:
             f.write(lista + "\n")
-        return True, len(lista.splitlines())
-    return False, len(lista.splitlines())
+        return True, n, ""
+    return False, n, ""
 
 
 def volcar_oido():
-    """El modelo de Whisper ya descargado, para no depender de internet.
+    """Los modelos de Whisper ya descargados, para no depender de internet.
 
-    SOLO el que dice whisper_tam, no todos los que haya en la cache. Copiarlos
-    todos parece mas generoso y no lo es: por probar el 'small' una vez, la
-    carpeta de instalacion paso de 613 MB a 1.077 MB para llevarse un modelo
-    que nadie iba a usar. Y lo que sobra tambien se borra, mas abajo.
+    SOLO los que Berna usa de verdad, no todos los que haya en la cache, y lo
+    que sobre se borra mas abajo: por probar el 'small' una vez, la carpeta de
+    instalacion paso de 613 MB a 1.077 MB para llevarse un modelo que nadie
+    iba a usar.
+
+    OJO (02-09-2026): AHORA SON DOS. Desde que existe el oido fino, Berna
+    arranca con el de `whisper_tam` (rapido, para ir siguiendo la conversacion)
+    y carga aparte el de `oido_fino` (mejor, para lo que cuesta entender). Aqui
+    se copiaba solo el primero Y SE BORRABA EL SEGUNDO, que es justo lo que
+    hacia esta linea de abajo. Resultado: en un ordenador nuevo y sin internet
+    el oido fino no estaba, y sin conexion no habia forma de bajarlo. Si algun
+    dia se anade un tercer modelo, va aqui.
     """
     origen = os.path.join(CACHE_HF, "hub")
     if not os.path.isdir(origen):
         return False
     try:
         with open(os.path.join(BASE, "config.json"), "r", encoding="utf-8") as f:
-            tam = json.load(f).get("whisper_tam", "base")
+            cfg = json.load(f)
     except Exception:
-        tam = "base"
-    quiero = ("faster-whisper-%s" % tam).lower()
+        cfg = {}
+    # Mismo criterio que asistente.py: el fino viene puesto salvo que lo apaguen.
+    tams = [str(cfg.get("whisper_tam") or "base")]
+    fino = str(cfg.get("oido_fino") or "small")
+    if fino.lower() not in ("", "no", "0") and fino not in tams:
+        tams.append(fino)
+    quiero = [("faster-whisper-%s" % t).lower() for t in tams]
     destino = os.path.join(OIDO, "hub")
     for d in os.listdir(origen):
-        if "whisper" in d.lower() and d.lower().endswith(quiero):
+        if "whisper" in d.lower() and any(d.lower().endswith(q) for q in quiero):
             _copiar_arbol(os.path.join(origen, d), os.path.join(destino, d))
     # y fuera el que se colase en su dia
     if os.path.isdir(destino):
         for d in os.listdir(destino):
-            if "whisper" in d.lower() and not d.lower().endswith(quiero):
+            if "whisper" in d.lower() and not any(d.lower().endswith(q)
+                                                  for q in quiero):
                 shutil.rmtree(os.path.join(destino, d), ignore_errors=True)
     tag = os.path.join(CACHE_HF, "CACHEDIR.TAG")
     if os.path.exists(tag):
@@ -489,7 +602,11 @@ if (Test-Path $priv) {
 # ---------------------------------------------------------------- 6. acceso directo
 Paso "6 de 6: creando el acceso directo"
 $ws = New-Object -ComObject WScript.Shell
-$lnk = $ws.CreateShortcut("$env:USERPROFILE\\Desktop\\$atajo.lnk")
+# El escritorio de verdad. Con OneDrive sincronizandolo NO es
+# $env:USERPROFILE\\Desktop, y el acceso directo acababa en una carpeta que
+# el dueno del ordenador no ve nunca.
+$escritorio = [Environment]::GetFolderPath("Desktop")
+$lnk = $ws.CreateShortcut("$escritorio\\$atajo.lnk")
 $lnk.TargetPath = "$destino\\venv\\Scripts\\pythonw.exe"
 $lnk.Arguments = "`"$destino\\asistente.py`""
 $lnk.WorkingDirectory = $destino
@@ -535,9 +652,11 @@ def sincronizar(forzar=False):
     config_sin_claves()
     volcar_privados()
     escribir_textos()
-    cambio, n = requisitos()
+    cambio, n, aviso = requisitos()
     lineas.append("  requisitos.txt: %d paquetes%s"
                   % (n, " (han cambiado)" if cambio else ""))
+    if aviso:
+        lineas.append("  OJO con requisitos.txt: " + aviso)
     if volcar_oido():
         lineas.append("  modelo del oido: puesto")
     lineas.append("  paquetes: " + bajar_paquetes(forzar or cambio))

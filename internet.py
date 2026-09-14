@@ -21,6 +21,8 @@ Y LO QUE NO SE HACE NUNCA, aunque Angel diga que si:
 """
 import os, re, json, time, hashlib, subprocess, unicodedata
 
+from persistencia import actualizar_json_atomico
+
 BASE = os.path.dirname(os.path.abspath(__file__))
 DESCARGAS = os.path.join(os.path.expanduser("~"), "Downloads")
 MAX_BYTES = 2 * 1024 ** 3          # 2 GB
@@ -272,12 +274,10 @@ def guardar_clave(cual, valor, permiso=None):
     ruta = os.path.join(BASE, "config.json")
     try:
         with open(ruta, "r", encoding="utf-8") as f:
-            cfg = json.load(f)
+            json.load(f)  # se comprueba que el fichero bueno se puede leer
         import shutil
         shutil.copy2(ruta, ruta + ".bak")
-        cfg[campo] = valor
-        with open(ruta, "w", encoding="utf-8") as f:
-            json.dump(cfg, f, indent=2, ensure_ascii=False)
+        actualizar_json_atomico(ruta, {campo: valor})
     except Exception as e:
         return "No he podido guardarla: %s" % e
 

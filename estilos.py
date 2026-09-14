@@ -36,6 +36,8 @@ DONDE ESTA LA RAYA, que esto hay que decirlo
 """
 import os, json, difflib, unicodedata
 
+from persistencia import actualizar_json_atomico
+
 BASE = os.path.dirname(os.path.abspath(__file__))
 CONFIG = os.path.join(BASE, "config.json")
 VOCES = os.path.join(BASE, "voces")
@@ -61,7 +63,7 @@ ACENTOS = {
     },
     "andaluz": {
         "donde": "Sevilla, del barrio, con mucha guasa",
-        "velocidad": 0.88,
+        "velocidad": 0.97,
         "reglas": [
             "La ese del final te la comes: 'estamos' es 'ehtamo', 'los libros' "
             "es 'loh libro', 'vamos' es 'vamo', 'mas' es 'ma'.",
@@ -414,10 +416,7 @@ def _guardar(clave, valor):
     except Exception:
         return False
     cfg[clave] = valor
-    tmp = CONFIG + ".tmp"
-    with open(tmp, "w", encoding="utf-8") as f:
-        json.dump(cfg, f, indent=2, ensure_ascii=False)
-    os.replace(tmp, CONFIG)
+    actualizar_json_atomico(CONFIG, {clave: valor})
     _cache["mtime"] = 0.0
     return True
 

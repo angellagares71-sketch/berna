@@ -37,6 +37,8 @@ import os
 import json
 import datetime
 
+from persistencia import actualizar_json_atomico
+
 BASE = os.path.dirname(os.path.abspath(__file__))
 CONFIG = os.path.join(BASE, "config.json")
 
@@ -302,10 +304,10 @@ def guardar_mi_dron(modelo, lugar=""):
     cfg["dron_modelo"] = str(modelo or "").strip()
     if lugar:
         cfg["dron_lugar"] = str(lugar).strip()
-    tmp = CONFIG + ".tmp"
-    with open(tmp, "w", encoding="utf-8") as f:
-        json.dump(cfg, f, indent=2, ensure_ascii=False)
-    os.replace(tmp, CONFIG)
+    cambios = {"dron_modelo": cfg["dron_modelo"]}
+    if lugar:
+        cambios["dron_lugar"] = cfg["dron_lugar"]
+    actualizar_json_atomico(CONFIG, cambios)
     if nombre:
         return ("Apuntado: tienes un %s, que aguanta hasta %d km/h de viento. Ya "
                 "no te lo pregunto mas.%s"

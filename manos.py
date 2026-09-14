@@ -556,13 +556,42 @@ TECLAS = {
     "inicio": 0x24, "home": 0x24, "fin": 0x23, "end": 0x23,
     "repag": 0x21, "avpag": 0x22, "pageup": 0x21, "pagedown": 0x22,
     "imppant": 0x2C, "bloqmayus": 0x14, "pausa": 0x13,
+    "aplicaciones": 0x5D, "contextual": 0x5D,
+    # El teclado numerico. Faltaba entero, y sin el no se puede manejar ni una
+    # calculadora ni un programa de contabilidad ni un juego que use el numerico
+    # (02-09-2026). OJO: son teclas DISTINTAS de los numeros de arriba; muchos
+    # programas las distinguen.
+    "num0": 0x60, "num1": 0x61, "num2": 0x62, "num3": 0x63, "num4": 0x64,
+    "num5": 0x65, "num6": 0x66, "num7": 0x67, "num8": 0x68, "num9": 0x69,
+    "num*": 0x6A, "nummultiplicar": 0x6A,
+    "num+": 0x6B, "numsumar": 0x6B, "nummas": 0x6B,
+    "num-": 0x6D, "numrestar": 0x6D, "nummenos": 0x6D,
+    "num/": 0x6F, "numdividir": 0x6F,
+    "num.": 0x6E, "numcoma": 0x6E, "numdecimal": 0x6E,
+    # Los bloqueos
+    "bloqnum": 0x90, "bloqueonumerico": 0x90,
+    "bloqdespl": 0x91, "bloqueodesplazamiento": 0x91,
+    # Las teclas de multimedia y de volumen que traen los teclados de portatil
+    "silencio": 0xAD, "silenciar": 0xAD,
+    "bajar volumen": 0xAE, "subir volumen": 0xAF,
+    "siguiente cancion": 0xB0, "cancion siguiente": 0xB0,
+    "cancion anterior": 0xB1, "anterior cancion": 0xB1,
+    "parar musica": 0xB2, "reproducir": 0xB3, "play": 0xB3, "pausar": 0xB3,
+    # Las del navegador
+    "atras navegador": 0xA6, "adelante navegador": 0xA7,
+    "recargar": 0xA8, "refrescar": 0xA8,
 }
 for _i in range(1, 25):
     TECLAS["f%d" % _i] = 0x6F + _i
 
 # Estas piden el bit de "extendida" o algunos programas las entienden mal.
+# El 0x6F (dividir del numerico) y el 0x90 (bloq num) tambien lo piden.
 EXTENDIDAS = {0x26, 0x28, 0x25, 0x27, 0x24, 0x23, 0x21, 0x22, 0x2D, 0x2E,
-              0x5B, 0x5D, 0xA5, 0x2C}
+              0x5B, 0x5D, 0xA5, 0x2C, 0x6F, 0x90,
+              0xAD, 0xAE, 0xAF, 0xB0, 0xB1, 0xB2, 0xB3, 0xA6, 0xA7, 0xA8}
+
+# Los que acompanan, y no valen ellos solos.
+MODIFICADORES = (0x11, 0x12, 0x10, 0x5B, 0xA5)
 
 
 def _vk_de(nombre):
@@ -577,6 +606,44 @@ def _vk_de(nombre):
     return None, False
 
 
+def _mods_de(con):
+    """Los acompanantes de un 'shift', 'ctrl+shift'... para clics y arrastres.
+
+    Existe porque sin esto no se puede seleccionar varias cosas de una lista
+    (ctrl+clic), ni un rango (mayus+clic), que es la mitad de lo que se hace
+    con el raton en cualquier programa (02-09-2026).
+    """
+    vks = []
+    for p in re.split(r"\s*\+\s*", str(con or "").strip()):
+        if not p.strip():
+            continue
+        vk, _s = _vk_de(p)
+        if vk in MODIFICADORES and vk not in vks:
+            vks.append(vk)
+    if 0xA5 in vks and 0x11 not in vks:
+        vks.insert(0, 0x11)
+    return vks
+
+
+def _con_modificadores(vks):
+    """Baja los acompanantes, y los sube pase lo que pase."""
+    class _Ctx(object):
+        def __enter__(self):
+            for m in vks:
+                _enviar(_tecla(m, extendida=m in EXTENDIDAS))
+            if vks:
+                time.sleep(0.03)
+
+        def __exit__(self, *_a):
+            for m in reversed(vks):
+                try:
+                    _enviar(_tecla(m, arriba=True, extendida=m in EXTENDIDAS))
+                except Exception:
+                    pass
+            return False
+    return _Ctx()
+
+
 def pulsar_teclas(teclas, veces=1, ventana="", permiso=None):
     if ventana:
         r = enfocar_ventana(ventana, permiso=permiso)
@@ -589,19 +656,30 @@ def pulsar_teclas(teclas, veces=1, ventana="", permiso=None):
     combo = str(teclas or "").strip()
     if not combo:
         return "Dime que teclas hay que pulsar, por ejemplo ctrl+s o intro."
-    partes = [p for p in re.split(r"\s*\+\s*", combo) if p]
+    # El "+" es el separador de las combinaciones, pero tambien es el NOMBRE
+    # de una tecla del numerico. Sin mirar primero el nombre entero, "num+"
+    # se partia en ["num", ""] y salia "no conozco la tecla num" (02-09-2026).
+    if _vk_de(combo)[0] is not None:
+        partes = [combo]
+    else:
+        partes = [p for p in re.split(r"\s*\+\s*", combo) if p]
     vks, modificadores = [], []
     for p in partes:
         vk, con_shift = _vk_de(p)
         if vk is None:
             return ("No conozco la tecla '%s'. Usa nombres como intro, tab, esc, "
                     "supr, f5, arriba, o combinaciones como ctrl+s." % p)
-        if vk in (0x11, 0x12, 0x10, 0x5B, 0xA5):
+        if vk in MODIFICADORES:
             modificadores.append(vk)
         else:
             if con_shift and 0x10 not in modificadores:
                 modificadores.append(0x10)
             vks.append(vk)
+    # AltGr es, por dentro, Ctrl + Alt derecho. Mandando solo el Alt derecho,
+    # Windows no compone el caracter y no llega nada: por eso "altgr+5" no
+    # sacaba el euro (medido el 02-09-2026).
+    if 0xA5 in modificadores and 0x11 not in modificadores:
+        modificadores.insert(0, 0x11)
     if not vks:
         return "Eso son solo teclas de las que acompanan. Dime tambien cual es la principal."
     fallo = _consumir("TECLAS", "pulsar %s%s" % (combo, (" %d veces" % veces) if veces > 1 else ""),
@@ -736,7 +814,8 @@ def mover_raton(x, y, permiso=None):
     return "Raton en x=%d y=%d." % (rx, ry)
 
 
-def clic_raton(x=None, y=None, boton="izquierdo", doble=False, permiso=None):
+def clic_raton(x=None, y=None, boton="izquierdo", doble=False, con="",
+               permiso=None):
     b = _sin_tildes(boton).strip() or "izquierdo"
     if b in ("izq", "left", "principal"):
         b = "izquierdo"
@@ -758,8 +837,10 @@ def clic_raton(x=None, y=None, boton="izquierdo", doble=False, permiso=None):
             return "Dame las dos coordenadas en numeros."
         donde = "x=%d y=%d" % (x, y)
         mover = True
-    fallo = _consumir("CLIC", "%s clic con el boton %s en %s"
-                      % ("doble" if doble else "un", b, donde), permiso)
+    mods = _mods_de(con)
+    fallo = _consumir("CLIC", "%s clic con el boton %s en %s%s"
+                      % ("doble" if doble else "un", b, donde,
+                         (" con %s pulsado" % con) if mods else ""), permiso)
     if fallo:
         return fallo
     try:
@@ -769,15 +850,17 @@ def clic_raton(x=None, y=None, boton="izquierdo", doble=False, permiso=None):
                            | MOUSEEVENTF_VIRTUALDESK))
             time.sleep(0.12)
         abajo, arriba = BOTONES[b]
-        for _ in range(2 if doble else 1):
-            _enviar(_raton(flags=abajo))
-            time.sleep(0.03)
-            _enviar(_raton(flags=arriba))
-            time.sleep(0.06)
+        with _con_modificadores(mods):
+            for _ in range(2 if doble else 1):
+                _enviar(_raton(flags=abajo))
+                time.sleep(0.03)
+                _enviar(_raton(flags=arriba))
+                time.sleep(0.06)
         time.sleep(0.3)
-        return ("Clic dado en %s. Ahora delante tienes '%s'. Mira la pantalla antes "
+        return ("Clic dado en %s%s. Ahora delante tienes '%s'. Mira la pantalla antes "
                 "de seguir, que un clic puede haber abierto otra cosa."
-                % (donde, _primer_plano() or "nada"))
+                % (donde, (" con %s" % con) if mods else "",
+                   _primer_plano() or "nada"))
     except Exception as e:
         return "No he podido dar el clic: %s" % e
 
@@ -884,7 +967,7 @@ def _centro_de(texto, ventana, tipos):
     return elegido, None
 
 
-def pinchar_en(texto, ventana="", doble=False, permiso=None):
+def pinchar_en(texto, ventana="", doble=False, con="", permiso=None):
     """Pulsa el boton, el enlace o la casilla que se llame asi.
 
     Es la forma BUENA de pinchar y la que hay que usar siempre que se pueda:
@@ -905,7 +988,9 @@ def pinchar_en(texto, ventana="", doble=False, permiso=None):
                 "ver_controles para saber que hay, o dime la ventana." % texto)
 
     nombre, tipo, x, y, an, al, _c = elegido
-    fallo = _consumir("CLIC", "pulsar '%s' (en %d, %d)" % (nombre, x, y), permiso)
+    mods = _mods_de(con)
+    fallo = _consumir("CLIC", "pulsar '%s' (en %d, %d)%s"
+                      % (nombre, x, y, (" con %s" % con) if mods else ""), permiso)
     if fallo:
         return fallo
     try:
@@ -915,11 +1000,12 @@ def pinchar_en(texto, ventana="", doble=False, permiso=None):
         time.sleep(0.06)
         abajo, arriba = BOTONES["izquierdo"]
         veces = 2 if doble is True else 1
-        for _ in range(veces):
-            _enviar(_raton(flags=abajo))
-            time.sleep(0.03)
-            _enviar(_raton(flags=arriba))
-            time.sleep(0.06)
+        with _con_modificadores(mods):
+            for _ in range(veces):
+                _enviar(_raton(flags=abajo))
+                time.sleep(0.03)
+                _enviar(_raton(flags=arriba))
+                time.sleep(0.06)
         time.sleep(0.25)
         return ("Pulsado '%s' en (%d, %d). Mira ver_controles otra vez o la "
                 "pantalla para ver que ha pasado." % (nombre, x, y))
@@ -975,3 +1061,365 @@ def escribir_en(campo, texto, ventana="", intro=False, permiso=None):
     # portapapeles, que es lo unico que sale bien con acentos)
     r = escribir_texto(texto, intro=intro, permiso=lambda a: True)
     return "He puesto el cursor en '%s'. %s" % (nombre, r)
+
+
+# ------------------------------------------------------------------ sostener
+def mantener_tecla(tecla, segundos=1.0, permiso=None):
+    """Deja una tecla PULSADA un rato, en vez de darle un toque.
+
+    POR QUE (02-09-2026): `pulsar_teclas` da un golpe y suelta. Hay cosas que
+    no se pueden hacer asi, y hasta hoy Berna no podia hacer NINGUNA:
+      - correr o agacharse en un juego (mayus mantenido),
+      - bajar rapido por un documento (avpag mantenido),
+      - adelantar un video (flecha derecha mantenida).
+    """
+    vk, con_shift = _vk_de(tecla)
+    if vk is None:
+        return ("No conozco la tecla '%s'. Prueba con nombres como mayus, ctrl, "
+                "espacio, abajo o avpag." % tecla)
+    try:
+        segundos = max(0.05, min(10.0, float(segundos)))
+    except Exception:
+        segundos = 1.0
+    fallo = _consumir("MANTENER", "mantener '%s' pulsada %.1f s" % (tecla, segundos),
+                      permiso)
+    if fallo:
+        return fallo
+    extra = [0x10] if con_shift else []
+    ext = vk in EXTENDIDAS
+    # Una tecla de verdad, al quedarse hundida, NO manda un solo aviso: manda uno
+    # y luego lo repite. Eso lo hace el teclado, no Windows, asi que con
+    # SendInput hay que imitarlo a mano. Sin esto (medido el 02-09-2026),
+    # mantener 'a' un segundo y medio escribia UNA letra en vez de un puñado, y
+    # bajar por un documento con avpag no bajaba mas que una pagina.
+    RETARDO, CADA = 0.4, 0.033
+    try:
+        with _con_modificadores(extra):
+            _enviar(_tecla(vk, extendida=ext))
+            fin = time.time() + segundos
+            time.sleep(min(RETARDO, segundos))
+            repeticiones = 0
+            while time.time() < fin:
+                _enviar(_tecla(vk, extendida=ext))
+                repeticiones += 1
+                time.sleep(CADA)
+            _enviar(_tecla(vk, arriba=True, extendida=ext))
+        time.sleep(0.15)
+        return ("He tenido '%s' pulsada %.1f segundos (%d repeticiones, como un "
+                "teclado de verdad) y la he soltado. Delante tienes '%s'."
+                % (tecla, segundos, repeticiones, _primer_plano() or "nada"))
+    except Exception as e:
+        try:
+            _enviar(_tecla(vk, arriba=True, extendida=ext))
+        except Exception:
+            pass
+        return "No he podido mantener esa tecla: %s" % e
+
+
+# ------------------------------------------------------------------ secuencia
+PASOS_MAX = 40
+ESPERA_PASO_MAX = 5.0
+ESPERA_TOTAL_MAX = 30.0
+
+_ALIAS = {
+    "teclas": "teclas", "tecla": "teclas", "pulsar": "teclas", "pulsa": "teclas",
+    "escribir": "escribir", "texto": "escribir", "teclear": "escribir",
+    "escribe": "escribir",
+    "pinchar": "pinchar", "boton": "pinchar", "pulsar_boton": "pinchar",
+    "pincha": "pinchar",
+    "campo": "campo", "escribir_en": "campo", "rellenar": "campo",
+    "clic": "clic", "click": "clic",
+    "doble": "doble", "doble_clic": "doble",
+    "derecho": "derecho", "clic_derecho": "derecho",
+    "mover": "mover", "raton": "mover",
+    "rueda": "rueda", "scroll": "rueda",
+    "arrastrar": "arrastrar", "arrastra": "arrastrar",
+    "esperar": "esperar", "espera": "esperar", "pausa": "esperar",
+    "enfocar": "enfocar", "ventana": "enfocar",
+    "mantener": "mantener", "manten": "mantener",
+    "menu": "menu", "menus": "menu",
+}
+
+
+def _parsear_pasos(pasos):
+    """Admite una lista o un texto de una accion por linea. Devuelve [(que, valor)]."""
+    crudos = []
+    if isinstance(pasos, (list, tuple)):
+        for p in pasos:
+            if isinstance(p, dict):
+                que = p.get("que") or p.get("accion") or p.get("tipo") or ""
+                val = p.get("valor")
+                if val is None and "x" in p and "y" in p:
+                    val = "%s,%s" % (p.get("x"), p.get("y"))
+                crudos.append("%s: %s" % (que, "" if val is None else val))
+            else:
+                crudos.append(str(p))
+    else:
+        crudos = str(pasos or "").splitlines()
+
+    fuera = []
+    for linea in crudos:
+        # OJO: aqui NO se limpia el final de la linea. Limpiarla entera se
+        # comia el espacio de "escribir: hola " y pegaba las palabras
+        # (02-09-2026). Se quita solo lo de delante y el guion de lista.
+        if not linea.strip():
+            continue
+        linea = linea.lstrip().lstrip("-*").lstrip()
+        if ":" in linea:
+            que, val = linea.split(":", 1)
+        elif " " in linea:
+            que, val = linea.split(" ", 1)
+        else:
+            que, val = linea, ""
+        clave = _ALIAS.get(_sin_tildes(que).strip().replace(" ", "_"))
+        if not clave:
+            return None, ("No entiendo el paso '%s'. Las acciones son: teclas, "
+                          "escribir, pinchar, campo, menu, clic, doble, derecho, "
+                          "mover, rueda, arrastrar, esperar, enfocar y "
+                          "mantener." % linea[:60])
+        # A lo que se escribe NO se le tocan los espacios: si el paso dice
+        # "escribir: hola " es porque quiere el espacio del final. Quitarselo
+        # dejaba las palabras pegadas (02-09-2026). Al resto si, que son
+        # nombres y numeros.
+        if clave in ("escribir", "campo"):
+            val = val[1:] if val[:1] == " " else val
+        else:
+            val = val.strip()
+        fuera.append((clave, val))
+    if not fuera:
+        return None, "No me has dado ningun paso."
+    if len(fuera) > PASOS_MAX:
+        return None, ("Son %d pasos y el tope es %d. Partelo en dos tandas y "
+                      "mira la pantalla entre una y otra." % (len(fuera), PASOS_MAX))
+    return fuera, None
+
+
+def _dos_numeros(v):
+    n = re.findall(r"-?\d+", v or "")
+    return (int(n[0]), int(n[1])) if len(n) >= 2 else (None, None)
+
+
+def hacer_secuencia(pasos, ventana="", permiso=None):
+    r"""Hace VARIAS cosas seguidas con una sola llamada, y cuenta que ha pasado.
+
+    POR QUE ES LO QUE MAS FALTA (medido el 02-09-2026): cada herramienta que
+    usa Berna es una vuelta entera al modelo. Con `MAX_RONDAS` en 18, una tarea
+    de veinte pulsaciones NO CABE: se queda a medias por agotar las vueltas, no
+    por no saber hacerla. Abrir el Bloc de notas, escribir cuatro lineas y
+    guardarlo con un nombre son ya nueve o diez vueltas.
+
+    Con esto, esa misma tarea es UNA vuelta. No es que Berna vaya mas rapido:
+    es que le caben tareas que antes no le cabian.
+
+    COMO SE LE PIDE, una accion por linea:
+
+        enfocar: Bloc de notas
+        escribir: Hola, esto lo he escrito yo.
+        teclas: ctrl+g
+        esperar: 0.5
+        escribir: notas.txt
+        teclas: intro
+
+    Acciones: teclas, escribir, pinchar (por el nombre del boton), campo
+    (nombre = texto), menu (Archivo > Guardar), clic (x,y), doble, derecho,
+    mover, rueda, arrastrar (x1,y1 > x2,y2), esperar (segundos), enfocar
+    (titulo) y mantener (tecla segundos).
+
+    OJO CON LOS ATAJOS, que este ordenador tiene Windows EN ESPANOL: en los
+    programas de siempre (Bloc de notas, Explorador) guardar es ctrl+g, abrir
+    es ctrl+a, seleccionar todo es ctrl+e y buscar es ctrl+b. Los ingleses
+    (ctrl+s, ctrl+f) no hacen nada ahi, aunque si funcionan en Chrome y en
+    Office. Si un atajo no surte efecto, NO insistas: hazlo por el menu, que
+    eso nunca falla: "menu: Archivo > Guardar".
+
+    LA SEGURIDAD NO SE SALTA. El permiso se pide UNA vez, ensenando la lista
+    entera, que es mas honesto que pedirlo veinte veces sueltas. Pero cada paso
+    sigue pasando por `_consumir`, asi que si a mitad de secuencia aparece
+    delante el banco o una ventana de Windows, se para ahi. Y el freno de ESC
+    sigue funcionando igual.
+
+    SI UN PASO FALLA, SE PARA. Seguir a ciegas despues de un fallo es como se
+    acaba escribiendo en la ventana equivocada.
+    """
+    lista, error = _parsear_pasos(pasos)
+    if error:
+        return error
+
+    resumen = "\n".join("  %d. %s %s" % (i + 1, q, v.strip()[:60])
+                        for i, (q, v) in enumerate(lista))
+    fallo = _consumir("SECUENCIA", "hacer %d cosas seguidas:\n%s"
+                      % (len(lista), resumen), permiso)
+    if fallo:
+        return fallo
+
+    # Ya autorizado: los pasos no vuelven a preguntar, pero SI siguen pasando
+    # por todas las comprobaciones (ventana intocable, tope de acciones, ESC).
+    si = lambda _t: True
+    if ventana:
+        r = enfocar_ventana(ventana, permiso=si)
+        if (r.startswith("No hay") or r.startswith("No he podido")
+                or r.startswith("Ahi NO")):
+            return "No he podido empezar: %s" % r
+
+    # De que ventana partimos. Escribir es lo unico que hace dano de verdad si
+    # cae en el sitio equivocado, asi que antes de CADA paso que escriba se
+    # comprueba que seguimos donde estabamos.
+    #
+    # POR QUE (02-09-2026): probando esto mismo, el Bloc de notas se abrio con
+    # un documento del usuario que ya estaba abierto en vez de uno en blanco, y
+    # la secuencia le escribio dentro tan tranquila. No se guardo nada y se
+    # pudo deshacer, pero podia haberse guardado. Una ventana que aparece a
+    # mitad de secuencia (un aviso, un "quiere guardar?") hace exactamente lo
+    # mismo. Un ejecutor que sigue a ciegas cuando el suelo se mueve no es un
+    # ejecutor, es un peligro.
+    ESCRIBEN = ("escribir", "campo", "teclas", "mantener")
+    donde = _primer_plano() or ""
+
+    parte, esperado = [], 0.0
+    for i, (que, val) in enumerate(lista, 1):
+        if que in ESCRIBEN:
+            ahora = _primer_plano() or ""
+            # el asterisco de "sin guardar" cambia el titulo sin cambiar de
+            # ventana, asi que no cuenta como cambio
+            if ahora.lstrip("*") != donde.lstrip("*"):
+                parte.append("PARADO EN EL PASO %d de %d: he empezado en '%s' y "
+                             "ahora delante hay '%s'. No sigo escribiendo a "
+                             "ciegas. Mira que ha pasado y dime si sigo."
+                             % (i, len(lista), donde or "nada", ahora or "nada"))
+                _apuntar("SECUENCIA CORTADA", resumen,
+                         "la ventana ha cambiado: %s -> %s" % (donde, ahora))
+                return "\n".join(parte)
+        try:
+            if que == "teclas":
+                r = pulsar_teclas(val, permiso=si)
+            elif que == "escribir":
+                r = escribir_texto(val, permiso=si)
+            elif que == "pinchar":
+                r = pinchar_en(val, permiso=si)
+            elif que == "campo":
+                if "=" not in val:
+                    r = ("ERROR: 'campo' se pide como 'nombre del cuadro = lo "
+                         "que va dentro'.")
+                else:
+                    campo, dentro = val.split("=", 1)
+                    r = escribir_en(campo.strip(), dentro.strip(), permiso=si)
+            elif que in ("clic", "doble", "derecho"):
+                x, y = _dos_numeros(val)
+                if x is None:
+                    r = "ERROR: dame las dos coordenadas, por ejemplo 'clic: 640, 480'."
+                else:
+                    r = clic_raton(x, y,
+                                   boton="derecho" if que == "derecho" else "izquierdo",
+                                   doble=(que == "doble"), permiso=si)
+            elif que == "mover":
+                x, y = _dos_numeros(val)
+                r = ("ERROR: dame las dos coordenadas." if x is None
+                     else mover_raton(x, y, permiso=si))
+            elif que == "rueda":
+                n = re.findall(r"-?\d+", val)
+                r = rueda_raton(int(n[0]) if n else 3, permiso=si)
+            elif que == "arrastrar":
+                n = re.findall(r"-?\d+", val)
+                r = ("ERROR: hacen falta cuatro numeros: x1,y1 > x2,y2."
+                     if len(n) < 4 else
+                     arrastrar_raton(int(n[0]), int(n[1]), int(n[2]), int(n[3]),
+                                     permiso=si))
+            elif que == "esperar":
+                try:
+                    s = min(ESPERA_PASO_MAX, max(0.0, float(val.replace(",", "."))))
+                except Exception:
+                    s = 0.5
+                if esperado + s > ESPERA_TOTAL_MAX:
+                    s = max(0.0, ESPERA_TOTAL_MAX - esperado)
+                esperado += s
+                time.sleep(s)
+                r = "esperado %.1f s" % s
+            elif que == "menu":
+                r = usar_menu(val, permiso=si)
+            elif que == "enfocar":
+                r = enfocar_ventana(val, permiso=si)
+                # cambiar de ventana aqui es la intencion, no un accidente
+                time.sleep(0.2)
+                donde = _primer_plano() or donde
+            elif que == "mantener":
+                trozos = val.rsplit(" ", 1)
+                if len(trozos) == 2:
+                    try:
+                        r = mantener_tecla(trozos[0],
+                                           float(trozos[1].replace(",", ".")),
+                                           permiso=si)
+                    except ValueError:
+                        r = mantener_tecla(val, 1.0, permiso=si)
+                else:
+                    r = mantener_tecla(val, 1.0, permiso=si)
+            else:
+                r = "ERROR: accion desconocida"
+        except Exception as e:
+            r = "ERROR: %s" % e
+
+        corto = " ".join(str(r).split())[:110]
+        parte.append("%d. %s %s -> %s" % (i, que, val[:40], corto))
+        malo = (corto.startswith("ERROR") or corto.startswith("No ")
+                or corto.startswith("Ahi NO") or corto.startswith("Dime")
+                or corto.startswith("He llegado al tope"))
+        if malo:
+            parte.append("PARADO EN EL PASO %d de %d. Los demas NO se han hecho."
+                         % (i, len(lista)))
+            _apuntar("SECUENCIA CORTADA", resumen, corto)
+            return "\n".join(parte)
+
+    parte.append("Hechos los %d pasos. Delante tienes '%s'. Comprueba con "
+                 "ver_controles o mirando la pantalla."
+                 % (len(lista), _primer_plano() or "nada"))
+    _apuntar("SECUENCIA", resumen, "%d pasos" % len(lista))
+    return "\n".join(parte)
+
+
+# ------------------------------------------------------------------ menus
+def usar_menu(ruta, ventana="", permiso=None):
+    r"""Recorre un menu: "Archivo > Guardar", "Editar > Buscar > Buscar...".
+
+    POR QUE HACE FALTA (02-09-2026): el menu es el unico camino que no hay que
+    adivinar. La opcion se llama como se llama, esta donde esta, y UI Automation
+    da su sitio exacto. Un atajo, en cambio, hay que saberselo, y ahi se falla
+    mas de lo que parece.
+
+    LA LECCION, que costo media tarde de pruebas: en este ordenador Windows
+    esta EN ESPANOL, y los atajos de los programas de siempre NO son los
+    ingleses. En el Bloc de notas, ctrl+s no guarda nada; se guarda con
+    ctrl+g (Guardar). Y ojo, que ctrl+a no es "seleccionar todo" sino ABRIR:
+    durante las pruebas se paso un buen rato abriendo el cuadro de Abrir sin
+    entender por que. Seleccionar todo es ctrl+e, y buscar es ctrl+b.
+
+    Los programas modernos (Chrome, Office) si usan los ingleses. O sea que
+    conviven los dos juegos de atajos, y no hay forma de saber cual toca sin
+    probar. POR ESO existe esta funcion: si el atajo no hace nada, se va por el
+    menu y se acabo la adivinanza.
+    """
+    pasos = [p.strip() for p in re.split(r"\s*(?:>|->|,)\s*", str(ruta or ""))
+             if p.strip()]
+    if not pasos:
+        return ("Dime el camino del menu, por ejemplo 'Archivo > Guardar'.")
+    if len(pasos) > 5:
+        return "Eso son demasiados niveles de menu."
+
+    if ventana:
+        r = enfocar_ventana(ventana, permiso=permiso)
+        if (r.startswith("No hay") or r.startswith("No he podido")
+                or r.startswith("Ahi NO")):
+            return r
+
+    hechos_ = []
+    for i, opcion in enumerate(pasos):
+        r = pinchar_en(opcion, permiso=permiso)
+        hechos_.append("%s -> %s" % (opcion, " ".join(r.split())[:70]))
+        if (r.startswith("No veo") or r.startswith("No he podido")
+                or r.startswith("Ahi NO") or r.startswith("No me has dado")):
+            hechos_.append("PARADO en '%s'. Mira con ver_controles como se llama "
+                           "de verdad esa opcion." % opcion)
+            return "\n".join(hechos_)
+        # al menu le hace falta un respiro para desplegarse
+        time.sleep(0.75 if i < len(pasos) - 1 else 0.35)
+    hechos_.append("Recorrido el menu %s. Delante tienes '%s'."
+                   % (" > ".join(pasos), _primer_plano() or "nada"))
+    return "\n".join(hechos_)

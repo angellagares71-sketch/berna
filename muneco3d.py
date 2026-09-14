@@ -6,6 +6,22 @@ Angel lo pidio el 2026-08-27: "que el avatar sea en 3D y de buena calidad".
 Antes era un dibujo plano de Tk (ovalos y lineas). Esto es geometria 3D con
 sus vertices, sus normales, su perspectiva y su luz.
 
+CUERPO ENTERO DESDE EL 2026-09-03
+  Hasta esa fecha era un BUSTO: cabeza, cuello y unos hombros que se salian
+  por abajo del encuadre. Angel pidio "brazos, y si es posible piernas, que
+  pueda girar el cuello y hacer movimientos completos". Ahora tiene brazo,
+  antebrazo y mano, y muslo, pierna y pie, cada uno en su grupo.
+
+  **Las poses se dicen por DONDE VA LA MANO, no por angulos.** Es la misma
+  leccion que ya costo una version en el muneco plano: con dos huesos y tres
+  ejes es imposible acertar los angulos a ojo. `_ik_brazo` resuelve la
+  cinematica inversa y sale exacta (se comprobo pidiendo un punto y midiendo
+  donde acababa la mano: error cero salvo cuando el sitio queda mas lejos que
+  el brazo, y entonces se estira todo lo que da).
+
+  Al rotar, el orden es: **primero el codo y despues el hombro**. Asi el
+  antebrazo acompana al brazo sin recalcular donde ha quedado el codo.
+
 POR QUE ESTA HECHO ASI Y NO CON UNA TARJETA GRAFICA
   Este portatil lleva una Radeon integrada con 0,5 GB de VRAM, y ademas Berna
   es una ventana de Tkinter, que no tiene lienzo 3D. Montar OpenGL aqui seria
@@ -146,7 +162,7 @@ class _Malla(object):
 class Cara(tk.Canvas):
     """Mismo trato por fuera que el muneco plano: set_estado, boca_obj y mic."""
 
-    AN, AL = 214, 318
+    AN, AL = 236, 430
     SS = 2                              # doble resolucion para el antialiasing
     FONDO = (238, 243, 250)
 
@@ -155,10 +171,13 @@ class Cara(tk.Canvas):
     OJO_BLANCO = (250, 250, 252)
     IRIS = (47, 127, 212)
     PUPILA = (18, 28, 44)
-    CEJA = (196, 160, 70)
+    CEJA = (162, 126, 52)
+    LABIO = (198, 126, 118)
     BOCA = (110, 52, 52)
     CAMISA = (74, 134, 200)
     CUELLO_CAMISA = (58, 103, 155)
+    PANTALON = (62, 71, 92)
+    ZAPATO = (48, 42, 38)
 
     LUZ = np.array([-0.45, 0.62, 0.65], dtype="float32")
 
@@ -179,6 +198,12 @@ class Cara(tk.Canvas):
         self._sig_mirada = time.time() + random.uniform(1.5, 3.5)
         self._giro = [0.0, 0.0]         # a donde mira la cabeza
         self._giro_obj = [0.0, 0.0]
+        # (hombro_z, hombro_x, codo_z, codo_x) y (cadera_z, cadera_x, rodilla_z, rodilla_x)
+        self._brazo_ang = {-1: [0.0] * 4, 1: [0.0] * 4}
+        self._pierna_ang = {-1: [0.0] * 4, 1: [0.0] * 4}
+        self._peso = 0.0
+        self._peso_obj = 0.0
+        self._sig_peso = time.time() + random.uniform(4, 9)
         self._t = 0.0
         self._foto = None
         self._img_id = None
@@ -224,7 +249,9 @@ class Cara(tk.Canvas):
         alt = p[:, 1]
         lado = np.abs(p[:, 0])
         delante = np.clip(p[:, 2], 0, 1)
-        linea = 0.18 + 0.60 * lado ** 1.5 * delante
+        # La linea del flequillo: mas alta que antes, que tapaba media
+        # frente. Cuanto mas al lado y mas adelante, mas baja (las patillas).
+        linea = 0.32 + 0.52 * lado ** 1.5 * delante
         usar = alt > linea
         grosor = 0.050 + 0.022 * np.clip((alt - 0.2) / 0.8, 0, 1)
         pelo_v = p * (1.0 + grosor)[:, None]
@@ -241,55 +268,79 @@ class Cara(tk.Canvas):
         self._ojo_centro = {}
         for s in (-1, 1):
             ex, ey = 0.275 * s, 0.11
-            ez = self._apoyar(p, ex, ey) - 0.045      # metido en su cuenca
+            # MEDIDO: con 0,075 el ojo quedaba a z=0,802 y la piel de la cara a
+            # 0,806, o sea que el ojo estaba DENTRO de la cabeza y no se veia,
+            # y parecia que tenia dos rendijas. Como aqui no hay cuenca hueca
+            # (son solidos), el ojo tiene que asomar un poco.
+            ez = self._apoyar(p, ex, ey) - 0.025
             centro = np.array([ex, ey, ez], dtype="float32")
             self._ojo_centro[s] = centro
-            m.añadir(ve * np.array([0.132, 0.112, 0.085], "float32") + centro,
-                     fe, self.OJO_BLANCO, 0.5, "ojo%d" % s)
-            m.añadir(ve * np.array([0.084, 0.084, 0.055], "float32")
-                     + centro + np.array([0, 0, 0.055], "float32"),
+            # El ojo es una ALMENDRA: ancho, poco alto y aplastado por delante.
+            # Antes era casi una bola y el iris asomaba por fuera de la cara.
+            m.añadir(ve * np.array([0.172, 0.100, 0.042], "float32") + centro,
+                     fe, self.OJO_BLANCO, 0.45, "ojo%d" % s)
+            m.añadir(ve * np.array([0.082, 0.082, 0.018], "float32")
+                     + centro + np.array([0, 0, 0.030], "float32"),
                      fe, self.IRIS, 0.7, "iris%d" % s)
-            m.añadir(ve * np.array([0.038, 0.038, 0.028], "float32")
-                     + centro + np.array([0, 0, 0.080], "float32"),
+            m.añadir(ve * np.array([0.036, 0.036, 0.012], "float32")
+                     + centro + np.array([0, 0, 0.042], "float32"),
                      fe, self.PUPILA, 0.85, "pupila%d" % s)
-            m.añadir(ve * np.array([0.165, 0.145, 0.110], "float32") + centro,
+            m.añadir(ve * np.array([0.152, 0.132, 0.092], "float32") + centro,
                      fe, self.PIEL, 0.16, "parpado%d" % s)
-            cz = self._apoyar(p, ex, ey + 0.22)
-            m.añadir(ve * np.array([0.170, 0.026, 0.038], "float32")
-                     + np.array([ex + 0.012 * s, ey + 0.225, cz - 0.01], "float32"),
-                     fe, self.CEJA, 0.05, "ceja%d" % s)
+            # La ceja va POR DEBAJO de la linea del pelo. A 0,225 se colaba por
+            # el borde del flequillo y se veian dos esquirlas blancas.
+            cz = self._apoyar(p, ex, ey + 0.17)
+            m.añadir(ve * np.array([0.190, 0.030, 0.050], "float32")
+                     + np.array([ex + 0.010 * s, ey + 0.185, cz + 0.005], "float32"),
+                     fe, self.CEJA, 0.04, "ceja%d" % s)
 
         # --- nariz ---------------------------------------------------------
         vn, fn = _esfera(14, 10)
         nz = self._apoyar(p, 0.0, -0.08)
-        m.añadir(vn * np.array([0.070, 0.115, 0.075], "float32")
-                 + np.array([0, -0.08, nz - 0.01], "float32"),
+        m.añadir(vn * np.array([0.078, 0.062, 0.062], "float32")
+                 + np.array([0, -0.120, nz - 0.008], "float32"),
                  fn, self.PIEL, 0.30, "nariz")
+        # el caballete: un lomo fino que sube al entrecejo. Va METIDO en la
+        # cara; sacandolo mas parecia un hocico.
+        m.añadir(vn * np.array([0.038, 0.110, 0.040], "float32")
+                 + np.array([0, -0.005, self._apoyar(p, 0.0, 0.01) - 0.052], "float32"),
+                 fn, self.PIEL, 0.26, "nariz")
 
         # --- boca ----------------------------------------------------------
         vb, fb = _esfera(18, 12)
         bz = self._apoyar(p, 0.0, -0.44)
-        self._boca_centro = np.array([0, -0.44, bz - 0.025], dtype="float32")
-        m.añadir(vb * np.array([0.140, 0.040, 0.040], "float32") + self._boca_centro,
+        self._boca_centro = np.array([0, -0.42, bz - 0.020], dtype="float32")
+        m.añadir(vb * np.array([0.170, 0.042, 0.045], "float32") + self._boca_centro,
                  fb, self.BOCA, 0.25, "boca")
+        # labios: dos rodetes finos que enmarcan la abertura. Sin esto la boca
+        # es una raya oscura y la cara se queda sin gesto.
+        m.añadir(vb * np.array([0.150, 0.032, 0.040], "float32")
+                 + self._boca_centro + np.array([0, 0.052, 0.004], "float32"),
+                 fb, self.LABIO, 0.18, "labio_alto")
+        m.añadir(vb * np.array([0.140, 0.038, 0.042], "float32")
+                 + self._boca_centro + np.array([0, -0.058, 0.004], "float32"),
+                 fb, self.LABIO, 0.20, "labio_bajo")
 
         # --- cuello --------------------------------------------------------
         vc, fc = _cilindro(16, 0.34, 0.22, 0.28)
         m.añadir(vc + np.array([0, -1.24, -0.03], "float32"),
                  fc, self.PIEL, 0.10, "cuello")
 
-        # --- hombros y pecho ------------------------------------------------
-        # Arranca justo debajo del cuello y SE SALE por abajo del encuadre. En
-        # la version 2 era una bola separada y parecia un monigote de nieve.
-        # (y, medio ancho, medio fondo) de abajo del cuello hacia los pies
-        vh, fh = _perfil(26, [
+        # --- tronco ---------------------------------------------------------
+        # Ya NO se sale por abajo: termina en la cadera, porque a partir de
+        # ahi empiezan las piernas. (y, medio ancho, medio fondo)
+        vh, fh = _perfil(24, [
             (-1.16, 0.26, 0.20),      # donde nace del cuello
-            (-1.30, 0.52, 0.30),      # trapecio
-            (-1.48, 0.82, 0.38),      # se abre
-            (-1.70, 1.02, 0.43),      # punta del hombro
-            (-2.05, 1.06, 0.45),      # brazos, ya rectos
-            (-2.60, 1.04, 0.45),
-            (-3.40, 1.00, 0.44),      # se sale del encuadre por abajo
+            (-1.32, 0.54, 0.31),      # trapecio
+            (-1.52, 0.92, 0.41),      # se abre
+            (-1.74, 1.04, 0.45),      # punta del hombro
+            (-2.10, 0.98, 0.43),      # pecho
+            (-2.52, 0.82, 0.38),      # cintura
+            (-2.92, 1.00, 0.52),      # cadera
+            (-3.30, 0.92, 0.48),      # la camisa baja a tapar el nacimiento
+                                      # de los muslos: si no, los pantalones
+                                      # asoman por los lados y se ve un hueco
+                                      # oscuro en la cintura
         ])
         m.añadir(vh + np.array([0, 0, -0.02], "float32"), fh,
                  self.CAMISA, 0.07, "tronco")
@@ -297,6 +348,50 @@ class Cara(tk.Canvas):
         vv, fv = _cilindro(18, 0.16, 0.27, 0.40)
         m.añadir(vv + np.array([0, -1.20, -0.02], "float32"), fv,
                  self.CUELLO_CAMISA, 0.05, "camisa")
+
+        # --- brazos y piernas -----------------------------------------------
+        # Cada hueso se construye colgando de su articulacion, mirando hacia
+        # abajo. Asi, para moverlo solo hay que girarlo alrededor de ese punto,
+        # sin recolocar nada.
+        self._art = {"hombro": {}, "codo": {}, "cadera": {}, "rodilla": {}}
+        for s in (-1, 1):
+            hombro = np.array([0.88 * s, -1.72, -0.02], "float32")
+            codo = hombro + np.array([0, -1.15, 0], "float32")
+            muneca = codo + np.array([0, -1.05, 0], "float32")
+            self._art["hombro"][s] = hombro
+            self._art["codo"][s] = codo
+
+            vb, fb = _cilindro(12, -1.15, 0.30, 0.235)
+            m.añadir(vb + hombro, fb, self.CAMISA, 0.07, "brazo%d" % s)
+            # el deltoides: cose el brazo con el tronco. Sin esta bola se ve
+            # el hueco entre los dos y parece un muneco desmontable.
+            vd, fd = _esfera(12, 10)
+            m.añadir(vd * np.array([0.34, 0.36, 0.34], "float32") + hombro,
+                     fd, self.CAMISA, 0.07, "brazo%d" % s)
+            vs, fs = _esfera(10, 8)
+            m.añadir(vs * 0.235 + codo, fs, self.CAMISA, 0.07, "brazo%d" % s)
+
+            va, fa = _cilindro(12, -1.05, 0.235, 0.175)
+            m.añadir(va + codo, fa, self.PIEL, 0.12, "antebrazo%d" % s)
+            m.añadir(vs * np.array([0.20, 0.26, 0.135], "float32")
+                     + muneca + np.array([0, -0.20, 0.02], "float32"),
+                     fs, self.PIEL, 0.14, "antebrazo%d" % s)
+
+            cadera = np.array([0.44 * s, -2.94, 0.0], "float32")
+            rodilla = cadera + np.array([0, -1.45, 0], "float32")
+            tobillo = rodilla + np.array([0, -1.35, 0], "float32")
+            self._art["cadera"][s] = cadera
+            self._art["rodilla"][s] = rodilla
+
+            vm, fm = _cilindro(12, -1.45, 0.42, 0.30)
+            m.añadir(vm + cadera, fm, self.PANTALON, 0.05, "muslo%d" % s)
+            m.añadir(vs * 0.30 + rodilla, fs, self.PANTALON, 0.05, "muslo%d" % s)
+
+            vp, fp = _cilindro(12, -1.35, 0.30, 0.205)
+            m.añadir(vp + rodilla, fp, self.PANTALON, 0.05, "pierna%d" % s)
+            m.añadir(vs * np.array([0.24, 0.16, 0.42], "float32")
+                     + tobillo + np.array([0, -0.10, 0.20], "float32"),
+                     fs, self.ZAPATO, 0.22, "pierna%d" % s)
 
         self.m = m
         self.grupo = np.array(m.grupo)
@@ -319,6 +414,12 @@ class Cara(tk.Canvas):
         v[:, 1] += resp * (v[:, 1] < -1.15)
 
         # la boca se abre con la amplitud real del audio
+        # los labios se separan con la boca, cada uno para su lado
+        for g, k in (("labio_alto", 0.45), ("labio_bajo", -0.75)):
+            idx = self._del_grupo.get(g)
+            if idx is not None:
+                v[idx, 1] += k * 0.16 * self._boca
+
         idx = self._del_grupo.get("boca")
         if idx is not None:
             centro = self._boca_centro
@@ -341,7 +442,8 @@ class Cara(tk.Canvas):
                 [1.0, 1.0 - 0.92 * baja, 1.0], "float32") + centro
             v[idx, 1] += 0.150 * baja
             if baja < 0.5:      # con el ojo abierto el parpado se esconde
-                v[idx, 2] -= 0.09
+                v[idx, 2] -= 0.145
+                v[idx, 1] += 0.145
 
         # los ojos siguen la mirada
         for lado in (-1, 1):
@@ -349,8 +451,8 @@ class Cara(tk.Canvas):
                 idx = self._del_grupo.get(g)
                 if idx is None:
                     continue
-                v[idx, 0] += self._mira[0] * 0.045 * k
-                v[idx, 1] += self._mira[1] * 0.035 * k
+                v[idx, 0] += self._mira[0] * 0.030 * k
+                v[idx, 1] += self._mira[1] * 0.022 * k
 
         # las cejas suben cuando escucha o se sorprende
         alza = 0.05 if self.estado in ("escuchando", "buscando") else 0.0
@@ -358,6 +460,43 @@ class Cara(tk.Canvas):
             idx = self._del_grupo.get("ceja%d" % lado)
             if idx is not None:
                 v[idx, 1] += alza + 0.012 * math.sin(self._t * 0.9 + lado)
+        return v
+
+    @staticmethod
+    def _R(rz, rx):
+        """Giro alrededor de Z (abrir a los lados) y de X (adelante y atras)."""
+        cz, sz = math.cos(rz), math.sin(rz)
+        cx, sx = math.cos(rx), math.sin(rx)
+        Rz = np.array([[cz, -sz, 0], [sz, cz, 0], [0, 0, 1]], dtype="float32")
+        Rx = np.array([[1, 0, 0], [0, cx, -sx], [0, sx, cx]], dtype="float32")
+        return Rz @ Rx
+
+    def _rotar(self, v, grupos, pivote, R):
+        idx = [self._del_grupo[g] for g in grupos if g in self._del_grupo]
+        if not idx:
+            return
+        idx = np.unique(np.concatenate(idx))
+        v[idx] = (v[idx] - pivote) @ R.T + pivote
+
+    def _miembros(self, v):
+        """Coloca brazos y piernas girando cada hueso sobre su articulacion.
+
+        EL ORDEN IMPORTA: primero el codo y despues el hombro. Girando el codo
+        con el brazo todavia en su sitio, y girando luego el conjunto entero
+        desde el hombro, el antebrazo acompana solo. Al reves habria que
+        recalcular donde ha quedado el codo en cada fotograma.
+        """
+        for s in (-1, 1):
+            hz, hx, cz, cx = self._brazo_ang[s]
+            self._rotar(v, ["antebrazo%d" % s], self._art["codo"][s],
+                        self._R(cz, cx))
+            self._rotar(v, ["brazo%d" % s, "antebrazo%d" % s],
+                        self._art["hombro"][s], self._R(hz, hx))
+            dz, dx, rz, rx = self._pierna_ang[s]
+            self._rotar(v, ["pierna%d" % s], self._art["rodilla"][s],
+                        self._R(rz, rx))
+            self._rotar(v, ["muslo%d" % s, "pierna%d" % s],
+                        self._art["cadera"][s], self._R(dz, dx))
         return v
 
     def _girar(self, v):
@@ -376,7 +515,7 @@ class Cara(tk.Canvas):
 
     # -------------------------------------------------------------- pintar
     def _fotograma(self):
-        v = self._girar(self._pose())
+        v = self._girar(self._miembros(self._pose()))
 
         # ligero balanceo del cuerpo entero, que quita rigidez
         vaiven = math.sin(self._t * 0.7) * 0.035
@@ -393,7 +532,6 @@ class Cara(tk.Canvas):
         centro = (a + b + c) / 3.0
         # camara en +z mirando a -z
         vista = np.array([0, 0, 1], dtype="float32")
-        mira = vista[None, :] - centro * 0.0 + np.array([0, 0, 0], "float32")
         nv = (n * vista).sum(1)
         visible = nv > 0.0                       # caras traseras fuera
         if not visible.any():
@@ -414,15 +552,19 @@ class Cara(tk.Canvas):
 
         # --- proyeccion en perspectiva --------------------------------------
         W, H = self.AN * self.SS, self.AL * self.SS
-        # Encuadre de BUSTO: la cabeza ocupa casi media altura y los hombros
-        # llegan al borde de abajo. La primera version salia diminuta en medio
-        # del lienzo y parecia un muñeco de lejos.
+        # Encuadre de CUERPO ENTERO. La figura mide 6,85 unidades de la coronilla
+        # (+0,9) a la suela (-5,95), y ocupa el 86% del alto: el resto es el
+        # aire de abajo, donde va el rotulo del estado. Con el 92% el rotulo
+        # se pintaba encima de los pies.
+        #   escala = 0,92 * H * dist / 6,85
+        # y el centro vertical se coloca en el medio de la figura (-2,53).
+        # Los numeros salen de ahi, no de probar a ojo.
         dist = 6.2
-        escala = H * 1.30
+        escala = H * 0.779
         z = dist - v[:, 2]
         z = np.maximum(z, 0.15)
         px = W * 0.5 + v[:, 0] * escala / z
-        py = H * 0.34 - v[:, 1] * escala / z
+        py = H * 0.153 - v[:, 1] * escala / z
         P = np.stack([px, py], 1)
 
         # --- de lejos a cerca (pintor) --------------------------------------
@@ -478,6 +620,8 @@ class Cara(tk.Canvas):
             self._giro[0] = _lerp(self._giro[0], obj[0], 0.10)
             self._giro[1] = _lerp(self._giro[1], obj[1], 0.10)
 
+            self._poner_miembros(ahora)
+
             img = self._fotograma()
             if img is not None:
                 self._foto = ImageTk.PhotoImage(img)
@@ -505,6 +649,109 @@ class Cara(tk.Canvas):
             objetivo = 85
         espera = int(max(objetivo, min(140, self._ms + 6)))
         self.after(espera, self._tick)
+
+    # Largo de los huesos del brazo, que la IK necesita saber.
+    L_BRAZO, L_ANTEBRAZO = 1.15, 1.05
+
+    def _ik_brazo(self, s, objetivo):
+        """De 'quiero la mano AQUI' a los cuatro angulos del brazo.
+
+        Devuelve (hombro_z, hombro_x, codo_z, codo_x). El codo solo dobla en
+        un plano (es una bisagra, como el de verdad), asi que codo_z siempre
+        es cero: esta ahi para que la lista tenga la forma que espera
+        `_miembros`.
+        """
+        hombro = self._art["hombro"][s]
+        tx, ty, tz = [float(x) for x in (np.asarray(objetivo, "float32") - hombro)]
+        l1, l2 = self.L_BRAZO, self.L_ANTEBRAZO
+        d = math.sqrt(tx * tx + ty * ty + tz * tz)
+        d = max(abs(l1 - l2) + 0.02, min(l1 + l2 - 0.02, d))
+
+        # cuanto dobla el codo (ley del coseno)
+        k = (d * d - l1 * l1 - l2 * l2) / (2.0 * l1 * l2)
+        codo_x = -math.acos(max(-1.0, min(1.0, k)))
+
+        # donde queda la mano con el codo ya doblado, en el plano YZ
+        hy0 = -l1 - l2 * math.cos(codo_x)
+        hz0 = -l2 * math.sin(codo_x)
+
+        # El hombro gira en XY para llevar la mano a su sitio de lado. Hay DOS
+        # soluciones (el brazo por arriba o por abajo) y hay que coger la que
+        # no lo voltea: la que deja el giro por debajo de noventa grados. Eso
+        # pasa cuando y1 tiene el mismo signo que ty. Sin esta distincion, con
+        # la mano colgando salia el brazo levantado por encima de la cabeza.
+        sgn = -1.0 if ty < 0 else 1.0
+        y1 = sgn * math.sqrt(max(0.0, d * d - tz * tz))
+        if sgn > 0:
+            hombro_z = math.atan2(-tx, ty)
+        else:
+            hombro_z = math.atan2(tx, -ty)
+        # ...y en YZ para llevarla adelante o atras
+        hombro_x = math.atan2(tz, y1) - math.atan2(hz0, hy0)
+        return [hombro_z, hombro_x, 0.0, codo_x]
+
+    def _donde_las_manos(self):
+        """Donde va cada mano segun lo que este haciendo. En coordenadas del mundo."""
+        t = self._t
+        e = self.estado
+        manos = {}
+        for s in (-1, 1):
+            vaiven = math.sin(t * 0.9 + s) * 0.06
+            manos[s] = (1.14 * s, -3.92 + vaiven, 0.12 + vaiven)
+
+        if e == "hablando":
+            # gesticula, y cuanto mas alto habla mas mueve las manos
+            g = 0.45 + self._boca * 1.5
+            for i, s in enumerate((-1, 1)):
+                fase = t * 2.3 + i * 2.4
+                manos[s] = (s * (1.05 + 0.22 * math.sin(fase) * g),
+                            -2.95 + math.sin(fase * 1.2) * 0.35 * g,
+                            0.75 + 0.25 * math.sin(fase * 0.8) * g)
+        elif e == "escuchando":
+            manos[1] = (0.92, -0.42, 0.26)          # la derecha, a la oreja
+        elif e == "pensando":
+            manos[1] = (0.30, -1.02, 0.70)          # la derecha, a la barbilla
+            manos[-1] = (-0.75, -2.70, 0.35)        # la otra, cruzada
+        elif e == "buscando":
+            for i, s in enumerate((-1, 1)):
+                bote = math.sin(t * 7.0 + i * 1.7) * 0.09
+                manos[s] = (0.60 * s, -2.98 + bote, 0.98)
+        return manos
+
+    def _poner_miembros(self, ahora):
+        """Adonde van los brazos y las piernas en cada estado.
+
+        Los angulos van en radianes: el de Z abre el miembro hacia afuera y el
+        de X lo lleva hacia delante o hacia atras. Todo se persigue poco a
+        poco (`_lerp`), que es lo que convierte una postura en un movimiento.
+
+        Los brazos cuelgan un poco separados del cuerpo aunque este quieto:
+        pegados del todo parecen una figura de plastico.
+        """
+        t = self._t
+        e = self.estado
+
+        # Se dice donde va la mano y la cinematica inversa saca los angulos.
+        manos = self._donde_las_manos()
+        obj = {s: self._ik_brazo(s, manos[s]) for s in (-1, 1)}
+
+        for s in (-1, 1):
+            for k in range(4):
+                self._brazo_ang[s][k] = _lerp(self._brazo_ang[s][k], obj[s][k], 0.13)
+
+        # ---- piernas: cambia el peso de una a otra de vez en cuando
+        if ahora > self._sig_peso:
+            self._peso_obj = random.uniform(-1, 1)
+            self._sig_peso = ahora + random.uniform(5, 11)
+        self._peso = _lerp(self._peso, self._peso_obj, 0.02)
+        for s in (-1, 1):
+            floja = (s * self._peso) < 0          # la que no carga se dobla
+            flex = 0.26 if floja else 0.04
+            if e == "buscando":
+                flex += abs(math.sin(t * 3.2 + (0 if s < 0 else 3.1))) * 0.06
+            objp = [0.04 * s, -flex * 0.45, 0.0, flex]
+            for k in range(4):
+                self._pierna_ang[s][k] = _lerp(self._pierna_ang[s][k], objp[k], 0.08)
 
     def _rotulo(self):
         texto = {"reposo": "Listo", "escuchando": "Escuchando",

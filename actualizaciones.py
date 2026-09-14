@@ -48,8 +48,8 @@ COPIAS = os.path.join(BASE, "copias")
 # ---------------------------------------------------------------- la version
 # Sube esto cada vez que se publique algo. Es lo que se compara con el
 # version.json del repositorio para saber si hay novedades.
-VERSION = "1.7.1"
-FECHA_VERSION = "2026-08-28"
+VERSION = "1.10.0"
+FECHA_VERSION = "2026-09-14"
 
 # Solo de aqui se baja nada. Clavado a proposito: ver el punto 1 de arriba.
 HOST = "https://raw.githubusercontent.com"
@@ -276,6 +276,33 @@ def _que_cambia(d):
 
 
 # ------------------------------------------------------------- instalarla
+def _lo_que_se_pierde(nombre, entra, destino):
+    """Que funciones y clases desapareceran si se instala 'entra' encima.
+
+    Devuelve (lista de nombres que se pierden, cuanto encoge de 0 a 1).
+    """
+    if not nombre.lower().endswith(".py") or not os.path.isfile(destino):
+        return [], 0.0
+    try:
+        with open(destino, "rb") as f:
+            hay = f.read()
+    except OSError:
+        return [], 0.0
+    if not hay:
+        return [], 0.0
+    patron = re.compile(r"^[ \t]*(?:def|class)[ \t]+([A-Za-z_]\w*)", re.M)
+
+    def nombres(b):
+        try:
+            return set(patron.findall(b.decode("utf-8")))
+        except Exception:
+            return set()
+
+    perdidas = sorted(nombres(hay) - nombres(entra))
+    encoge = 1.0 - (len(entra) / float(len(hay)))
+    return perdidas, encoge
+
+
 def instalar_actualizacion(permiso=None):
     """Se baja la version nueva, la comprueba entera y la instala.
 
@@ -343,6 +370,41 @@ def instalar_actualizacion(permiso=None):
             return ("El archivo '%s' que me he bajado tiene un fallo de "
                     "programacion (%s). No instalo nada: prefiero dejarte con la "
                     "version %s que dejarte con Berna roto." % (nombre, e, VERSION))
+
+    # 2b) QUE NO SEA UN PASO ATRAS.
+    #
+    # Esto lo pago Angel el 01-sep-2026. Se instalo una "1.7.1" que por numero
+    # era mas nueva y por dentro era MAS VIEJA: se llevo por delante siete
+    # archivos. asistente.py perdio micros_disponibles(), es_el_suyo() y
+    # refrescar_aparatos(), o sea el arreglo del microfono, y Berna se quedo
+    # sorda otra vez; mantella.py perdio mantella_quitar_bom(). Firma correcta
+    # y todo compilaba: las dos comprobaciones de arriba lo dieron por bueno.
+    #
+    # Un numero de version mas alto NO es prueba de nada: lo pone quien publica.
+    # La prueba de verdad es que el codigo que entra no borre nada de lo que ya
+    # hay. Si borra, se para y se dice QUE se perdia; para cambios asi hace
+    # falta mano humana, no un "si" por voz.
+    ENCOGE_MAX = 0.10
+    quejas = []
+    for nombre, crudo in sorted(bajados.items()):
+        perdidas, encoge = _lo_que_se_pierde(nombre, crudo,
+                                             os.path.join(BASE, nombre))
+        if perdidas:
+            quejas.append("%s se dejaria por el camino %d cosas que ahora si "
+                          "estan (%s)" % (nombre, len(perdidas),
+                                          ", ".join(perdidas[:6])))
+        elif encoge > ENCOGE_MAX:
+            quejas.append("%s encoge un %d%% de golpe"
+                          % (nombre, int(round(encoge * 100))))
+    if quejas:
+        _apuntar("ACTUALIZAR", nueva, "PASO ATRAS, no instalo: " + quejas[0])
+        return ("NO he instalado nada, y a proposito. Esa version dice ser la "
+                "%s, mas nueva que la %s, pero por dentro va hacia atras:\n\n"
+                "  - %s\n\n"
+                "Instalarla te quitaria cosas que ahora funcionan, que es "
+                "justo lo que paso el 1 de septiembre. Prefiero dejarte como "
+                "estas. Si de verdad hay que meterla, que la mire Claude a "
+                "mano." % (nueva, VERSION, "\n  - ".join(quejas[:4])))
 
     # 3) copia de seguridad y cambiazo
     sello = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
