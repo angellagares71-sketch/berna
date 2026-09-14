@@ -153,9 +153,9 @@ def _compases(ruta, bpm):
     if not bpm:
         return None
     try:
-        w = wave.open(ruta, "rb")
-        segundos = w.getnframes() / float(w.getframerate())
-        w.close()
+        # con "with": si la lectura falla a medias, el archivo se cierra igual
+        with wave.open(ruta, "rb") as w:
+            segundos = w.getnframes() / float(w.getframerate())
     except Exception:
         return None
     compases = segundos * bpm / 60.0 / 4.0

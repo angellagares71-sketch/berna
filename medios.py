@@ -267,6 +267,7 @@ def redimensionar_fotos(carpeta, ancho=1600, destino=""):
     destino = destino or os.path.join(carpeta, "copias-%d" % ancho)
     os.makedirs(destino, exist_ok=True)
     hechas, ahorro = 0, 0
+    fallidas = []
     try:
         from PIL import Image
     except Exception as e:
@@ -286,16 +287,21 @@ def redimensionar_fotos(carpeta, ancho=1600, destino=""):
                 copia.save(fuera, "JPEG", quality=88)
                 ahorro += os.path.getsize(ruta) - os.path.getsize(fuera)
                 hechas += 1
-        except Exception:
-            pass
-    _apuntar("REDIMENSIONAR", carpeta, "%d fotos a %dpx" % (hechas, ancho))
+        except Exception as e:
+            # antes se callaba: decia "hechas 8" sin contar que 3 no se pudieron
+            fallidas.append("%s (%s)" % (os.path.basename(ruta), str(e)[:60]))
+    _apuntar("REDIMENSIONAR", carpeta, "%d fotos a %dpx, %d sin poder abrir"
+             % (hechas, ancho, len(fallidas)))
+    aviso = ""
+    if fallidas:
+        aviso = ("\n\nNo he podido con %d: %s" % (len(fallidas), "; ".join(fallidas[:5])))
     if not hechas:
         return ("No he encogido ninguna: o ya eran mas pequenas de %d puntos de "
-                "ancho, o no he podido abrirlas." % ancho)
+                "ancho, o no he podido abrirlas." % ancho) + aviso
     return ("Hechas %d copias de %d puntos de ancho en:\n%s\n\nLos originales "
             "NO se han tocado. Asi ocupan %s menos y se pueden mandar por "
             "WhatsApp o correo sin problema." % (hechas, ancho, destino,
-                                                 _tamano(max(0, ahorro))))
+                                                 _tamano(max(0, ahorro)))) + aviso
 
 
 def info_de_video(ruta):
@@ -417,8 +423,8 @@ def transcribir(ruta, subtitulos=False, oido=None):
         with open(con_texto, "w", encoding="utf-8") as f:
             f.write(texto)
         salidas.append(con_texto)
-    except Exception:
-        pass
+    except Exception as e:
+        _apuntar("TRANSCRIPCION", base + "-transcripcion.txt", "no he podido guardarla: %s" % e)
     quiere_srt = subtitulos is True or str(subtitulos).strip().lower() in (
         "si", "true", "1", "yes", "subtitulos")
     if quiere_srt:
@@ -429,8 +435,8 @@ def transcribir(ruta, subtitulos=False, oido=None):
                     f.write("%d\n%s --> %s\n%s\n\n"
                             % (i, _srt(tr.start), _srt(tr.end), tr.text.strip()))
             salidas.append(con_srt)
-        except Exception:
-            pass
+        except Exception as e:
+            _apuntar("SUBTITULOS", base + ".srt", "no he podido guardarlos: %s" % e)
     _apuntar("TRANSCRIBIR", ruta, "%d trozos" % len(trozos))
     duracion = trozos[-1].end if trozos else 0
     resumen = texto if len(texto) <= 4000 else texto[:4000] + " [...cortado...]"

@@ -66,6 +66,17 @@ def anotar(texto):
     except Exception:
         pass
 
+
+_YA_ANOTADO = {}
+
+
+def anotar_una_vez(clave, texto):
+    """Como anotar, pero para lo que va en bucle: el mismo fallo seguido se apunta
+    UNA vez, y no cada pocos segundos hasta llenar el registro."""
+    if _YA_ANOTADO.get(clave) != texto:
+        _YA_ANOTADO[clave] = texto
+        anotar(texto)
+
 PASO_BOCA = 0.045      # segundos por fotograma de sincronia labial
 MAX_RONDAS = 18        # cuantas veces seguidas puede usar herramientas
 # Cuanto se aparta un cerebro que ha fallado. La cuota de Google se cuenta por
@@ -613,8 +624,8 @@ class Berna(tk.Tk):
                             nueva = l.split("hay publicada la")[-1].strip(" .,")
                             break
                 self.after(0, lambda: self._pintar_version(hay, nueva))
-            except Exception:
-                pass
+            except Exception as e:
+                anotar("no he podido mirar si hay version nueva: %s" % e)
 
         threading.Thread(target=trabajar, daemon=True).start()
 
@@ -1079,8 +1090,8 @@ class Berna(tk.Tk):
                     sd._terminate()
                     time.sleep(0.3)
                     sd._initialize()
-                except Exception:
-                    pass
+                except Exception as e:
+                    anotar("no he podido reiniciar el audio: %s" % e)
             return True
         while True:
             # Se le cede el microfono al juego SOLO si Angel no lo esta pidiendo
@@ -1897,16 +1908,17 @@ class Berna(tk.Tk):
         # cada peticion y el proveedor puede reaprovecharlo en cache.
         try:
             sis += Ce.bloque_de_prompt(Hr.ESQUEMAS)
-        except Exception:
-            pass
+        except Exception as e:
+            # sin este trozo no sabe que herramientas tiene: que quede rastro
+            anotar_una_vez("prompt-herramientas", "prompt sin lista de herramientas: %s" % e)
         try:
             sis += Est.bloque_de_prompt()
-        except Exception:
-            pass
+        except Exception as e:
+            anotar_una_vez("prompt-estilo", "prompt sin acento ni caracter: %s" % e)
         try:
             sis += M2K.bloque_de_prompt(self.historial)
-        except Exception:
-            pass
+        except Exception as e:
+            anotar_una_vez("prompt-m2k", "prompt sin el bloque de Music 2000: %s" % e)
         sis += (
             "\n\nSABES TOCAR CODIGO QUE YA EXISTE, no solo escribir programas "
             "nuevos. Cuando Angel te pida arreglar, cambiar o mejorar algo de un "
@@ -1996,15 +2008,15 @@ class Berna(tk.Tk):
         tira del siguiente, y lo vuelve a intentar mas tarde.
         """
         e = str(err or "")
-        if "429" in e or e == "CUOTA_DIARIA":
-            cuanto = CASTIGO_CUOTA
-        elif "503" in e or "HTTP 5" in e or "timeout" in e.lower():
-            cuanto = CASTIGO_SATURADO
-        else:
+        # La regla vive en cerebro.cuanto_apartar y es la misma del movil. Antes
+        # aqui cualquier 429 eran 30 minutos: un pico por minuto dejaba a Berna
+        # sin ningun Gemini (registro del 10/09 y del 13/09).
+        cuanto = Ce.cuanto_apartar(e, CASTIGO_CUOTA, CASTIGO_SATURADO)
+        if not cuanto:
             return
         if self._sirve(modelo):
-            anotar("cerebro apartado %d min: %s (%s)"
-                   % (cuanto // 60, modelo, e[:40]))
+            anotar("cerebro apartado %s: %s (%s)"
+                   % (Ce.rato(cuanto), modelo, " ".join(e.split())[:60]))
         self.castigados[modelo] = time.time() + cuanto
 
     def _una_ronda(self, modelo, mensajes, tools=None):
@@ -2046,17 +2058,20 @@ class Berna(tk.Tk):
             r = requests.post(url, headers=cab, stream=True, timeout=(8, 90),
                                json=payload)
             if r.status_code != 200:
-                detalle_error = ""
+                cuerpo = ""
                 try:
-                    detalle_error = r.text[:400]
-                except Exception:
-                    pass
+                    cuerpo = r.text or ""
+                except Exception as e:
+                    anotar("no he podido leer el error de %s: %s" % (modelo, e))
+                detalle_error = cuerpo[:400]
                 # tope diario de la cuenta: no sirve de nada probar otros modelos,
                 # porque el limite es de la cuenta entera y no de cada modelo
                 if r.status_code == 429 and "free-models-per-day" in detalle_error:
                     return "", [], "CUOTA_DIARIA"
                 if r.status_code == 429:
-                    return "", [], "saturado ahora mismo (429)"
+                    # con el tipo de cuota y la espera que pide Google, para que
+                    # _castigar sepa cuanto apartarlo
+                    return "", [], "saturado ahora mismo (429%s)" % Ce.detalle_429(cuerpo)
                 if (r.status_code == 400 and
                         "reasoning_effort" in detalle_error and esfuerzo):
                     payload.pop("reasoning_effort", None)
@@ -2482,8 +2497,9 @@ class Berna(tk.Tk):
                     self.after(0, self._escribir, "sis", "\n[AVISO] %s\n" % aviso)
                     if self.cfg.get("hablar", True):
                         self.cola_voz.put(aviso)
-            except Exception:
-                pass
+            except Exception as e:
+                # si esto falla, los recordatorios no suenan nunca: que quede rastro
+                anotar_una_vez("agenda", "no he podido mirar los recordatorios: %s" % e)
             time.sleep(20)
 
     def _bucle_vigilante(self):
@@ -2535,8 +2551,8 @@ class Berna(tk.Tk):
                                                        "parece que se ha atascado?",
                                                        guardar=False))
                 v.apunta_una_mirada()
-            except Exception:
-                pass
+            except Exception as e:
+                anotar_una_vez("vigilante", "el vigilante no ha podido mirar la pantalla: %s" % e)
         contexto.append("Dile en UNA O DOS FRASES si le puedes echar una mano y "
                         "como. Si no ves nada raro, callate diciendo solo NADA. "
                         "No le regañes ni le metas prisa: puede que este "
@@ -2594,8 +2610,8 @@ class Berna(tk.Tk):
                         if self.parar_voz.is_set():
                             break
                         self._sonar(ch.audio_int16_array, ch.sample_rate)
-            except Exception:
-                pass
+            except Exception as e:
+                anotar_una_vez("voz", "no he podido hablar: %s" % e)
             self.hablando = False
             self.dejo_de_hablar = time.time()
             self.cara.boca_obj = 0.0
@@ -2628,8 +2644,8 @@ class Berna(tk.Tk):
                 if os.path.exists(ruta):
                     self.voz = PiperVoice.load(ruta)
                     self.voz_nombre = quiere
-        except Exception:
-            pass
+        except Exception as e:
+            anotar("no he podido cargar la voz %s: %s" % (quiere, e))
 
     def _ajustes_voz(self):
         """La velocidad que pide el acento. Por debajo de 1 habla mas rapido."""

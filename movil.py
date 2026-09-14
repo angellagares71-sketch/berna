@@ -1008,18 +1008,18 @@ def _sirve(modelo):
 
 
 def _castigar(modelo, err):
-    """Aparta un rato al cerebro que acaba de fallar, para no tropezar con el."""
+    """Aparta un rato al cerebro que acaba de fallar, para no tropezar con el.
+
+    La regla (cuota del dia, pico por minuto, saturado) vive en
+    cerebro.cuanto_apartar y es la misma que usa la ventana.
+    """
     e = str(err or "")
-    if "PerDay" in e:
-        cuanto = 6 * 60 * 60        # cuota gratis del dia agotada: no volver a probar en horas
-    elif "429" in e or e == "CUOTA_DIARIA":
-        cuanto = CASTIGO_CUOTA
-    elif "503" in e or "HTTP 5" in e or "timeout" in e.lower():
-        cuanto = CASTIGO_SATURADO
-    else:
+    cuanto = Ce.cuanto_apartar(e, CASTIGO_CUOTA, CASTIGO_SATURADO)
+    if not cuanto:
         return
     if _sirve(modelo):
-        anotar("cerebro apartado %d min: %s (%s)" % (cuanto // 60, modelo, e[:40]))
+        anotar("cerebro apartado %s: %s (%s)"
+               % (Ce.rato(cuanto), modelo, " ".join(e.split())[:60]))
     _castigados[modelo] = time.time() + cuanto
 
 
@@ -1088,11 +1088,14 @@ def una_ronda(cfg, modelo, mensajes, tools):
             payload["reasoning_effort"] = esfuerzo
         r = _sesion_http.post(url, headers=cab, timeout=(8, 90), json=payload)
         if r.status_code != 200:
-            detalle_error = ""
+            cuerpo = ""
             try:
-                detalle_error = r.text[:400]
-            except Exception:
-                pass
+                cuerpo = r.text or ""
+            except Exception as e:
+                anotar("no he podido leer el error de %s: %s" % (modelo, e))
+            # En UNA linea: el JSON de Google trae saltos y partia el registro en
+            # trozos sueltos como '"code": 429)'.
+            detalle_error = " ".join(cuerpo.split())[:400]
             if r.status_code == 429 and "free-models-per-day" in detalle_error:
                 return "", [], "CUOTA_DIARIA"
             if (r.status_code == 400 and esfuerzo and
@@ -1103,9 +1106,8 @@ def una_ronda(cfg, modelo, mensajes, tools):
                 if r.status_code != 200:
                     return "", [], "HTTP %d" % r.status_code
             else:
-                por_dia = " PerDay" if "PerDay" in (r.text or "") else ""
-                return "", [], "HTTP %d%s %s" % (r.status_code, por_dia,
-                                                   detalle_error[:120])
+                tipo = Ce.detalle_429(cuerpo) if r.status_code == 429 else ""
+                return "", [], "HTTP %d%s %s" % (r.status_code, tipo, detalle_error[:120])
         datos = r.json()
         msg = (datos.get("choices") or [{}])[0].get("message") or {}
         return msg.get("content") or "", msg.get("tool_calls") or [], None

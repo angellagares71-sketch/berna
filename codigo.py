@@ -650,14 +650,30 @@ def insertar_en_archivo(ruta, texto, despues_de="", antes_de="", al_final=False,
             "ahora." % (os.path.basename(r), donde, trozo.count("\n") + 1))
 
 
+def _copias_por_fecha(carpeta, marca):
+    """Las copias de un archivo, de la mas VIEJA a la mas NUEVA por fecha real.
+
+    Antes se ordenaban por nombre, y con nombres como `.bak-voz-natural-20260907`
+    y `.bak-code-20260909` el orden alfabetico no es el de las fechas: el
+    14-09-2026, en 8 archivos de Berna "la ultima copia" era una de dias antes, y
+    restaurarla habria borrado el trabajo de despues.
+    """
+    def fecha(nombre):
+        try:
+            return os.path.getmtime(os.path.join(carpeta, nombre))
+        except OSError:
+            return 0
+    return sorted((n for n in os.listdir(carpeta) if n.startswith(marca)),
+                  key=lambda n: (fecha(n), n))
+
+
 def copias_de_archivo(ruta):
     """Las copias de seguridad de un archivo, de la mas nueva a la mas vieja."""
     r = _ruta(ruta)
     carpeta = os.path.dirname(r) or "."
     marca = os.path.basename(r) + ".bak-"
     try:
-        copias = sorted((n for n in os.listdir(carpeta) if n.startswith(marca)),
-                        reverse=True)
+        copias = _copias_por_fecha(carpeta, marca)[::-1]
     except Exception as e:
         return "No he podido mirar la carpeta: %s" % e
     if not copias:
@@ -694,7 +710,7 @@ def cambios_desde_la_copia(ruta, copia=""):
     else:
         marca = os.path.basename(r) + ".bak-"
         try:
-            todas = sorted(n for n in os.listdir(carpeta) if n.startswith(marca))
+            todas = _copias_por_fecha(carpeta, marca)
         except Exception:
             todas = []
         if not todas:
@@ -724,7 +740,7 @@ def restaurar_copia(ruta, copia="", permiso=None):
     else:
         marca = os.path.basename(r) + ".bak-"
         try:
-            todas = sorted(n for n in os.listdir(carpeta) if n.startswith(marca))
+            todas = _copias_por_fecha(carpeta, marca)
         except Exception:
             todas = []
         if not todas:

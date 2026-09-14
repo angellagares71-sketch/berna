@@ -298,12 +298,16 @@ def _claves_guardadas():
     try:
         with open(CONFIG, "r", encoding="utf-8") as f:
             cfg = json.load(f)
-        for c in ("clave_api", "clave_gemini", "clave_busqueda", "imap_password"):
+        # clave_movil tambien: es la contrasena con la que el movil entra en Berna
+        for c in ("clave_api", "clave_gemini", "clave_busqueda", "imap_password",
+                  "clave_movil"):
             v = (cfg.get(c) or "").strip()
             if len(v) >= 12:
                 fuera.append(v)
-    except Exception:
-        pass
+    except Exception as e:
+        # Sin este aviso, el cerrojo de "no escribir sus claves" se apagaba en
+        # silencio si config.json no se podia leer.
+        _apuntar("CLAVES", "no he podido leer config.json para proteger las claves", str(e))
     return fuera
 
 

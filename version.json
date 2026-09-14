@@ -1,12 +1,12 @@
 {
-  "version": "1.10.0",
+  "version": "1.10.1",
   "fecha": "2026-09-14",
   "novedades": [
-    "Programa en serio (opcion Code): busca por todo un proyecto, explica los errores marcando la linea culpable, pasa pruebas, hace .exe y guarda versiones con git.",
-    "Arregla programas que ya existen cambiando solo el trozo necesario, con copia de seguridad, y lo deshace solo si algo se rompe.",
-    "Servidor del movil: lee chats exportados enteros, con sus audios e imagenes, y usa menos memoria.",
-    "Mejoras en el estudio de musica y en como Berna elige sus herramientas.",
-    "Publicar y guardar la configuracion es mas seguro."
+    "Restaurar una copia vuelve de verdad a la mas nueva (antes podia elegir una de dias antes).",
+    "Si Gemini se satura un momento, Berna ya no se queda media hora sin cerebro: espera solo lo que pide Google.",
+    "Elige mejor sus herramientas: entiende pdf, git, dji o bpm y manda menos datos en cada pregunta.",
+    "Protege tambien la clave del movil y apunta en el registro los fallos que antes se callaba.",
+    "Al reducir fotos avisa de las que no ha podido abrir."
   ],
   "archivos": {
     "ACTUALIZACIONES-COMO-ACTIVARLO.txt": {
@@ -38,7 +38,7 @@
       "bytes": 31319
     },
     "actualizaciones.py": {
-      "sha256": "0ea6daa1fff66d75a9756b0e7cc20e7658adb002db18b39f9961f11661cb0590",
+      "sha256": "ad6a938bd4ca98b5981d8770591cb710a8b1fcf87bf23fb9f96260e8638550a6",
       "bytes": 21066
     },
     "agenda.py": {
@@ -46,16 +46,16 @@
       "bytes": 13379
     },
     "asistente.py": {
-      "sha256": "16f18cebcbac3ba980ebbcbf257df85f2cb245c7db175eda531131c9acabee55",
-      "bytes": 139703
+      "sha256": "3ba7fee8ee27a24ead7e60136c7f72ef07897e8e6b54883422a6fc77db12de96",
+      "bytes": 141255
     },
     "autorizar_google.py": {
       "sha256": "fc6e085a0740f16c7f04c4872c0eac1c8bb4b7994447bae0e3002da390bec065",
       "bytes": 381
     },
     "biblioteca.py": {
-      "sha256": "bdee3859abc6c182405a90254fb64775dd0a787e85aebc8fe3b50ff8c367d278",
-      "bytes": 16525
+      "sha256": "a7c9f0a4ba7b4bd25f02b70b46e2c69e614f5800b9607c0ec11d077be6699aa4",
+      "bytes": 16597
     },
     "camara.py": {
       "sha256": "8fc3109c544fa755f3807c4efed72f1f400009bf959cb530b0183b039d83c629",
@@ -70,12 +70,12 @@
       "bytes": 15903
     },
     "cerebro.py": {
-      "sha256": "fc3dadd7d078677998ca7a5a401e8c32890d29861f2195ff456f1fe0f3924c13",
-      "bytes": 9955
+      "sha256": "0f0df71f6aceb1b8218e809cc3c03d3f741d47b39bd2d2422467d4fec275d074",
+      "bytes": 13420
     },
     "codigo.py": {
-      "sha256": "c247b6fe05895c5da74d850fb33f1f6f453b7d72cb94be3c4e9f30489e771d2e",
-      "bytes": 40017
+      "sha256": "8449ef0840ef7acd86d63aa20f8174014bda9d23db8a0e2854ad456c40554f22",
+      "bytes": 40591
     },
     "consejo.py": {
       "sha256": "a24bcf93952b9d752cbaa9f3efcc0626f556aa475dda2a599c50c251e41de677",
@@ -118,20 +118,20 @@
       "bytes": 12379
     },
     "manos.py": {
-      "sha256": "a6daf3bbaa85739332322015a986724cbc8328d469337b56ddf6f08879449baa",
-      "bytes": 59879
+      "sha256": "b1690c4963bdb5fab370af8f2b0e27980be08e574ad9a6d3371571cdbeec0432",
+      "bytes": 60215
     },
     "mantella.py": {
       "sha256": "1e072fe0b763a97d893e12cfd8777a981e3791dd58a4ef8602b9e53982e46c6e",
       "bytes": 72565
     },
     "medios.py": {
-      "sha256": "967ac5663a23aadab10329c740f48c4bab54c79775bfc297f67dc1171dabe923",
-      "bytes": 20159
+      "sha256": "10245a7e788b11b1baa97c9a79f628153341db0a383ab5297b9ef3c1c5eb57c4",
+      "bytes": 20674
     },
     "movil.py": {
-      "sha256": "02c8c115593f2d0841abd8a8548b3ef4b15befe10cbfb4b8a750026fe12e179c",
-      "bytes": 78481
+      "sha256": "7fe155615eac1e1088ef9628df036269a6d72ba27d99a99eb4bbaf5571f53585",
+      "bytes": 78617
     },
     "muneco.py": {
       "sha256": "75e874fe7ae5d16298400fe91202769b974fb78beb28a65e8ec88fb86b68119c",
@@ -217,6 +217,5 @@
       "sha256": "7c831700a294529aea7160a3bfc8612cd6e782bc44c7423ef3df23c4218b0616",
       "bytes": 8792
     }
-  },
-  "commit": "b94d13d87c352e530bc6af4c4314bc9a88557fff"
+  }
 }

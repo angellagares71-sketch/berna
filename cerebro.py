@@ -22,6 +22,7 @@ COMO SE ARREGLA, sin perder ni una capacidad:
      la vuelta siguiente las tiene enteras. Nada queda fuera de su alcance.
 """
 
+import math
 import re
 import unicodedata
 
@@ -85,6 +86,20 @@ def _limpio(t):
 
 RAIZ = 4          # cuantas letras del principio valen como raiz
 
+# Las claves de TRES letras de los temas (pdf, git, dji, bpm, npc, api, exe...).
+# _palabras tiraba todo lo de tres letras o menos, asi que estas claves NUNCA
+# casaban: "une estos dos pdf" no traia unir_pdfs (medido el 14-09-2026).
+CORTAS = frozenset(w for claves in TEMAS.values()
+                   for w in _limpio(" ".join(claves)).split() if len(w) <= 3)
+
+# Una palabra que sale en muchas fichas ("archivo", "hace", "tiempo") no dice
+# cual hace falta y llenaba el tope con herramientas de relleno. Solo puntuan
+# las que salen en como mucho el 8 % de las fichas, y pesan mas cuanto mas raras;
+# y solo entran las que llegan al 10 % de la mejor puntuacion. Medido el
+# 14-09-2026 con 34 frases: 34/34 aciertos (antes 33) y ~6 % menos tokens.
+COMUN = 0.08
+RELATIVO = 0.1
+
 
 def _palabras(t):
     """Las palabras de un texto, MAS su raiz de cuatro letras.
@@ -100,6 +115,8 @@ def _palabras(t):
         if len(p) > 3:
             salida.add(p)
             salida.add(p[:RAIZ])
+        elif p in CORTAS:
+            salida.add(p)
     return salida
 
 
@@ -116,6 +133,16 @@ def indice(esquemas):
     return idx
 
 
+def _pesos(idx):
+    """Cuanto vale cada palabra: mas cuanto menos fichas la tienen (0 si es comun)."""
+    total = len(idx) or 1
+    cuantas = {}
+    for saco in idx.values():
+        for w in saco:
+            cuantas[w] = cuantas.get(w, 0) + 1
+    return {w: math.log(total / c) for w, c in cuantas.items() if c / total <= COMUN}
+
+
 def elegir(esquemas, texto, usadas=(), extra=(), tope=45):
     """Que herramientas se le ensenan al modelo para esta frase.
 
@@ -125,6 +152,7 @@ def elegir(esquemas, texto, usadas=(), extra=(), tope=45):
     llena de palabras comunes no acabe mandandolas todas otra vez.
     """
     idx = indice(esquemas)
+    peso = _pesos(idx)
     directas = _palabras(texto)
     pal = set(directas)
 
@@ -141,8 +169,9 @@ def elegir(esquemas, texto, usadas=(), extra=(), tope=45):
         # Lo que Angel ha dicho de verdad pesa mas que las palabras anadidas
         # por tema. Asi "guarda" no se pierde entre cuarenta herramientas de
         # codigo solo porque tambien haya dicho "programando".
-        n = len(pal & saco) + 3 * len(directas & saco)
-        if n:
+        n = (sum(peso.get(w, 0) for w in pal & saco)
+             + 3 * sum(peso.get(w, 0) for w in directas & saco))
+        if n > 0:
             puntos[nombre] = n
 
     elegidas = []
@@ -152,8 +181,9 @@ def elegir(esquemas, texto, usadas=(), extra=(), tope=45):
     for nombre in fijas + list(extra) + list(usadas):
         if nombre in idx and nombre not in elegidas:
             elegidas.append(nombre)
-    for nombre, _n in sorted(puntos.items(), key=lambda x: -x[1]):
-        if len(elegidas) >= tope:
+    mejor = max(puntos.values(), default=0)
+    for nombre, n in sorted(puntos.items(), key=lambda x: -x[1]):
+        if len(elegidas) >= tope or n < RELATIVO * mejor:
             break
         if nombre not in elegidas:
             elegidas.append(nombre)
@@ -224,3 +254,63 @@ def bloque_de_prompt(esquemas):
             "\nSi necesitas una que ahora no llevas, llama a mas_herramientas "
             "con el tema y en tu siguiente turno la tendras. Nunca digas que no "
             "puedes hacer algo que este en esa lista.")
+
+
+# ------------------------------------------------------ cuanto apartar un cerebro
+# Cuanto tiempo se deja sin llamar a un modelo que acaba de fallar. Vive aqui
+# para que la ventana y el movil apliquen LA MISMA regla (14-09-2026): el movil
+# ya distinguia la cuota del dia, pero la ventana apartaba 30 minutos CUALQUIER
+# 429, y un simple pico por minuto dejaba a Berna sin ningun Gemini a la vez.
+UN_DIA_DE_CUOTA = 6 * 60 * 60
+
+
+def detalle_429(cuerpo):
+    """Lo que importa de un 429 de Google, en pocas palabras.
+
+    Devuelve algo como " PerDay", " PerMinute reintentar 37s" o "". El tipo sale
+    del quotaId ("...PerDayPerProjectPerModel...") y la espera del retryDelay.
+    """
+    t = str(cuerpo or "")
+    trozos = []
+    if "PerDay" in t:
+        trozos.append("PerDay")
+    elif "PerMinute" in t:
+        trozos.append("PerMinute")
+    m = re.search(r'"retryDelay"\s*:\s*"(\d+(?:\.\d+)?)s"', t)
+    if m:
+        trozos.append("reintentar %ds" % math.ceil(float(m.group(1))))
+    return "".join(" " + x for x in trozos)
+
+
+def cuanto_apartar(error, cuota=30 * 60, saturado=3 * 60):
+    """Segundos que se aparta un cerebro segun su error. 0 = no apartarlo.
+
+    - cuota del dia agotada ("PerDay"): horas, que antes de manana no vuelve.
+    - pico por minuto: lo que pide Google (+5 s), entre 30 s y 5 min; si no lo
+      dice, un minuto.
+    - otro 429 (o el tope diario de OpenRouter): `cuota`, como siempre.
+    - saturado (5xx o se ha agotado el tiempo): `saturado`.
+    """
+    e = str(error or "")
+    if "PerDay" in e:
+        return UN_DIA_DE_CUOTA
+    if "429" in e or e == "CUOTA_DIARIA":
+        m = re.search(r"reintentar (\d+)s", e)
+        if m:
+            return min(max(int(m.group(1)) + 5, 30), 5 * 60)
+        if "PerMinute" in e:
+            return 60
+        return cuota
+    if "503" in e or "HTTP 5" in e or "timeout" in e.lower():
+        return saturado
+    return 0
+
+
+def rato(segundos):
+    """'40 s', '3 min', '6 h': para el registro."""
+    s = int(segundos)
+    if s < 120:
+        return "%d s" % s
+    if s < 2 * 3600:
+        return "%d min" % (s // 60)
+    return "%d h" % (s // 3600)
