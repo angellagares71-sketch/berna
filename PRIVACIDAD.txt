@@ -1,0 +1,39 @@
+SOBRI - POLITICA DE PRIVACIDAD / PRIVACY POLICY
+Ultima actualizacion / Last updated: 2026-09-18
+
+ESPANOL
+Sobri es un asistente personal de escritorio que se instala y funciona en el
+ordenador de cada usuario. No tiene servidores propios: no recoge, no guarda
+fuera del ordenador y no vende ni comparte datos con terceros.
+
+- Cuentas de Google (Gmail, Calendar, Drive, YouTube): solo se usan si el
+  propio usuario da permiso desde la pagina oficial de Google. El permiso
+  (token) se guarda en el ordenador del usuario, en la carpeta google, y se
+  puede retirar cuando quiera en myaccount.google.com/permissions.
+- YouTube: Sobri solo trabaja con el canal del propio usuario: lee sus
+  estadisticas y comentarios, y sube o cambia videos SOLO con su permiso.
+  Las cifras se guardan en el ordenador del usuario un maximo de 90 dias.
+- Los datos de Google no se usan para publicidad ni se transfieren a nadie.
+- Para hablar con la inteligencia artificial, el texto que el usuario le
+  escribe se envia al proveedor de IA que el usuario haya configurado.
+
+Contacto: alagaresrivas@gmail.com
+
+ENGLISH
+Sobri is a personal desktop assistant that runs on each user's own computer.
+It has no servers of its own: it does not collect, store outside the user's
+computer, sell or share any data with third parties.
+
+- Google accounts (Gmail, Calendar, Drive, YouTube) are only used if the user
+  grants access through Google's official consent screen. The token is stored
+  on the user's computer and can be revoked at any time at
+  myaccount.google.com/permissions.
+- YouTube: Sobri only works with the user's own channel: it reads its
+  statistics and comments, and uploads or edits videos ONLY with the user's
+  permission. Statistics are stored locally for at most 90 days.
+- Google user data is not used for advertising and is not transferred to
+  anyone. Sobri's use of information received from Google APIs adheres to the
+  Google API Services User Data Policy, including the Limited Use
+  requirements.
+
+Contact: alagaresrivas@gmail.com

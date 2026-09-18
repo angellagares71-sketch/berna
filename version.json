@@ -1,12 +1,8 @@
 {
-  "version": "1.11.0",
+  "version": "1.11.1",
   "fecha": "2026-09-18",
   "novedades": [
-    "Ahora se llama Sobri (sigue respondiendo a Oye Berna).",
-    "Manager de redes: YouTube, TikTok y Suno. Elige que canciones subir segun el mercado y tu canal, monta video, Short y miniatura, y escribe titulos, descripciones y hashtags.",
-    "Piloto automatico: cada 10 minutos detecta canciones nuevas, las prepara, hace el plan de publicacion y te avisa a la hora de publicar.",
-    "Suno asistido: te escribe estilo y letra y te copia cada casilla.",
-    "Si un cerebro falla seguido lo aparta mas tiempo, y avisa si el permiso de Google ha caducado."
+    "Politica de privacidad de Sobri (PRIVACIDAD.txt)."
   ],
   "archivos": {
     "ACTUALIZACIONES-COMO-ACTIVARLO.txt": {
@@ -33,6 +29,10 @@
       "sha256": "f70cd08b0e960d2a83fa998fadb2fccd50acbcc84cd629e46a6e68243e315658",
       "bytes": 33811
     },
+    "PRIVACIDAD.txt": {
+      "sha256": "fcd3edad404e9eb52038491f9f7d8df3315ba4e1ce14ad8cb7572e0dab5cab94",
+      "bytes": 2033
+    },
     "REDES-COMO-ACTIVARLO.txt": {
       "sha256": "ce7ee0231f5df3ebc4bb5113b646d1cde59e7cccc3f0817e2fe7761acc0a4cb4",
       "bytes": 4025
@@ -42,7 +42,7 @@
       "bytes": 173
     },
     "actualizaciones.py": {
-      "sha256": "8804e21979094427ffdd7985ab8433c4d391366272426975e037593b613893c1",
+      "sha256": "c2d4caa2d2a903e653f803800893f00322ba15b9c7356862e148a4aaa1ad06e7",
       "bytes": 21066
     },
     "agenda.py": {
@@ -233,6 +233,5 @@
       "sha256": "75753c6747b9b9103bc932c438945bf73e34d09f37e5d0cb1c5240b398aa5f02",
       "bytes": 8792
     }
-  },
-  "commit": "f4de52fdde6a3264f9bb5d6b48d04e7fdba26e90"
+  }
 }
