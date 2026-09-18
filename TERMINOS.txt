@@ -1,0 +1,37 @@
+SOBRI - TERMINOS DEL SERVICIO / TERMS OF SERVICE
+Ultima actualizacion / Last updated: 2026-09-19
+
+ESPANOL
+1. Sobri es un asistente personal gratuito que funciona en tu propio
+   ordenador. Lo usas bajo tu responsabilidad y tal cual esta, sin garantias.
+2. Las funciones de YouTube usan los Servicios de API de YouTube. Al usarlas
+   aceptas las Condiciones del Servicio de YouTube
+   (https://www.youtube.com/t/terms) y la Politica de Privacidad de Google
+   (https://policies.google.com/privacy).
+3. Solo puedes usar Sobri con tu propio canal y para subir contenido del que
+   tengas los derechos. Tienes que marcar el contenido hecho con IA (Sobri lo
+   hace siempre) y cumplir las normas de la comunidad de YouTube.
+4. Queda prohibido usar Sobri para spam, para inflar visitas o suscriptores,
+   o para acceder a canales de otras personas.
+5. Tus datos se tratan como explica PRIVACIDAD.txt. Puedes retirar el permiso
+   de Google cuando quieras en myaccount.google.com/permissions.
+6. Estos terminos pueden cambiar con nuevas versiones de Sobri.
+
+Contacto: alagaresrivas@gmail.com
+
+ENGLISH
+1. Sobri is a free personal assistant that runs on your own computer. You use
+   it at your own risk and as is, without warranties.
+2. The YouTube features use YouTube API Services. By using them you agree to
+   the YouTube Terms of Service (https://www.youtube.com/t/terms) and the
+   Google Privacy Policy (https://policies.google.com/privacy).
+3. You may only use Sobri with your own channel and to upload content you
+   hold the rights to. AI-generated content must be disclosed (Sobri always
+   does it) and the YouTube Community Guidelines must be followed.
+4. Using Sobri for spam, to inflate views or subscribers, or to access other
+   people's channels is prohibited.
+5. Your data is handled as described in PRIVACIDAD.txt. You can revoke
+   Google access at any time at myaccount.google.com/permissions.
+6. These terms may change with new versions of Sobri.
+
+Contact: alagaresrivas@gmail.com

@@ -1,8 +1,8 @@
 {
-  "version": "1.11.1",
-  "fecha": "2026-09-18",
+  "version": "1.11.2",
+  "fecha": "2026-09-19",
   "novedades": [
-    "Politica de privacidad de Sobri (PRIVACIDAD.txt)."
+    "Politica de privacidad y terminos del servicio para la revision de YouTube."
   ],
   "archivos": {
     "ACTUALIZACIONES-COMO-ACTIVARLO.txt": {
@@ -30,8 +30,8 @@
       "bytes": 33811
     },
     "PRIVACIDAD.txt": {
-      "sha256": "fcd3edad404e9eb52038491f9f7d8df3315ba4e1ce14ad8cb7572e0dab5cab94",
-      "bytes": 2033
+      "sha256": "01f8eeee5515e62ce7f833cfe6cc600f3a33dd62350dcef167d766b8b172aebc",
+      "bytes": 3528
     },
     "REDES-COMO-ACTIVARLO.txt": {
       "sha256": "ce7ee0231f5df3ebc4bb5113b646d1cde59e7cccc3f0817e2fe7761acc0a4cb4",
@@ -41,8 +41,12 @@
       "sha256": "88138d080de444258e7bceee50697feda6d0a41c93f0d09ca9cdafaf52ea642a",
       "bytes": 173
     },
+    "TERMINOS.txt": {
+      "sha256": "e67c9d4a860bbfb9fe3cb75fb9b588c7ec44f947e9bbb121662d5273e5e083fe",
+      "bytes": 1996
+    },
     "actualizaciones.py": {
-      "sha256": "c2d4caa2d2a903e653f803800893f00322ba15b9c7356862e148a4aaa1ad06e7",
+      "sha256": "141835b834429aa6970701f29431ef45aeb9242019c5f8b546562de1f78719c1",
       "bytes": 21066
     },
     "agenda.py": {
@@ -198,8 +202,8 @@
       "bytes": 37438
     },
     "redes.py": {
-      "sha256": "b916c9ed571088cb5c0e808348789b656f47201f1760eadf9106174a0b2990b5",
-      "bytes": 118197
+      "sha256": "9a1e81ec6958384c40e236e03a6446b740f3ba30d6bd418159e1a498c71c7e59",
+      "bytes": 118196
     },
     "suno.py": {
       "sha256": "1e217c2505b80b051fb4be08f8f7a6abee4eb182bcf64f00ae815589fe1f6d7a",
@@ -233,6 +237,5 @@
       "sha256": "75753c6747b9b9103bc932c438945bf73e34d09f37e5d0cb1c5240b398aa5f02",
       "bytes": 8792
     }
-  },
-  "commit": "bf1d1b6cea79db2bc4f1d073f58deef358a52d2f"
+  }
 }

@@ -1,21 +1,37 @@
 SOBRI - POLITICA DE PRIVACIDAD / PRIVACY POLICY
-Ultima actualizacion / Last updated: 2026-09-18
+Ultima actualizacion / Last updated: 2026-09-19
 
 ESPANOL
 Sobri es un asistente personal de escritorio que se instala y funciona en el
 ordenador de cada usuario. No tiene servidores propios: no recoge, no guarda
 fuera del ordenador y no vende ni comparte datos con terceros.
 
-- Cuentas de Google (Gmail, Calendar, Drive, YouTube): solo se usan si el
-  propio usuario da permiso desde la pagina oficial de Google. El permiso
-  (token) se guarda en el ordenador del usuario, en la carpeta google, y se
-  puede retirar cuando quiera en myaccount.google.com/permissions.
-- YouTube: Sobri solo trabaja con el canal del propio usuario: lee sus
-  estadisticas y comentarios, y sube o cambia videos SOLO con su permiso.
-  Las cifras se guardan en el ordenador del usuario un maximo de 90 dias.
+SERVICIOS DE API DE YOUTUBE
+- Sobri usa los Servicios de API de YouTube (YouTube API Services).
+- Al usar las funciones de YouTube de Sobri aceptas las Condiciones del
+  Servicio de YouTube: https://www.youtube.com/t/terms
+- Tambien se aplica la Politica de Privacidad de Google:
+  https://policies.google.com/privacy
+- Sobri solo trabaja con el canal del propio usuario: lee sus estadisticas,
+  analiticas y comentarios, y sube o cambia videos SOLO con su permiso o su
+  plan de publicacion.
+
+QUE DATOS SE USAN Y DONDE SE GUARDAN
+- Permiso de Google (token OAuth): en el ordenador del usuario, carpeta google.
+- Cifras del canal (vistas, likes, comentarios por video): en el ordenador
+  del usuario (redes.json), un maximo de 90 dias.
+- Nada de esto se envia a Sobri ni a ningun servidor del desarrollador.
 - Los datos de Google no se usan para publicidad ni se transfieren a nadie.
-- Para hablar con la inteligencia artificial, el texto que el usuario le
-  escribe se envia al proveedor de IA que el usuario haya configurado.
+- Para hablar con la inteligencia artificial, el texto que el usuario escribe
+  se envia al proveedor de IA que el propio usuario haya configurado.
+
+COMO BORRAR LOS DATOS O RETIRAR EL PERMISO
+- Retirar el permiso: https://security.google.com/settings/security/permissions
+  (o myaccount.google.com/permissions) > Sobri > Quitar acceso.
+- Tambien se retira diciendole a Sobri "desconecta mi Google" o borrando la
+  carpeta google.
+- Borrar los datos guardados: borrar el archivo redes.json. Las cifras se
+  borran solas a los 90 dias. Al desinstalar Sobri se borra todo.
 
 Contacto: alagaresrivas@gmail.com
 
@@ -24,16 +40,32 @@ Sobri is a personal desktop assistant that runs on each user's own computer.
 It has no servers of its own: it does not collect, store outside the user's
 computer, sell or share any data with third parties.
 
-- Google accounts (Gmail, Calendar, Drive, YouTube) are only used if the user
-  grants access through Google's official consent screen. The token is stored
-  on the user's computer and can be revoked at any time at
-  myaccount.google.com/permissions.
-- YouTube: Sobri only works with the user's own channel: it reads its
-  statistics and comments, and uploads or edits videos ONLY with the user's
-  permission. Statistics are stored locally for at most 90 days.
+YOUTUBE API SERVICES
+- Sobri uses YouTube API Services.
+- By using Sobri's YouTube features you agree to be bound by the YouTube Terms
+  of Service: https://www.youtube.com/t/terms
+- The Google Privacy Policy also applies: https://policies.google.com/privacy
+- Sobri only works with the user's own channel: it reads its statistics,
+  analytics and comments, and uploads or edits videos ONLY with the user's
+  permission or publishing plan.
+
+WHAT DATA IS USED AND WHERE IT IS STORED
+- Google permission (OAuth token): on the user's computer, "google" folder.
+- Channel statistics (views, likes, comments per video): on the user's
+  computer (redes.json), for at most 90 days.
+- None of this is sent to the developer or to any developer server.
 - Google user data is not used for advertising and is not transferred to
   anyone. Sobri's use of information received from Google APIs adheres to the
   Google API Services User Data Policy, including the Limited Use
   requirements.
+- To talk to the AI, the text the user types is sent to the AI provider the
+  user has configured.
+
+HOW TO DELETE DATA OR REVOKE ACCESS
+- Revoke access: https://security.google.com/settings/security/permissions
+  (or myaccount.google.com/permissions) > Sobri > Remove access.
+- Or tell Sobri "disconnect my Google", or delete the "google" folder.
+- Delete stored data: delete the redes.json file. Statistics are deleted
+  automatically after 90 days. Uninstalling Sobri deletes everything.
 
 Contact: alagaresrivas@gmail.com

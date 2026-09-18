@@ -1869,7 +1869,7 @@ def analiticas_youtube(dias=28):
                     b, c) for a, b, c in r["rows"]) + ".")
     except Exception as err:
         return "Las analiticas han fallado: %s" % err
-    lineas.append("Si el %% visto baja del 40%%, el principio no engancha: en la proxima, "
+    lineas.append("Si el % visto baja del 40 %, el principio no engancha: en la proxima, "
                   "gancho antes de los 10 segundos.")
     return "\n".join(lineas)
 
