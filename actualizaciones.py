@@ -1,20 +1,20 @@
 # -*- coding: utf-8 -*-
 r"""
-Berna actualizandose solo por internet.
+Sobri actualizandose solo por internet.
 
-Angel lo pidio el 2026-08-27: que cualquiera que tenga a Berna pueda ponerlo
+Angel lo pidio el 2026-08-27: que cualquiera que tenga a Sobri pueda ponerlo
 al dia desde el desplegable de la ventana, sin pen y sin que nadie le toque el
 ordenador.
 
 COMO FUNCIONA
   En un repositorio de GitHub hay un `version.json` con el numero de version,
-  las novedades y la lista de archivos con su SHA256. Berna se lo baja, compara
+  las novedades y la lista de archivos con su SHA256. Sobri se lo baja, compara
   con lo que tiene, le ENSENA a la persona que va a cambiar, y solo si dice que
   si se baja los archivos, los comprueba uno a uno, guarda copia de los viejos
   y los cambia.
 
 POR QUE ESTA TAN ATADO, QUE NO ES MANIA
-  Berna teclea, pincha, ejecuta ordenes de consola y entra en las cuentas de
+  Sobri teclea, pincha, ejecuta ordenes de consola y entra en las cuentas de
   quien lo use. Un canal de actualizacion es la llave de todo eso: quien
   controle el sitio de donde se baja, controla el ordenador de todo el que se
   actualice. Por eso:
@@ -28,7 +28,7 @@ POR QUE ESTA TAN ATADO, QUE NO ES MANIA
   3. **Nunca se toca lo que es de la persona:** ni el config.json, ni las
      claves, ni la memoria, ni el perfil, ni las caras, ni sus programas.
   4. **Todo .py que entra se COMPILA antes de instalarse.** Si no compila, no
-     se instala nada. Es lo que evita dejar a alguien con un Berna roto y sin
+     se instala nada. Es lo que evita dejar a alguien con un Sobri roto y sin
      ventana desde la que arreglarlo.
   5. **Copia de seguridad de todo lo que se cambia** en `copias\<fecha>`, y
      `volver_atras()` para deshacerlo.
@@ -48,8 +48,8 @@ COPIAS = os.path.join(BASE, "copias")
 # ---------------------------------------------------------------- la version
 # Sube esto cada vez que se publique algo. Es lo que se compara con el
 # version.json del repositorio para saber si hay novedades.
-VERSION = "1.10.1"
-FECHA_VERSION = "2026-09-14"
+VERSION = "1.11.0"
+FECHA_VERSION = "2026-09-18"
 
 # Solo de aqui se baja nada. Clavado a proposito: ver el punto 1 de arriba.
 HOST = "https://raw.githubusercontent.com"
@@ -57,12 +57,12 @@ RAMA = "main"
 
 # El repositorio de donde se baja todo el mundo, en formato usuario/proyecto.
 # VA AQUI Y NO EN EL config.json a proposito: asi viaja DENTRO del programa y
-# quien reciba a Berna no tiene que configurar nada para poder actualizarse.
+# quien reciba a Sobri no tiene que configurar nada para poder actualizarse.
 # El config.json solo puede pisarlo, y eso es para probar.
 REPOSITORIO = "angellagares71-sketch/berna"
 
 ESPERA = 25
-MAX_BYTES_ARCHIVO = 5 * 1024 * 1024      # ningun .py de Berna llega a 100 KB
+MAX_BYTES_ARCHIVO = 5 * 1024 * 1024      # ningun .py de Sobri llega a 100 KB
 
 
 # ------------------------------------------------------------------ ajustes
@@ -78,7 +78,7 @@ def _repositorio():
     """Cual es el repositorio, en formato 'usuario/proyecto'.
 
     Manda el config.json si lo han puesto, y si no el que viene dentro del
-    programa. Asi el que reciba a Berna se actualiza sin tocar nada.
+    programa. Asi el que reciba a Sobri se actualiza sin tocar nada.
     """
     r = str(_cfg().get("repositorio") or REPOSITORIO or "").strip().strip("/")
     # Si le han pegado la url entera del navegador, se le quita la paja.
@@ -149,7 +149,7 @@ def _bajar(url, maximo=MAX_BYTES_ARCHIVO):
     """Se baja un archivo del repositorio, SIN pasar por la cache.
 
     raw.githubusercontent guarda copia unos cinco minutos. Eso da dos
-    problemas: recien publicada una version, Berna sigue diciendo que esta al
+    problemas: recien publicada una version, Sobri sigue diciendo que esta al
     dia; y peor, podria bajarse un version.json nuevo con archivos viejos, y
     entonces las firmas no cuadran y la actualizacion se aborta sola diciendo
     que alguien ha tocado los archivos. Se le pide copia fresca siempre.
@@ -157,7 +157,7 @@ def _bajar(url, maximo=MAX_BYTES_ARCHIVO):
     import requests
     fresco = "%s%scache=%d" % (url, "&" if "?" in url else "?", int(time.time()))
     r = requests.get(fresco, timeout=ESPERA,
-                     headers={"User-Agent": "Berna/%s" % VERSION,
+                     headers={"User-Agent": "Sobri/%s" % VERSION,
                               "Cache-Control": "no-cache",
                               "Pragma": "no-cache"})
     if r.status_code == 404:
@@ -192,7 +192,7 @@ def _manifiesto():
         return None, ("Todavia no esta puesto de donde bajarse las "
                       "actualizaciones. Se hace UNA vez y lo cuenta paso a paso "
                       "el archivo ACTUALIZACIONES-COMO-ACTIVARLO.txt que hay en "
-                      "la carpeta de Berna.")
+                      "la carpeta de Sobri.")
     url = "%s/%s/%s/version.json" % (HOST, repo, RAMA)
     try:
         crudo = _bajar(url, 200 * 1024)
@@ -210,8 +210,8 @@ def _manifiesto():
 
 
 def version_actual():
-    """Que version tiene puesta este Berna."""
-    return "Berna version %s, del %s.%s" % (
+    """Que version tiene puesta este Sobri."""
+    return "Sobri version %s, del %s.%s" % (
         VERSION, FECHA_VERSION,
         ("" if _repositorio() else
          " Todavia no esta configurado de donde bajarse las actualizaciones; "
@@ -226,11 +226,11 @@ def buscar_actualizaciones():
 
     nueva = str(d.get("version", "?"))
     if _version_como_numeros(nueva) <= _version_como_numeros(VERSION):
-        return ("Berna ya esta al dia: tienes la version %s y la ultima "
+        return ("Sobri ya esta al dia: tienes la version %s y la ultima "
                 "publicada es la %s." % (VERSION, nueva))
 
     cambios, motivos = _que_cambia(d)
-    l = ["HAY UNA VERSION NUEVA DE BERNA",
+    l = ["HAY UNA VERSION NUEVA DE SOBRI",
          "",
          "Tienes la %s y hay publicada la %s, del %s."
          % (VERSION, nueva, d.get("fecha", "?")), ""]
@@ -323,7 +323,7 @@ def instalar_actualizacion(permiso=None):
                 "que yo pueda tocar. No hago nada." % nueva)
 
     repo = _repositorio()
-    aviso = ("Berna se va a ACTUALIZAR por internet.\n\n"
+    aviso = ("Sobri se va a ACTUALIZAR por internet.\n\n"
              "De la version %s a la %s.\n"
              "Se baja de: github.com/%s\n\n"
              "Archivos que cambian (%d):\n  %s\n\n"
@@ -331,7 +331,7 @@ def instalar_actualizacion(permiso=None):
              "Se guarda copia de los actuales antes de tocarlos, y se puede "
              "deshacer. NO se toca tu configuracion, ni tus claves, ni tu "
              "memoria, ni tus programas.\n\n"
-             "Al terminar hay que cerrar Berna y volverlo a abrir.\n\nLe dejas?"
+             "Al terminar hay que cerrar Sobri y volverlo a abrir.\n\nLe dejas?"
              % (VERSION, nueva, repo, len(cambios),
                 "\n  ".join(sorted(cambios)),
                 ("Novedades: " + "; ".join(str(x) for x in (d.get("novedades") or [])[:5])
@@ -369,14 +369,14 @@ def instalar_actualizacion(permiso=None):
             _apuntar("ACTUALIZAR", nombre, "no compila: %s" % e)
             return ("El archivo '%s' que me he bajado tiene un fallo de "
                     "programacion (%s). No instalo nada: prefiero dejarte con la "
-                    "version %s que dejarte con Berna roto." % (nombre, e, VERSION))
+                    "version %s que dejarte con Sobri roto." % (nombre, e, VERSION))
 
     # 2b) QUE NO SEA UN PASO ATRAS.
     #
     # Esto lo pago Angel el 01-sep-2026. Se instalo una "1.7.1" que por numero
     # era mas nueva y por dentro era MAS VIEJA: se llevo por delante siete
     # archivos. asistente.py perdio micros_disponibles(), es_el_suyo() y
-    # refrescar_aparatos(), o sea el arreglo del microfono, y Berna se quedo
+    # refrescar_aparatos(), o sea el arreglo del microfono, y Sobri se quedo
     # sorda otra vez; mantella.py perdio mantella_quitar_bom(). Firma correcta
     # y todo compilaba: las dos comprobaciones de arriba lo dieron por bueno.
     #
@@ -443,7 +443,7 @@ def instalar_actualizacion(permiso=None):
 
     return ("ACTUALIZADO a la version %s. He cambiado %d archivos (%s) y he "
             "guardado los viejos en copias\\%s por si acaso.\n\n"
-            "IMPORTANTE: hay que cerrar Berna y volverlo a abrir para que se "
+            "IMPORTANTE: hay que cerrar Sobri y volverlo a abrir para que se "
             "note. Diselo asi, que es lo unico que tiene que hacer. Si algo va "
             "raro despues, se puede deshacer."
             % (nueva, len(puestos), ", ".join(sorted(puestos)), sello))
@@ -476,7 +476,7 @@ def volver_atras(permiso=None):
     carpeta = os.path.join(COPIAS, ultima)
     archivos = [n for n in os.listdir(carpeta) if not n.startswith("_")]
 
-    aviso = ("Berna va a DESHACER la ultima actualizacion.\n\n"
+    aviso = ("Sobri va a DESHACER la ultima actualizacion.\n\n"
              "Vuelve a como estaba el %s, cambiando %d archivos:\n  %s\n\n"
              "Despues hay que cerrarlo y volverlo a abrir.\n\nLe dejas?"
              % (ultima, len(archivos), "\n  ".join(sorted(archivos))))
@@ -486,7 +486,7 @@ def volver_atras(permiso=None):
     n = _volver(carpeta)
     _apuntar("ACTUALIZAR", "volver atras a " + ultima, "%d archivos" % n)
     return ("Deshecho: he devuelto %d archivos a como estaban el %s. Cierra "
-            "Berna y vuelvelo a abrir." % (n, ultima))
+            "Sobri y vuelvelo a abrir." % (n, ultima))
 
 
 def _apuntar(que, detalle, resultado):

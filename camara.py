@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
-Berna mirando por la camara, y acordandose de quien ve.
+Sobri mirando por la camara, y acordandose de quien ve.
 
 Angel lo pidio asi: "que sea capaz de verme por la camara, que reconozca a
 las personas diferentes cada vez que las vea, y que se acuerde de ellas".
@@ -41,7 +41,7 @@ BASE = os.path.dirname(os.path.abspath(__file__))
 CARAS = os.path.join(BASE, "caras.json")
 MODELOS = os.path.join(BASE, "modelos")
 REGISTRO = os.path.join(BASE, "tareas", "registro.log")
-CARPETA_FOTOS = os.path.join(os.path.expanduser("~"), "Pictures", "Berna")
+CARPETA_FOTOS = os.path.join(os.path.expanduser("~"), "Pictures", "Sobri")
 
 DETECTOR = os.path.join(MODELOS, "deteccion_caras.onnx")
 RECONOCEDOR = os.path.join(MODELOS, "reconocer_caras.onnx")
@@ -221,7 +221,7 @@ def camara_encendida():
 
 
 def apagar_camara():
-    """Berna puede APAGARLA, pero no encenderla. La asimetria es el invento.
+    """Sobri puede APAGARLA, pero no encenderla. La asimetria es el invento.
 
     Encender es lo que tiene riesgo, asi que eso pide una mano humana en el
     boton: ni una pagina web ni un correo pueden convencerle de que la
@@ -373,7 +373,7 @@ def recordar_a_esta_persona(nombre, notas="", permiso=None):
         return "Dime como se llama para poder apuntarla."
     if not hay_modelos():
         return FALTAN_MODELOS
-    pregunta = ("Berna va a APUNTAR LA CARA de esta persona para reconocerla "
+    pregunta = ("Sobri va a APUNTAR LA CARA de esta persona para reconocerla "
                 "en adelante:\n\n%s\n\nSe guardan unos numeros que representan "
                 "la cara (no la foto) en C:\\Asistente\\caras.json, y no salen "
                 "del ordenador. Se puede borrar cuando quieras.\n\n"
@@ -484,7 +484,7 @@ def olvidar_a_persona(nombre, permiso=None):
     if p is None:
         return "No tengo a nadie apuntado como '%s'." % nombre
     if permiso is None or not permiso(
-            "Berna va a OLVIDAR la cara de %s.\n\nSe borran sus huellas de "
+            "Sobri va a OLVIDAR la cara de %s.\n\nSe borran sus huellas de "
             "caras.json y dejara de reconocerle. No tiene vuelta atras.\n\n"
             "Le dejas?" % p["nombre"]):
         return "No me has dado permiso, no he borrado nada."
@@ -497,7 +497,7 @@ def olvidar_a_persona(nombre, permiso=None):
 # ------------------------------------------------------------------ fotos y estado
 def hacer_foto(permiso=None):
     if permiso is None or not permiso(
-            "Berna va a HACER UNA FOTO con la camara y guardarla en tus "
+            "Sobri va a HACER UNA FOTO con la camara y guardarla en tus "
             "Imagenes.\n\nLe dejas?"):
         return "No me has dado permiso, no he hecho ninguna foto."
     imagen, fallo = _fotograma()

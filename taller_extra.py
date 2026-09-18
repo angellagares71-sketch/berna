@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
-El taller de Berna, segunda planta.
+El taller de Sobri, segunda planta.
 
 taller.py le dio lo minimo para programar: crear, escribir, probar, arreglar.
 Esto es lo que hace falta DESPUES, que es donde se separa "sabe escribir un
@@ -104,7 +104,7 @@ def probar_con_datos(programa, entrada="", argumentos="", archivo="",
     colgado esperando y acaba en "se ha quedado colgado". Aqui se le mete por
     delante lo que teclearia una persona (una linea por respuesta) y ademas se
     le pueden pasar argumentos de la linea de ordenes. Sin esto no se pueden
-    probar la mitad de los programas que hace Berna.
+    probar la mitad de los programas que hace Sobri.
     """
     carpeta, queja = _carpeta_o_error(programa)
     if queja:
@@ -134,7 +134,7 @@ def probar_con_datos(programa, entrada="", argumentos="", archivo="",
     clave = T._limpio(programa)
     if T._permitidos.get(clave, 0) < time.time():
         if permiso is None or not permiso(
-                "Berna va a EJECUTAR su programa '%s' (archivo %s) dandole estos "
+                "Sobri va a EJECUTAR su programa '%s' (archivo %s) dandole estos "
                 "datos como si los escribieras tu:\n\n%s\n\nArgumentos: %s\n\n"
                 "Esta en %s. Le dejas?"
                 % (clave, nombre, str(entrada or "(ninguno)")[:600],
@@ -186,7 +186,7 @@ def ejecutar_python(codigo, segundos=20, permiso=None):
     except Exception:
         segundos = 20
     if permiso is None or not permiso(
-            "Berna quiere EJECUTAR este trozo de Python para probar una cosa:\n\n"
+            "Sobri quiere EJECUTAR este trozo de Python para probar una cosa:\n\n"
             "%s\n\nSe ejecuta en su carpeta de borradores, con %d segundos de "
             "tope. Le dejas?" % (txt[:1500], segundos)):
         return "No me has dado permiso, no he ejecutado nada."
@@ -308,7 +308,7 @@ def pasar_pruebas(programa, permiso=None):
     clave = T._limpio(programa)
     if T._permitidos.get(clave, 0) < time.time():
         if permiso is None or not permiso(
-                "Berna va a PASAR LAS PRUEBAS del programa '%s':\n\n%s\n\n"
+                "Sobri va a PASAR LAS PRUEBAS del programa '%s':\n\n%s\n\n"
                 "Ejecuta el codigo de las pruebas, que estan en %s. Le dejas?"
                 % (clave, "\n".join("  " + p for p in pruebas), carpeta)):
             return "No me has dado permiso, no he pasado nada."
@@ -481,7 +481,7 @@ def medir_velocidad(programa, archivo="", segundos=60, permiso=None):
     clave = T._limpio(programa)
     if T._permitidos.get(clave, 0) < time.time():
         if permiso is None or not permiso(
-                "Berna va a EJECUTAR '%s' midiendo cuanto tarda cada parte.\n\n"
+                "Sobri va a EJECUTAR '%s' midiendo cuanto tarda cada parte.\n\n"
                 "Archivo: %s\nCarpeta: %s\n\nTarda un poco mas de lo normal "
                 "porque va contando. Le dejas?" % (clave, nombre, carpeta)):
             return "No me has dado permiso, no he medido nada."
@@ -549,10 +549,10 @@ def quitar_libreria(nombre, permiso=None):
     propio = os.path.join(ENTORNO, "Scripts", "python.exe")
     if not os.path.exists(propio):
         return ("El taller no tiene entorno propio todavia, asi que no hay nada "
-                "que quitar. Y el entorno de Berna NO lo toco: si le quito una "
+                "que quitar. Y el entorno de Sobri NO lo toco: si le quito una "
                 "libreria me quedo sin voz o sin ojos.")
     if permiso is None or not permiso(
-            "Berna va a DESINSTALAR la libreria '%s' del entorno del taller.\n\n"
+            "Sobri va a DESINSTALAR la libreria '%s' del entorno del taller.\n\n"
             "Si algun programa suyo la usaba, dejara de funcionar. Le dejas?"
             % paquete):
         return "No me has dado permiso, no he quitado nada."
@@ -604,7 +604,7 @@ def guardar_requisitos(programa):
     try:
         with open(ruta, "w", encoding="utf-8") as f:
             f.write("# Lo que hace falta instalar para que funcione %s.\n"
-                    "# Lo apunto Berna el %s leyendo los import del codigo.\n"
+                    "# Lo apunto Sobri el %s leyendo los import del codigo.\n"
                     % (T._limpio(programa),
                        datetime.datetime.now().strftime("%d/%m/%Y")))
             for n in hacen_falta:
@@ -638,7 +638,7 @@ def instalar_requisitos(programa, permiso=None):
     if not pide:
         return "El requisitos.txt esta vacio: ese programa no necesita nada."
     if permiso is None or not permiso(
-            "Berna va a INSTALAR las librerias que necesita '%s':\n\n%s\n\n"
+            "Sobri va a INSTALAR las librerias que necesita '%s':\n\n%s\n\n"
             "Van al entorno del taller, aparte del suyo. Hace falta internet. "
             "Le dejas?" % (T._limpio(programa), "\n".join("  " + p for p in pide))):
         return "No me has dado permiso, no he instalado nada."
@@ -665,7 +665,7 @@ def instalar_requisitos(programa, permiso=None):
 
 def estado_del_taller():
     """Como esta el taller: que Python usa, cuantos programas hay y cuanto ocupan."""
-    lineas = ["El taller de Berna esta en %s." % TALLER, ""]
+    lineas = ["El taller de Sobri esta en %s." % TALLER, ""]
     python = T._python()
     propio = os.path.join(ENTORNO, "Scripts", "python.exe")
     try:
@@ -721,7 +721,7 @@ def copiar_programa(programa, nuevo_nombre, permiso=None):
     if os.path.isdir(destino):
         return "Ya existe un programa llamado '%s'." % T._limpio(nuevo_nombre)
     if permiso is None or not permiso(
-            "Berna va a COPIAR el programa '%s' a uno nuevo llamado '%s'.\n\n"
+            "Sobri va a COPIAR el programa '%s' a uno nuevo llamado '%s'.\n\n"
             "El original no se toca. Le dejas?"
             % (T._limpio(programa), T._limpio(nuevo_nombre))):
         return "No me has dado permiso, no he copiado nada."
@@ -747,7 +747,7 @@ def renombrar_programa(programa, nuevo_nombre, permiso=None):
     if os.path.isdir(destino):
         return "Ya hay un programa llamado '%s'." % T._limpio(nuevo_nombre)
     if permiso is None or not permiso(
-            "Berna va a CAMBIARLE EL NOMBRE al programa '%s', que pasara a "
+            "Sobri va a CAMBIARLE EL NOMBRE al programa '%s', que pasara a "
             "llamarse '%s'.\n\nSi tenia acceso directo en el escritorio, habra "
             "que volver a ponerlo. Le dejas?"
             % (T._limpio(programa), T._limpio(nuevo_nombre))):
@@ -798,7 +798,7 @@ def importar_programa(ruta, nombre="", permiso=None):
     else:
         que = "el archivo %s" % os.path.basename(origen)
     if permiso is None or not permiso(
-            "Berna va a TRAERSE AL TALLER %s:\n\n%s\n\nLo copia (el original no "
+            "Sobri va a TRAERSE AL TALLER %s:\n\n%s\n\nLo copia (el original no "
             "se toca) a:\n%s\n\nLe dejas?" % (que, origen, destino)):
         return "No me has dado permiso, no he traido nada."
     try:
@@ -832,7 +832,7 @@ def borrar_archivo_de_programa(programa, archivo, permiso=None):
         return "En '%s' no hay ningun archivo que se llame '%s'." % (
             T._limpio(programa), n)
     if permiso is None or not permiso(
-            "Berna va a BORRAR el archivo '%s' del programa '%s':\n\n%s\n\n"
+            "Sobri va a BORRAR el archivo '%s' del programa '%s':\n\n%s\n\n"
             "Guarda una copia .anterior por si acaso. Le dejas?"
             % (n, T._limpio(programa), ruta)):
         return "No me has dado permiso, no he borrado nada."
@@ -852,7 +852,7 @@ def abrir_carpeta_del_programa(programa, permiso=None):
     if queja:
         return queja
     if permiso is None or not permiso(
-            "Berna va a ABRIRTE EN PANTALLA la carpeta del programa '%s':\n\n%s\n\n"
+            "Sobri va a ABRIRTE EN PANTALLA la carpeta del programa '%s':\n\n%s\n\n"
             "Le dejas?" % (T._limpio(programa), carpeta)):
         return "No me has dado permiso, no he abierto nada."
     try:
@@ -896,7 +896,7 @@ def documentar_programa(programa):
     elif principal and principal.endswith(".bat"):
         lineas.append("  Doble clic en %s." % principal)
     else:
-        lineas.append("  Pidele a Berna que lo abra, o doble clic en abrir.bat si "
+        lineas.append("  Pidele a Sobri que lo abra, o doble clic en abrir.bat si "
                       "ya lo publico en el escritorio.")
     lineas.append("")
     lineas.append("QUE HAY DENTRO")
@@ -929,7 +929,7 @@ def documentar_programa(programa):
         except Exception:
             pass
     lineas.append("")
-    lineas.append("Lo escribio Berna. Ultimo repaso el %s."
+    lineas.append("Lo escribio Sobri. Ultimo repaso el %s."
                   % datetime.datetime.now().strftime("%d/%m/%Y"))
     try:
         if os.path.exists(viejo):
@@ -952,7 +952,7 @@ def empaquetar_programa(programa, permiso=None):
     clave = T._limpio(programa)
     destino = os.path.join(T.ESCRITORIO, "%s.zip" % clave)
     if permiso is None or not permiso(
-            "Berna va a EMPAQUETAR el programa '%s' en un zip y dejartelo en el "
+            "Sobri va a EMPAQUETAR el programa '%s' en un zip y dejartelo en el "
             "escritorio:\n\n%s\n\nLe dejas?" % (clave, destino)):
         return "No me has dado permiso, no he empaquetado nada."
     try:
@@ -994,7 +994,7 @@ def hacer_ejecutable(programa, archivo="", permiso=None):
         return "No encuentro %s." % nombre
     clave = T._limpio(programa)
     if permiso is None or not permiso(
-            "Berna va a CONVERTIR '%s' EN UN PROGRAMA .EXE que se abre sin tener "
+            "Sobri va a CONVERTIR '%s' EN UN PROGRAMA .EXE que se abre sin tener "
             "Python instalado.\n\nArchivo: %s\n\nOjo a dos cosas:\n"
             "  - tarda varios minutos y baja PyInstaller de internet si no esta\n"
             "  - el .exe sale grande (30-100 MB) porque lleva Python dentro\n\n"
@@ -1069,7 +1069,7 @@ def abrir_web_del_programa(programa, puerto=8765, permiso=None):
         return ("'%s' ya esta servido en http://localhost:%d. Para pararlo, "
                 "parar_web_del_programa." % (clave, viejo[1]))
     if permiso is None or not permiso(
-            "Berna va a LEVANTAR UN SERVIDOR WEB en tu ordenador para ver el "
+            "Sobri va a LEVANTAR UN SERVIDOR WEB en tu ordenador para ver el "
             "programa '%s':\n\n  http://localhost:%d\n\nSirve solo la carpeta %s "
             "y solo para este ordenador. Se para con parar_web_del_programa. "
             "Le dejas?" % (clave, puerto, carpeta)):
@@ -1137,13 +1137,13 @@ def probar_api(url, metodo="GET", cuerpo="", cabeceras="", permiso=None):
         return "No conozco el metodo '%s'." % m
     if m != "GET" and m != "HEAD":
         if permiso is None or not permiso(
-                "Berna va a MANDAR UNA PETICION '%s' a un servidor de internet:\n\n"
+                "Sobri va a MANDAR UNA PETICION '%s' a un servidor de internet:\n\n"
                 "%s\n\nCon estos datos:\n%s\n\nUna peticion asi puede CAMBIAR "
                 "cosas en el otro lado (crear, modificar o borrar). Le dejas?"
                 % (m, u, str(cuerpo or "(sin cuerpo)")[:600])):
             return "No me has dado permiso, no he mandado nada."
 
-    cabs = {"User-Agent": "Berna/1.0"}
+    cabs = {"User-Agent": "Sobri/1.0"}
     if cabeceras:
         for linea in re.split(r"[\n;]+", str(cabeceras)):
             if ":" in linea:

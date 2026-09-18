@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 r"""
-Las manos de Berna sobre el ordenador.
+Las manos de Sobri sobre el ordenador.
 
 Abrir y cerrar programas, volumen, multimedia, portapapeles, capturas de
 pantalla y ver que ventanas hay abiertas.
 
 SEGURIDAD
   Lo que modifica algo (abrir o cerrar un programa) pasa por una ventana de
-  confirmacion. Berna lee paginas web, y una pagina podria intentar darle
+  confirmacion. Sobri lee paginas web, y una pagina podria intentar darle
   ordenes: la confirmacion es justo lo que corta eso.
   Lo inofensivo (subir el volumen, listar programas, leer el portapapeles)
   no pregunta nada.
@@ -22,7 +22,7 @@ def escritorio():
 
     Con OneDrive sincronizando el escritorio, que es el caso de Angel, no es
     "~/Desktop": es ~/OneDrive/Escritorio. Buscar los accesos directos en el
-    sitio equivocado hacia que Berna dijera que no encontraba programas que
+    sitio equivocado hacia que Sobri dijera que no encontraba programas que
     estaban ahi delante. Windows guarda la buena en el registro. Copia igual
     que la de instalador.py y taller.py, a proposito: estos modulos tienen
     que valerse solos. Si se toca una, tocar las tres.
@@ -149,7 +149,7 @@ def abrir_programa(nombre, permiso=None):
         extra = ("\nQuizas era: " + ", ".join(sug)) if sug else ""
         return ("No encuentro ningun programa llamado '%s'.%s\n"
                 "Usa listar_programas para ver los disponibles." % (nombre, extra))
-    pregunta = "Berna quiere abrir este programa:\n\n%s\n\nLe dejas?" % prog["nombre"]
+    pregunta = "Sobri quiere abrir este programa:\n\n%s\n\nLe dejas?" % prog["nombre"]
     if permiso is None or not permiso(pregunta):
         return "El usuario no ha dado permiso, no he abierto nada."
     try:
@@ -179,7 +179,7 @@ def cerrar_programa(nombre, permiso=None):
     if not victimas:
         return "No hay ningun programa abierto que se llame '%s'." % nombre
     listado = ", ".join(sorted({p.info["name"] for p in victimas}))
-    pregunta = ("Berna quiere CERRAR estos programas:\n\n%s\n\n%d procesos. "
+    pregunta = ("Sobri quiere CERRAR estos programas:\n\n%s\n\n%d procesos. "
                 "Lo que no este guardado se puede perder. Le dejas?"
                 % (listado, len(victimas)))
     if permiso is None or not permiso(pregunta):
@@ -231,7 +231,7 @@ def control_multimedia(accion):
 def hacer_captura():
     try:
         from PIL import ImageGrab
-        carpeta = os.path.join(os.path.expanduser("~"), "Pictures", "Berna")
+        carpeta = os.path.join(os.path.expanduser("~"), "Pictures", "Sobri")
         os.makedirs(carpeta, exist_ok=True)
         ruta = os.path.join(carpeta, time.strftime("captura-%Y%m%d-%H%M%S.png"))
         img = ImageGrab.grab()

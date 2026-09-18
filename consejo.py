@@ -12,7 +12,7 @@ POR QUE NO SE HACE EN CADA FRASE, que es lo primero que hay que decir
   contesta hablando se nota muchisimo (Angel ya se quejo una vez de que iba
   lento cuando tardaba 6 s).
 
-  Ademas, la mayoria de lo que le pide a Berna NO se beneficia: "abre el
+  Ademas, la mayoria de lo que le pide a Sobri NO se beneficia: "abre el
   Skyrim" o "que hora es" se resuelven con una herramienta, y ahi tres
   opiniones no aportan nada.
 
@@ -219,12 +219,12 @@ def consultar_al_consejo(pregunta, cuantos=3):
         "4. Si hay cuentas, comprueba tu la aritmetica y corrige al que se "
         "haya equivocado.\n"
         "5. No menciones que eres varias IA ni cuentes este proceso. Habla "
-        "como Berna, en primera persona."
+        "como Sobri, en primera persona."
         % (len(buenas), len(buenas), pregunta, "\n\n".join(trozos)))
 
     ponente = sorted(buenas, key=lambda x: x[2])[0][0]
     final, seg_p, err = _preguntar(ponente, [
-        {"role": "system", "content": "Eres Berna, el asistente de Angel."},
+        {"role": "system", "content": "Eres Sobri, el asistente de Angel."},
         {"role": "user", "content": encargo}], cfg, maxtok=900)
     if err or not final:
         # si la ponente falla, se devuelve la primera respuesta antes que nada

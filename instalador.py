@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
-Vuelca Berna, tal y como este ahora mismo, a la carpeta de instalacion
+Vuelca Sobri, tal y como este ahora mismo, a la carpeta de instalacion
 del escritorio para llevarselo en un pen.
 
 Angel lo pidio asi el 2026-08-26: "cualquier modificacion que le vayamos
@@ -52,15 +52,15 @@ def escritorio():
     hasta que un os.makedirs lo CREA. Eso es justo lo que llevaba pasando:
     la sincronizacion de fin de sesion volcaba 373 MB a una carpeta fantasma
     que Angel no ve, mientras el kit que si ve en su escritorio se quedaba
-    con la Berna del 26 de agosto. Si llegaba a pinchar aquel INSTALAR.bat,
-    se cargaba la Berna buena con una vieja.
+    con la Sobri del 26 de agosto. Si llegaba a pinchar aquel INSTALAR.bat,
+    se cargaba la Sobri buena con una vieja.
 
     Windows guarda la ruta buena en el registro y la respeta aunque OneDrive
     la haya movido. Si por lo que sea no se pudiera leer, se cae a la de
     siempre, que en un equipo sin OneDrive es la correcta.
 
     Esta funcion esta repetida en taller.py y en operar.py a proposito: esos
-    modulos y este tienen que poder funcionar sueltos, sin importar a Berna.
+    modulos y este tienen que poder funcionar sueltos, sin importar a Sobri.
     """
     try:
         import winreg
@@ -77,7 +77,7 @@ def escritorio():
 
 
 ESCRITORIO = escritorio()
-DESTINO = os.path.join(ESCRITORIO, "Instalar Berna")
+DESTINO = os.path.join(ESCRITORIO, "Instalar Sobri")
 PROGRAMA = os.path.join(DESTINO, "Programa")
 PAQUETES = os.path.join(DESTINO, "Paquetes")
 PRIVADO = os.path.join(DESTINO, "TUS-DATOS-PRIVADOS")
@@ -97,7 +97,7 @@ NUNCA = {"caras.json", "berna.log", "google", "venv", "__pycache__",
          # la herramienta de publicar es de Angel, no del producto
          "publicar_actualizacion.py", "Enlazar-con-GitHub.bat",
          # y su boton: en otro ordenador no hay publicador y solo daria error
-         "Publicar Berna.bat",
+         "Publicar Sobri.bat", "Publicar Berna.bat",   # el de antes del cambio
          # el enganche de Claude Code que pone al dia ESTA carpeta del pen
          # desde este ordenador; en otro no tiene nada que sincronizar
          "sincronizar-al-terminar.bat"}
@@ -107,7 +107,7 @@ PRIVADOS = ["config.json", "memoria.json", "perfil.json",
             "oportunidades.json", "vigilancias.json"]
 
 # clave_movil (02-09-2026): es la contrasena con la que el movil se engancha
-# a Berna. Se colaba tal cual en el config del programa, o sea que viajaba en
+# a Sobri. Se colaba tal cual en el config del programa, o sea que viajaba en
 # el pen aunque se borrase TUS-DATOS-PRIVADOS, que es justo lo que el LEEME
 # promete que no pasa. Al dueno le sigue llegando: va en su carpeta privada.
 CLAVES = ["clave_api", "clave_gemini", "clave_busqueda", "imap_password",
@@ -172,7 +172,7 @@ def limpiar_sobras():
     y con suerte solo estorba.
 
     Tambien quita lo que se ha metido en NUNCA despues de haberse copiado
-    (14-09-2026, "Publicar Berna.bat"): sigue existiendo en C:\\Asistente, asi
+    (14-09-2026, "Publicar Sobri.bat"): sigue existiendo en C:\\Asistente, asi
     que sin esto se quedaba en el pen para siempre. Solo los .py/.txt/.bat,
     que son los que copia volcar_programa; el config.json del pen lo escribe
     config_sin_claves a proposito y no se toca.
@@ -204,7 +204,7 @@ def config_sin_claves():
         if k in cfg:
             cfg[k] = ""
     # El microfono elegido a mano son unos cascos concretos de ESTE ordenador.
-    # En otro no estan enchufados, y Berna se quedaba buscando un aparato que
+    # En otro no estan enchufados, y Sobri se quedaba buscando un aparato que
     # no existe en vez de coger el que hubiera. En blanco lo busca sola.
     for k in ("microfono", "altavoz"):
         if cfg.get(k):
@@ -230,7 +230,7 @@ def volcar_privados():
         ruta = os.path.join(BASE, f)
         if os.path.exists(ruta):
             _copiar(ruta, os.path.join(PRIVADO, f))
-    # Los programas que Berna le haya escrito son cosas suyas, asi que viajan
+    # Los programas que Sobri le haya escrito son cosas suyas, asi que viajan
     # con sus datos. El entorno del taller no: un venv no se puede copiar de un
     # ordenador a otro, y se vuelve a crear solo cuando haga falta.
     taller = os.path.join(BASE, "programas")
@@ -253,12 +253,12 @@ MINIMO_PAQUETES = 20
 def requisitos():
     """Guarda la lista de piezas que hay que instalar.
 
-    OJO: esto rompio a Berna el 30-ago-2026 y se llevo la instalacion entera.
+    OJO: esto rompio a Sobri el 30-ago-2026 y se llevo la instalacion entera.
     Antes se guardaba lo que soltara `pip freeze` SIN MIRARLO. El 28-ago el
     venv estaba a medias, `pip freeze` no devolvio nada, y aqui se escribio un
     requisitos.txt VACIO. Dos dias despues INSTALAR.bat hizo lo suyo: borrar el
     venv, crearlo de nuevo y pedirle a pip que instale ese fichero, o sea nada.
-    Berna arranco sin numpy, sin piper y sin sounddevice: sorda y muda.
+    Sobri arranco sin numpy, sin piper y sin sounddevice: sorda y muda.
     Un fichero de dos bytes se llevo por delante todo lo instalado.
 
     Por eso ahora NO se guarda si la lista viene vacia, si pip ha fallado o si
@@ -304,12 +304,12 @@ def requisitos():
 def volcar_oido():
     """Los modelos de Whisper ya descargados, para no depender de internet.
 
-    SOLO los que Berna usa de verdad, no todos los que haya en la cache, y lo
+    SOLO los que Sobri usa de verdad, no todos los que haya en la cache, y lo
     que sobre se borra mas abajo: por probar el 'small' una vez, la carpeta de
     instalacion paso de 613 MB a 1.077 MB para llevarse un modelo que nadie
     iba a usar.
 
-    OJO (02-09-2026): AHORA SON DOS. Desde que existe el oido fino, Berna
+    OJO (02-09-2026): AHORA SON DOS. Desde que existe el oido fino, Sobri
     arranca con el de `whisper_tam` (rapido, para ir siguiendo la conversacion)
     y carga aparte el de `oido_fino` (mejor, para lo que cuesta entender). Aqui
     se copiaba solo el primero Y SE BORRABA EL SEGUNDO, que es justo lo que
@@ -380,29 +380,29 @@ Aqui dentro estan:
   config.json ........ TUS CLAVES (la de Google, la de OpenRouter y la
                        de busqueda). Con ellas cualquiera podria gastar
                        tu cuota.
-  memoria.json ....... lo que Berna recuerda de ti
+  memoria.json ....... lo que Sobri recuerda de ti
   perfil.json ........ tu perfil profesional
   oportunidades.json . los encargos que tienes apuntados
-  programas\\ ......... los programas que Berna te ha escrito
+  programas\\ ......... los programas que Sobri te ha escrito
 
 El instalador las copia solas, asi que al instalar en otro ordenador
-Berna funciona de una vez, sin que tengas que escribir ninguna clave.
+Sobri funciona de una vez, sin que tengas que escribir ninguna clave.
 
   >>> SI LE PRESTAS EL PEN A ALGUIEN, BORRA ESTA CARPETA ENTERA. <<<
 
-Si la borras, Berna se instala igual: solo que la primera vez te pedira
+Si la borras, Sobri se instala igual: solo que la primera vez te pedira
 las claves. Todo lo demas funciona.
 
 Lo que NO esta aqui, y es a proposito:
   - Tu permiso de Google (google\\token.json). Eso da entrada a tu correo,
     y no debe viajar en un pen. En el ordenador nuevo se vuelve a
     autorizar con: venv\\Scripts\\python.exe autorizar_google.py
-  - Las caras que Berna conoce (caras.json). Son datos de personas y se
+  - Las caras que Sobri conoce (caras.json). Son datos de personas y se
     quedan en su ordenador.
 """
 
 LEEME = u"""========================================================
-   BERNA - CARPETA DE INSTALACION
+   SOBRI - CARPETA DE INSTALACION
    Para llevartelo en un pen e instalarlo donde quieras
 ========================================================
 
@@ -411,7 +411,7 @@ COMO SE INSTALA
   2. En el ordenador nuevo, entra en la carpeta.
   3. Doble clic en INSTALAR.bat
   4. Espera. Te va contando lo que hace.
-  5. Cuando termine tendras un acceso directo "Berna" en el
+  5. Cuando termine tendras un acceso directo "Sobri" en el
      escritorio. Doble clic y a hablar.
 
 NO HACE FALTA INTERNET
@@ -430,7 +430,7 @@ CUANTO TARDA
   es instalar los paquetes.
 
 QUE HAY EN CADA CARPETA
-  Programa\\ ............. Berna: el codigo, las voces y los modelos
+  Programa\\ ............. Sobri: el codigo, las voces y los modelos
   Paquetes\\ ............. las piezas de Python que necesita
   Python\\ ............... el instalador de Python, por si no lo tiene
   Modelo-de-oido\\ ....... lo que usa para entenderte al hablar
@@ -440,15 +440,15 @@ QUE HAY EN CADA CARPETA
 DESPUES DE INSTALAR
   - La camara: la primera vez Windows puede preguntar si dejas que
     las aplicaciones de escritorio usen la camara. Hay que decir
-    que si, o Berna no vera nada.
+    que si, o Sobri no vera nada.
   - Google (tu Gmail y tu agenda): hay que volver a autorizarlo en
-    el ordenador nuevo. Berna te guia si se lo pides.
+    el ordenador nuevo. Sobri te guia si se lo pides.
   - Todo lo demas ya viene puesto tal y como lo tenias: el acento,
     la personalidad, la voz y lo que sabe hacer.
 
 SI ALGO FALLA
   Abre "Diagnostico (si falla).bat" dentro de C:\\Asistente, o
-  pideselo a Claude tal cual: "Berna no arranca en el portatil".
+  pideselo a Claude tal cual: "Sobri no arranca en el portatil".
 """
 
 
@@ -473,7 +473,7 @@ def escribir_textos():
 
 
 BAT = u"""@echo off
-title Instalar Berna
+title Instalar Sobri
 powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0instalar.ps1"
 if errorlevel 1 (
   echo.
@@ -482,7 +482,7 @@ if errorlevel 1 (
 )
 """
 
-PS1 = u"""# Instalador de Berna. Se lanza desde INSTALAR.bat.
+PS1 = u"""# Instalador de Sobri. Se lanza desde INSTALAR.bat.
 # Funciona sin internet y sin ser administrador.
 #
 # Los dos parametros son para poder ENSAYAR la instalacion sin tocar la que
@@ -490,7 +490,7 @@ PS1 = u"""# Instalador de Berna. Se lanza desde INSTALAR.bat.
 # normal no se tocan.
 param(
   [string]$destino = "C:\\Asistente",
-  [string]$atajo = "Berna"
+  [string]$atajo = "Sobri"
 )
 $ErrorActionPreference = "Stop"
 $aqui = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -501,7 +501,7 @@ function Ojo($t)  { Write-Host "    $t" -ForegroundColor Yellow }
 
 Write-Host ""
 Write-Host "==========================================" -ForegroundColor White
-Write-Host "   INSTALANDO BERNA" -ForegroundColor White
+Write-Host "   INSTALANDO SOBRI" -ForegroundColor White
 Write-Host "==========================================" -ForegroundColor White
 Write-Host "   Se instala en $destino"
 Write-Host "   No hace falta internet ni ser administrador."
@@ -510,7 +510,7 @@ if (Test-Path $destino) {
   Write-Host ""
   Ojo "OJO: ya existe $destino"
   Ojo "Se van a sobrescribir los programas, pero NO se toca lo que"
-  Ojo "Berna recuerde ni las caras que conozca."
+  Ojo "Sobri recuerde ni las caras que conozca."
   $r = Read-Host "    Escribe SI para seguir"
   if ($r -ne "SI" -and $r -ne "si" -and $r -ne "Si") { Write-Host "Cancelado."; exit 0 }
 }
@@ -547,7 +547,7 @@ if ($py) {
 }
 
 # ---------------------------------------------------------------- 2. copiar
-Paso "2 de 6: copiando Berna a $destino"
+Paso "2 de 6: copiando Sobri a $destino"
 New-Item -ItemType Directory -Force -Path $destino | Out-Null
 Copy-Item -Path (Join-Path $aqui "Programa\\*") -Destination $destino -Recurse -Force
 Bien "Copiado."
@@ -592,11 +592,11 @@ if (Test-Path $priv) {
   if (Test-Path (Join-Path $priv "programas")) {
     New-Item -ItemType Directory -Force -Path "$destino\\programas" | Out-Null
     Copy-Item -Path (Join-Path $priv "programas\\*") -Destination "$destino\\programas" -Recurse -Force
-    Bien "Los programas que Berna te ha escrito, tambien."
+    Bien "Los programas que Sobri te ha escrito, tambien."
   }
 } else {
   Ojo "Sin la carpeta TUS-DATOS-PRIVADOS: tendras que darle las claves."
-  Ojo "Cuando arranque, pideselo a Berna o escribelas en config.json."
+  Ojo "Cuando arranque, pideselo a Sobri o escribelas en config.json."
 }
 
 # ---------------------------------------------------------------- 6. acceso directo
@@ -610,13 +610,13 @@ $lnk = $ws.CreateShortcut("$escritorio\\$atajo.lnk")
 $lnk.TargetPath = "$destino\\venv\\Scripts\\pythonw.exe"
 $lnk.Arguments = "`"$destino\\asistente.py`""
 $lnk.WorkingDirectory = $destino
-$lnk.Description = "Berna, tu asistente"
+$lnk.Description = "Sobri, tu asistente"
 $lnk.Save()
 Bien "Acceso directo '$atajo' en el escritorio."
 
 Write-Host ""
 Write-Host "==========================================" -ForegroundColor Green
-Write-Host "   LISTO. Berna esta instalado." -ForegroundColor Green
+Write-Host "   LISTO. Sobri esta instalado." -ForegroundColor Green
 Write-Host "==========================================" -ForegroundColor Green
 Write-Host ""
 Write-Host "   Doble clic en '$atajo' en el escritorio."
@@ -637,12 +637,12 @@ if ($r -eq "S" -or $r -eq "s") {
 def sincronizar(forzar=False):
     """Hace el volcado y devuelve el parte por escrito.
 
-    Devuelve texto en vez de imprimirlo para que Berna pueda usarlo como
+    Devuelve texto en vez de imprimirlo para que Sobri pueda usarlo como
     herramienta y contarselo a Angel de viva voz.
     """
     t0 = time.time()
     cuenta["copiados"] = cuenta["iguales"] = cuenta["carpetas"] = 0
-    lineas = ["Volcando Berna a: %s" % DESTINO]
+    lineas = ["Volcando Sobri a: %s" % DESTINO]
     os.makedirs(DESTINO, exist_ok=True)
 
     volcar_programa()
@@ -681,7 +681,7 @@ def actualizar_carpeta_del_pen():
         return ("No he podido actualizar la carpeta de instalacion: %s. "
                 "Diselo a Angel tal cual." % e)
     return (parte + "\n\nCuentaselo en una frase: que la carpeta 'Instalar "
-            "Berna' del escritorio ya tiene la ultima version, y que puede "
+            "Sobri' del escritorio ya tiene la ultima version, y que puede "
             "copiarla al pen cuando quiera.")
 
 

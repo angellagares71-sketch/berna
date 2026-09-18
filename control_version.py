@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 r"""
-Git para Berna: guardar el trabajo y poder volver atras.
+Git para Sobri: guardar el trabajo y poder volver atras.
 
 Angel lo pidio el 2026-09-09 junto con el resto de la "opcion code".
 
 POR QUE HACE FALTA, dicho en cristiano
-  Programar sin git es trabajar sin red. Berna ya hace copias .bak de cada
+  Programar sin git es trabajar sin red. Sobri ya hace copias .bak de cada
   archivo que toca, pero eso no te dice QUE cambio entre el lunes y el martes
   en los ocho archivos del proyecto, ni te deja volver a "como estaba cuando
   funcionaba". Git si.
 
-  Y hay una razon mas: el repositorio de las actualizaciones de Berna (el que
+  Y hay una razon mas: el repositorio de las actualizaciones de Sobri (el que
   Angel tiene pendiente de crear en GitHub) se lleva con esto mismo.
 
 COMO ESTA PENSADO
@@ -229,7 +229,7 @@ def git_empezar(carpeta="", permiso=None):
         return ("%s ya lleva control de cambios con git. Mira como esta con "
                 "git_estado." % _raiz(c))
     if permiso is None or not permiso(
-            "Berna va a EMPEZAR UN CONTROL DE CAMBIOS (git) en:\n\n%s\n\n"
+            "Sobri va a EMPEZAR UN CONTROL DE CAMBIOS (git) en:\n\n%s\n\n"
             "Crea una carpeta oculta .git dentro. No cambia ni borra nada de lo "
             "que ya hay, solo permite guardar versiones y volver atras. Le dejas?"
             % c):
@@ -276,7 +276,7 @@ def git_guardar(carpeta="", mensaje="", archivos="", permiso=None):
                 if seleccion else
                 "No hay nada que guardar: esta todo igual que en el ultimo guardado.")
     lista = [l[3:].strip() for l in breve.splitlines()][:30]
-    aviso = ("Berna va a GUARDAR UNA VERSION del proyecto:\n\n%s\n\n"
+    aviso = ("Sobri va a GUARDAR UNA VERSION del proyecto:\n\n%s\n\n"
              "Mensaje: %s\n\nEntran estos archivos:\n%s\n\n"
              "Esto no borra nada: guarda una foto de como esta todo ahora, para "
              "poder volver. Le dejas?"
@@ -312,7 +312,7 @@ def git_deshacer(carpeta="", archivo="", permiso=None):
     """Tira los cambios que AUN NO se han guardado y vuelve al ultimo guardado.
 
     Solo toca lo no guardado. La historia ya guardada no se reescribe nunca
-    desde aqui: eso es la unica forma segura de que Berna no borre trabajo.
+    desde aqui: eso es la unica forma segura de que Sobri no borre trabajo.
     """
     c = _ruta(carpeta)
     if not _es_repo(c):
@@ -321,7 +321,7 @@ def git_deshacer(carpeta="", archivo="", permiso=None):
     if not breve.strip():
         return "No hay nada sin guardar, no hay nada que deshacer."
     que = ("el archivo %s" % archivo) if archivo else "TODOS los archivos cambiados"
-    aviso = ("Berna va a TIRAR LOS CAMBIOS SIN GUARDAR de %s en:\n\n%s\n\n"
+    aviso = ("Sobri va a TIRAR LOS CAMBIOS SIN GUARDAR de %s en:\n\n%s\n\n"
              "Vuelve a como estaba en el ultimo guardado. LO DE DESPUES SE "
              "PIERDE y no hay vuelta atras.\n\nAsi esta la cosa ahora:\n%s\n\n"
              "Seguro?" % (que, _raiz(c), breve[:1200]))
@@ -350,7 +350,7 @@ def git_rama(carpeta="", nombre="", crear=False, permiso=None):
         return "Dime como se llama la rama. Si solo quieres verlas, usa git_ramas."
     crear = str(crear).lower() in ("true", "si", "1", "yes")
     if permiso is None or not permiso(
-            "Berna va a %s la rama '%s' en:\n\n%s\n\n%s Le dejas?"
+            "Sobri va a %s la rama '%s' en:\n\n%s\n\n%s Le dejas?"
             % ("CREAR Y PASARSE A" if crear else "CAMBIARSE A", n, _raiz(c),
                "Una rama es una copia del trabajo donde puedes probar cosas sin "
                "estropear la buena." if crear else
@@ -369,7 +369,7 @@ def git_bajar(carpeta="", permiso=None):
     if not _es_repo(c):
         return _falta_repo(c)
     if permiso is None or not permiso(
-            "Berna va a TRAER DE INTERNET los cambios del repositorio en:\n\n%s\n\n"
+            "Sobri va a TRAER DE INTERNET los cambios del repositorio en:\n\n%s\n\n"
             "Puede cambiar archivos de esa carpeta. Hace falta internet. Le dejas?"
             % _raiz(c)):
         return "No me has dado permiso, no he bajado nada."
@@ -399,7 +399,7 @@ def git_subir(carpeta="", permiso=None):
     _c2, rama = _git(c, "rev-parse", "--abbrev-ref", "HEAD")
     _c3, pendientes = _git(c, "log", "--oneline", "@{u}..HEAD")
     if permiso is None or not permiso(
-            "Berna va a SUBIR A INTERNET el trabajo guardado:\n\n%s\n\nRama: %s\n"
+            "Sobri va a SUBIR A INTERNET el trabajo guardado:\n\n%s\n\nRama: %s\n"
             "Va a:\n%s\n\nGuardados que se suben:\n%s\n\n"
             "OJO: lo que se sube queda publicado y ya no se puede 'des-subir'. "
             "Mira que no haya claves ni datos tuyos dentro. Le dejas?"
@@ -431,7 +431,7 @@ def git_clonar(url, destino="", permiso=None):
         return ("Ya hay una carpeta '%s' dentro de %s. Ponle otro destino o mira "
                 "la que hay." % (nombre, d))
     if permiso is None or not permiso(
-            "Berna va a TRAERSE UN PROYECTO ENTERO de internet:\n\n%s\n\n"
+            "Sobri va a TRAERSE UN PROYECTO ENTERO de internet:\n\n%s\n\n"
             "Lo deja en:\n%s\n\nDescarga codigo de otra gente: no lo ejecutes sin "
             "mirarlo antes. Le dejas?" % (u, os.path.join(d, nombre))):
         return "No me has dado permiso, no he descargado nada."

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Abre el navegador para que Angel autorice a Berna en su cuenta de Google."""
+"""Abre el navegador para que Angel autorice a Sobri en su cuenta de Google."""
 import sys
 sys.path.insert(0, r"C:\Asistente")
 import cuentas as C

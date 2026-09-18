@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
-Los ojos de Berna.
+Los ojos de Sobri.
 
 Le permite MIRAR de verdad: su pantalla, una imagen, una captura. Es la
 capacidad que mas se echaba en falta, porque casi todos los atascos de
@@ -19,7 +19,7 @@ import os, io, json, time, base64
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 URL_GEMINI = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"
-CARPETA = os.path.join(os.path.expanduser("~"), "Pictures", "Berna")
+CARPETA = os.path.join(os.path.expanduser("~"), "Pictures", "Sobri")
 
 MODELOS_CON_OJOS = ["gemini-3.6-flash", "gemini-3.1-flash-lite", "gemini-3.5-flash"]
 
@@ -230,7 +230,7 @@ def puede_ver():
 # mientras que manos.py pincha en el de 1920. Un 20% de error constante,
 # siempre arriba y a la izquierda. Y encima al modelo nunca se le pedian
 # coordenadas: el prompt le pide que describa el sitio con palabras, asi que
-# los numeros se los tenia que inventar Berna.
+# los numeros se los tenia que inventar Sobri.
 #
 # Aqui se hace bien: se le pide al modelo que diga la coordenada EN LA IMAGEN
 # QUE ESTA VIENDO, y la conversion al marco de la pantalla la hace este codigo,
@@ -242,7 +242,7 @@ def puede_ver():
 # lienzos de dibujo y programas que no publican sus controles.
 
 def mirar_para_pinchar(que_busco):
-    """Devuelve DONDE pinchar, ya convertido al marco en el que pincha Berna."""
+    """Devuelve DONDE pinchar, ya convertido al marco en el que pincha Sobri."""
     import re as _re
     que_busco = str(que_busco or "").strip()
     if not que_busco:

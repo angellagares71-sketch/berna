@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
-Berna buscando trabajo y oportunidades para Angel.
+Sobri buscando trabajo y oportunidades para Angel.
 
 QUE HACE ESTO Y QUE NO
   Busca, filtra, estudia y PREPARA. Lleva la cuenta de lo que encuentra y
@@ -8,10 +8,10 @@ QUE HACE ESTO Y QUE NO
 
   NO mueve dinero, no paga, no cobra, no acepta encargos ni firma nada.
   Todo lo que compromete a Angel (presentarse a algo, comprar, vender,
-  aceptar) lo hace Angel con su propia mano. Berna llega hasta la puerta
+  aceptar) lo hace Angel con su propia mano. Sobri llega hasta la puerta
   y le deja el trabajo hecho.
 
-  Motivo: Berna lee paginas de terceros, y una pagina puede intentar
+  Motivo: Sobri lee paginas de terceros, y una pagina puede intentar
   colarle ordenes. Mientras no toque dinero, lo peor que puede pasar es
   que traiga una oportunidad mala y Angel la descarte.
 """
@@ -40,7 +40,7 @@ PERFIL_INICIAL = {
     "no_quiere": ["multinivel", "criptomonedas", "pagar por trabajar",
                   "encuestas remuneradas", "trading"],
     "nota": ("Esto lo puede corregir Angel en cualquier momento diciendole a "
-             "Berna que actualice su perfil."),
+             "Sobri que actualice su perfil."),
 }
 
 # donde buscar segun el tipo de encargo

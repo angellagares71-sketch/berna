@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-"""Conocimiento de trabajo de Music 2000 para Berna.
+"""Conocimiento de trabajo de Music 2000 para Sobri.
 
 Se carga solo cuando la conversacion habla del programa. El contenido sale del
-manual que instala el propio Music 2000, resumido para que Berna pueda convertir
+manual que instala el propio Music 2000, resumido para que Sobri pueda convertir
 una peticion musical en acciones concretas dentro del secuenciador.
 """
 

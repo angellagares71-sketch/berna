@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
-Que Berna VEA los botones de verdad, en vez de adivinar donde estan.
+Que Sobri VEA los botones de verdad, en vez de adivinar donde estan.
 
 Angel se quejo el 2026-08-27: "la manipulacion del teclado y el raton no da
 pie con bola". Se midio antes de tocar nada, y el resultado fue revelador:
@@ -17,7 +17,7 @@ pie con bola". Se midio antes de tocar nada, y el resultado fue revelador:
      arriba y a la izquierda.
   2. Y sobre todo: **al modelo nunca se le pidieron coordenadas**. El prompt de
      vista.py le pide que describa el sitio con palabras ("el boton azul de
-     abajo a la derecha"). Con eso, Berna tenia que INVENTARSE los numeros.
+     abajo a la derecha"). Con eso, Sobri tenia que INVENTARSE los numeros.
 
   O sea que le estabamos pidiendo a un modelo que adivinara pixeles mirando
   una foto encogida. No hay ajuste fino que arregle eso.
@@ -28,7 +28,7 @@ LA SOLUCION: NO ADIVINAR
   en el centro exacto del control. Cero adivinanza.
 
   Asi, "pulsa el boton Aceptar" pasa de ser una estimacion a ser una
-  coordenada exacta. Y de paso Berna puede LEER lo que hay en la ventana sin
+  coordenada exacta. Y de paso Sobri puede LEER lo que hay en la ventana sin
   gastar una peticion de las de Google.
 
 CUANDO NO SIRVE
@@ -37,7 +37,7 @@ CUANDO NO SIRVE
   ya se ha comprobado que son exactas.
 
 OJO CON LOS HILOS
-  UI Automation es COM, y las herramientas de Berna corren en un hilo de
+  UI Automation es COM, y las herramientas de Sobri corren en un hilo de
   trabajo. Hay que envolver TODA llamada en `auto.UIAutomationInitializerInThread()`
   o revienta con un error de COM que no dice nada. Es la trampa numero uno de
   esta libreria.
@@ -46,7 +46,7 @@ import time
 import unicodedata
 
 # Cuanto se espera como mucho a que aparezca un control. La libreria trae 10 s
-# por defecto y eso cuelga la ventana de Berna, que es sincrona.
+# por defecto y eso cuelga la ventana de Sobri, que es sincrona.
 ESPERA = 2.0
 
 # Hasta donde se baja en el arbol. Las paginas web anidan mucho; 18 llega al
@@ -171,7 +171,7 @@ def _listar(ventana=""):
 
 
 def ver_controles(filtro="", ventana=""):
-    """Le enseña a Berna lo que hay para pinchar, con su sitio exacto."""
+    """Le enseña a Sobri lo que hay para pinchar, con su sitio exacto."""
     if not hay_soporte():
         return ("No tengo instalado lo que hace falta para ver los controles "
                 "(uiautomation). Sin eso solo puedo pinchar por coordenadas.")

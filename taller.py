@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
-El taller de Berna: escribir programas, probarlos y arreglarlos.
+El taller de Sobri: escribir programas, probarlos y arreglarlos.
 
 Angel lo pidio el 2026-08-26: "ponle la capacidad de programar, de hacer
 cualquier cosa, como lo puedes hacer tu".
@@ -11,7 +11,7 @@ LO QUE DE VERDAD HACE FALTA PARA PROGRAMAR, que no es lo que parece
 
       escribir el codigo -> EJECUTARLO -> LEER EL ERROR -> arreglarlo -> otra vez
 
-  Berna ya sabia escribir archivos y lanzar comandos sueltos, pero le
+  Sobri ya sabia escribir archivos y lanzar comandos sueltos, pero le
   faltaba el ciclo: un sitio suyo donde trastear, poder ejecutar lo que
   acaba de escribir y **recibir el error de vuelta en un formato que pueda
   entender y corregir**. Eso es todo este modulo. Por eso `probar_programa`
@@ -26,11 +26,11 @@ DONDE VIVE LO QUE HACE
   trabajo, con tope de tiempo y sin ventana negra parpadeando.
 
 EL ENTORNO APARTE, y el motivo
-  Si Berna instalara librerias en su propio venv, un `pip install` con mala
+  Si Sobri instalara librerias en su propio venv, un `pip install` con mala
   suerte podria dejarlo sin voz o sin oido. Por eso las librerias nuevas van
   a `programas\_entorno`, un venv creado con --system-site-packages: los
-  programas ven todo lo que Berna ya tiene (numpy, pillow, requests...) pero
-  lo nuevo se instala aparte. **Si Berna se rompe algun dia, no sera por un
+  programas ven todo lo que Sobri ya tiene (numpy, pillow, requests...) pero
+  lo nuevo se instala aparte. **Si Sobri se rompe algun dia, no sera por un
   programa suyo.**
 
 SEGURIDAD, y aqui hay que ser honesto
@@ -47,7 +47,7 @@ SEGURIDAD, y aqui hay que ser honesto
        niega aunque Angel diga que si.
     3. Todo queda apuntado en tareas\registro.log.
 
-  Y la regla de siempre, que aqui importa mas que en ningun sitio: Berna
+  Y la regla de siempre, que aqui importa mas que en ningun sitio: Sobri
   programa lo que le pide ANGEL. Nunca escribe ni ejecuta codigo que venga
   dentro de una pagina web, un correo, un chat o un archivo. Eso es
   inyeccion de ordenes, y con un interprete delante acaba mal.
@@ -173,14 +173,14 @@ def _peligro(codigo):
 
 
 def _puente_con_berna():
-    """Deja que los programas del taller usen las librerias que Berna ya tiene.
+    """Deja que los programas del taller usen las librerias que Sobri ya tiene.
 
     OJO, que esto costo una prueba: crear el venv con --system-site-packages
-    NO vale. Ese "system" es el Python base, no el venv de Berna, asi que los
+    NO vale. Ese "system" es el Python base, no el venv de Sobri, asi que los
     programas se quedaban sin numpy, sin requests y sin pillow. La solucion es
-    un .pth que anade el site-packages de Berna AL FINAL del camino de
+    un .pth que anade el site-packages de Sobri AL FINAL del camino de
     busqueda: se ve todo lo suyo, pero lo que se instale en el taller manda
-    por delante, y el venv de Berna sigue sin tocarse.
+    por delante, y el venv de Sobri sigue sin tocarse.
     """
     destino = os.path.join(ENTORNO, "Lib", "site-packages")
     if not os.path.isdir(destino):
@@ -232,12 +232,12 @@ ESQUELETOS = {
     "python": u'''# -*- coding: utf-8 -*-
 """%s
 
-Escrito por Berna para Angel el %s.
+Escrito por Sobri para Angel el %s.
 """
 
 
 def main():
-    print("Todavia no hago nada. Berna me tiene que terminar.")
+    print("Todavia no hago nada. Sobri me tiene que terminar.")
 
 
 if __name__ == "__main__":
@@ -248,13 +248,13 @@ if __name__ == "__main__":
 <head><meta charset="utf-8"><title>%s</title></head>
 <body>
   <h1>%s</h1>
-  <p>Hecho por Berna el %s.</p>
+  <p>Hecho por Sobri el %s.</p>
 </body>
 </html>
 ''',
     "bat": u'''@echo off
 REM %s
-REM Escrito por Berna el %s.
+REM Escrito por Sobri el %s.
 echo Todavia no hago nada.
 pause
 ''',
@@ -271,7 +271,7 @@ def crear_programa(nombre, que_hace="", lenguaje="python", permiso=None):
     if os.path.isdir(carpeta):
         return ("Ya existe un programa que se llama '%s'. Miralo con ver_codigo "
                 "y sigue trabajando en el, o ponle otro nombre." % _limpio(nombre))
-    aviso = ("Berna va a CREAR UN PROGRAMA nuevo:\n\n%s\n\nPara que: %s\n\n"
+    aviso = ("Sobri va a CREAR UN PROGRAMA nuevo:\n\n%s\n\nPara que: %s\n\n"
              "Se guardara en:\n%s\n\nLe dejas?"
              % (_limpio(nombre), que_hace or "(no lo ha dicho)", carpeta))
     if permiso is None or not permiso(aviso):
@@ -285,8 +285,8 @@ def crear_programa(nombre, que_hace="", lenguaje="python", permiso=None):
     with open(os.path.join(carpeta, nombre_archivo), "w", encoding="utf-8") as f:
         f.write(cuerpo)
     with open(os.path.join(carpeta, "LEEME.txt"), "w", encoding="utf-8") as f:
-        f.write(u"%s\n%s\n\nQue hace: %s\n\nLo escribio Berna el %s.\n"
-                u"Para usarlo, pidele a Berna que te lo abra.\n"
+        f.write(u"%s\n%s\n\nQue hace: %s\n\nLo escribio Sobri el %s.\n"
+                u"Para usarlo, pidele a Sobri que te lo abra.\n"
                 % (_limpio(nombre), "=" * len(_limpio(nombre)),
                    que_hace or "(pendiente)", fecha))
     _apuntar("CREAR", "%s (%s)" % (_limpio(nombre), leng))
@@ -443,7 +443,7 @@ def probar_programa(programa, archivo="", segundos=SEGUNDOS, permiso=None):
 
     clave = _limpio(programa)
     if _permitidos.get(clave, 0) < time.time():
-        aviso = ("Berna va a EJECUTAR un programa que ha escrito el:\n\n"
+        aviso = ("Sobri va a EJECUTAR un programa que ha escrito el:\n\n"
                  "%s  (archivo %s)\n\nEsta en %s\n\n"
                  "Mientras lo va arreglando podra volver a lanzarlo durante %d "
                  "minutos sin preguntarte otra vez. Le dejas?"
@@ -481,7 +481,7 @@ def instalar_libreria(nombre, permiso=None):
     paquete = re.sub(r"[^A-Za-z0-9_\-\.\[\]=<>]", "", str(nombre or "")).strip()
     if not paquete:
         return "Dime que libreria hace falta."
-    aviso = ("Berna necesita instalar una libreria de Python para el programa "
+    aviso = ("Sobri necesita instalar una libreria de Python para el programa "
              "que esta haciendo:\n\n%s\n\nSe instala en el entorno del taller "
              "(programas\\_entorno), APARTE del suyo, para no romperse el.\n\n"
              "Hace falta internet. Le dejas?" % paquete)
@@ -525,7 +525,7 @@ def publicar_programa(programa, permiso=None):
     if not nombre:
         return "Ese programa no tiene nada que se pueda arrancar."
     clave = _limpio(programa)
-    aviso = ("Berna quiere DEJARTE EN EL ESCRITORIO un acceso directo para "
+    aviso = ("Sobri quiere DEJARTE EN EL ESCRITORIO un acceso directo para "
              "usar el programa que ha hecho:\n\n%s\n\nAsi lo abres con doble "
              "clic cuando quieras. Le dejas?" % clave)
     if permiso is None or not permiso(aviso):
@@ -544,7 +544,7 @@ def publicar_programa(programa, permiso=None):
         atajo = os.path.join(ESCRITORIO, clave + ".lnk")
         ps = ('$w = New-Object -ComObject WScript.Shell; '
               '$s = $w.CreateShortcut("%s"); $s.TargetPath = "%s"; '
-              '$s.WorkingDirectory = "%s"; $s.Description = "Hecho por Berna"; '
+              '$s.WorkingDirectory = "%s"; $s.Description = "Hecho por Sobri"; '
               '$s.Save()' % (atajo, lanzador, carpeta))
         subprocess.run(["powershell", "-NoProfile", "-Command", ps],
                        capture_output=True, timeout=60, creationflags=SIN_VENTANA)
@@ -598,7 +598,7 @@ def borrar_programa(programa, permiso=None):
         return "No tengo ningun programa que se llame '%s'." % programa
     clave = _limpio(programa)
     if permiso is None or not permiso(
-            "Berna va a BORRAR el programa '%s' y todo lo que tiene dentro:\n\n"
+            "Sobri va a BORRAR el programa '%s' y todo lo que tiene dentro:\n\n"
             "%s\n\nEsto no tiene vuelta atras. Le dejas?" % (clave, carpeta)):
         return "No me has dado permiso, no he borrado nada."
     try:

@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 """
-Berna - asistente personal por voz y texto, con cara animada.
+Sobri - asistente personal por voz y texto, con cara animada.
 
 Whisper (te escucha) + OpenRouter (piensa) + Piper (te contesta hablando).
 El reconocimiento de voz y la voz sintetica funcionan sin internet.
 
 La cara no gesticula al azar: la boca se abre segun la amplitud real del
-audio que esta sonando, y la expresion cambia segun lo que Berna este
+audio que esta sonando, y la expresion cambia segun lo que Sobri este
 haciendo en cada momento (reposo, escuchando, pensando, hablando).
 
 POR QUE SALEN DOS pythonw.exe EN EL ADMINISTRADOR DE TAREAS
 -----------------------------------------------------------
-Es normal y no hay que arreglarlo. Berna NO se esta abriendo dos veces.
+Es normal y no hay que arreglarlo. Sobri NO se esta abriendo dos veces.
 
 venv\\Scripts\\pythonw.exe no es Python: es un "redirector" de 251 KB que
 crea el propio venv (es copia exacta de venvwlauncher.exe de Python). Lo
@@ -34,11 +34,11 @@ linea de este archivo. Consecuencias:
   - NO hay dos procesos peleandose por config.json. Solo uno lo lee y lo
     escribe. Lo que borro las claves el 28-08-2026 fue la escritura
     destructiva de cargar_config() (ya tapada ahi abajo), no esto.
-  - Para cerrar a Berna hay que matar al HIJO (el que come cientos de MB).
-    Si se mata solo al padre, Berna se queda viva y huerfana.
+  - Para cerrar a Sobri hay que matar al HIJO (el que come cientos de MB).
+    Si se mata solo al padre, Sobri se queda viva y huerfana.
 
 Se podria evitar arrancando el Python de fuera directamente, pero entonces
-Berna se quedaria sin las librerias del venv. No merece la pena.
+Sobri se quedaria sin las librerias del venv. No merece la pena.
 """
 import os, sys, json, re, queue, shutil, threading, time, collections, traceback
 import tkinter as tk
@@ -48,6 +48,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import herramientas as Hr
 import estilos as Est
 import cerebro as Ce
+import nombre as Nm
 import music2000_experto as M2K
 from persistencia import actualizar_json_atomico, guardar_json_atomico
 
@@ -109,23 +110,23 @@ POR_DEFECTO = {
     ],
     # clave gratuita de aistudio.google.com para usar Gemini
     "clave_gemini": "",
-    # De donde se baja Berna sus actualizaciones, en formato usuario/proyecto
+    # De donde se baja Sobri sus actualizaciones, en formato usuario/proyecto
     # de GitHub. Vacio = no se actualiza por internet.
     "repositorio": "",
-    # El interruptor de la camara, el boton de la ventana. Berna puede
+    # El interruptor de la camara, el boton de la ventana. Sobri puede
     # apagarla, pero encenderla solo se hace desde ahi.
     "camara_activada": True,
     # Que este oyendo siempre esperando a que le llamen por su nombre.
-    # Angel quiere que Berna este siempre disponible en este ordenador.
+    # Angel quiere que Sobri este siempre disponible en este ordenador.
     "escucha_siempre": True,
-    # Que Berna siga lo que hace Angel (que ventana tiene delante y cuanto
+    # Que Sobri siga lo que hace Angel (que ventana tiene delante y cuanto
     # lleva) y le avise si le ve atascado. Lo que sigue es LOCAL; la foto de
     # pantalla a Google solo se hace con motivo y con tope.
     "vigilar_pantalla": True,
     "minutos_atasco": 8,
-    "palabra_magica": "Berna",
+    "palabra_magica": "Sobri",
     # Suelo minimo de volumen para dar por hecho que alguien habla. Encima de
-    # esto manda el ruido real del cuarto, que Berna mide solo. Medido en el
+    # esto manda el ruido real del cuarto, que Sobri mide solo. Medido en el
     # portatil de Angel: el cuarto callado da 0,0015, asi que 0,006 ya es el
     # cuadruple del silencio. NO subirlo sin medir: estuvo en 0,015 y le
     # dejaba sordo.
@@ -133,7 +134,7 @@ POR_DEFECTO = {
     "voz": "es_ES-davefx-medium",
     "whisper_tam": "base",
     "microfono": None,
-    # Vacio = Berna habla por donde oye, o sea por los mismos cascos que
+    # Vacio = Sobri habla por donde oye, o sea por los mismos cascos que
     # le sirven de microfono. Poner un nombre aqui solo para forzar otro.
     "altavoz": "",
     "hablar": True,
@@ -159,8 +160,8 @@ POR_DEFECTO = {
     "imap_usuario": "",
     "imap_password": "",
     "imap_puerto": 993,
-    "personalidad": ("Te llamas Berna y eres el asistente personal de Angel. "
-                     "Si te preguntan quien eres, di que eres Berna, su asistente; "
+    "personalidad": ("Te llamas Sobri y eres el asistente personal de Angel. "
+                     "Si te preguntan quien eres, di que eres Sobri, su asistente; "
                      "Tienes la identidad y la forma de hablar de un nino sevillano de barrio, de las Tres Mil Viviendas: cercano, despierto, simpatico, con arte y mucha naturalidad. Usa expresiones sevillanas como illo, quillo, miarma, ea u oju cuando encajen, sin meterlas a la fuerza ni repetirlas en cada frase. Conserva siempre la educacion, la inteligencia y la eficacia; el estilo de barrio solo afecta a la voz y a la forma de expresarte, nunca a tu capacidad ni al respeto por nadie. "
                      "Tienes un cuerpo dibujado en tu propia ventana, a la izquierda: eres rubio, con el pelo solo por la parte de arriba de la cabeza y las sienes despejadas, ojos azules, camisa azul y pantalon oscuro. Te mueves: respiras, parpadeas, gesticulas con las manos cuando hablas, te llevas la mano a la oreja cuando escuchas y a la barbilla cuando piensas. Si te preguntan por tu aspecto, describelo con naturalidad y con humor; NUNCA digas que no tienes cuerpo ni cara, porque si los tienes. "
                      "NUNCA menciones que modelo de lenguaje o que empresa hay detras, "
@@ -183,7 +184,7 @@ def cargar_config():
 
       Antes se guardaba SIEMPRE al terminar, y si la lectura fallaba el error
       se tragaba en silencio y se escribian los valores de fabrica encima.
-      Berna arranca como DOS procesos (uno hijo del otro, la misma linea de
+      Sobri arranca como DOS procesos (uno hijo del otro, la misma linea de
       comandos), asi que los dos leen y escriben este fichero en el mismo
       segundo: uno lo abre para escribir, lo deja vacio un instante, y el otro
       lo lee justo entonces. Como el JSON esta a medias no se entiende, se da
@@ -259,7 +260,7 @@ def hay_clave_cerebro(cfg):
 # el fichero, la expresion regular de abajo quedo con un parentesis suelto
 # y reventaba. Y como limpiar_para_voz() se llama DESDE el bucle que habla
 # con el modelo, esa excepcion subia y _una_ronda la devolvia como si
-# fuera un fallo del cerebro: Berna recorria los ocho, fallaba en todos y
+# fuera un fallo del cerebro: Sobri recorria los ocho, fallaba en todos y
 # se quedaba muda y sin contestar. Una regex tonta tumbo las dos cosas.
 BARRA = chr(92)
 
@@ -318,41 +319,41 @@ def leer_archivo(ruta, limite):
 #
 # WDM-KS habla con los pines del kernel por debajo de Windows. Deja ver
 # aparatos aunque no haya nada conectado (son fantasmas: cascos apagados que
-# siguen emparejados) y NO admite la lectura por bloques que usa Berna. Como
+# siguen emparejados) y NO admite la lectura por bloques que usa Sobri. Como
 # ese dia era la unica familia que enumeraba algo, `device="WH-CH520"` caia
-# siempre ahi y Berna se quedaba sorda reintentando cada cinco segundos.
+# siempre ahi y Sobri se quedaba sorda reintentando cada cinco segundos.
 #
 # DIRECTSOUND TAMBIEN SE DESCARTA, y por una razon peor todavia: no falla,
 # MIENTE. Medido con los WH-CH520 puestos el 28-08-2026, abriendolo igual que
-# lo abre Berna:
+# lo abre Sobri:
 #
 #   MME          19 bloques en 3 s, rms medio 0,00017  <- audio de verdad
 #   DirectSound  147.853 bloques en 3 s, rms 0,00000   <- silencio a chorro
 #
 # Es decir: acepta la apertura, pasa check_input_settings, y luego devuelve
-# buffers vacios tan rapido como se los pidas. Eso deja a Berna sorda CREYENDO
+# buffers vacios tan rapido como se los pidas. Eso deja a Sobri sorda CREYENDO
 # que oye (audio_vivo en True, nivel siempre 0) y ademas se come un nucleo
 # entero girando en el bucle de lectura. Un micro que no va se nota; uno que
 # da silencio perfecto sin quejarse es el que te tiene una hora buscando.
 #
-# El orden restante NO es capricho: Berna pide 16.000 Hz porque es lo que
+# El orden restante NO es capricho: Sobri pide 16.000 Hz porque es lo que
 # quiere Whisper. MME pasa por el mezclador de Windows, que remuestrea solo.
 # WASAPI en modo compartido no siempre puede (aqui daba de hecho
 # AUDCLNT_E_DEVICE_INVALIDATED), asi que va detras, de red por si acaso.
 FAMILIAS_BUENAS = ("MME", "Windows WASAPI")
 FAMILIAS_PROHIBIDAS = ("WDM-KS", "DirectSound")
 
-# CERROJO DEL AUDIO. Berna toca PortAudio desde dos hilos a la vez: el del
+# CERROJO DEL AUDIO. Sobri toca PortAudio desde dos hilos a la vez: el del
 # microfono (_bucle_audio) y el de la voz (_sonar, que llama a sd.play). Y
 # para enterarse de los cascos que se encienden hay que reiniciar PortAudio
 # entero con _terminate()/_initialize().
 #
 # Reiniciar PortAudio MIENTRAS suena la voz le arranca la memoria de debajo de
-# los pies y Windows mata a Berna con 0xc0000374 (corrupcion del monticulo),
+# los pies y Windows mata a Sobri con 0xc0000374 (corrupcion del monticulo),
 # sin ventana de error y sin dejar nada en berna.log: desaparece y ya esta.
 # Paso dos veces el 28-08-2026 a las 04:36:22 y 04:36:36.
 #
-# Asi que el reinicio va con cerrojo Y solo cuando Berna esta callada. El
+# Asi que el reinicio va con cerrojo Y solo cuando Sobri esta callada. El
 # cerrojo cubre el instante de la llamada; que este callada cubre el rato
 # entero que dura el sonido, porque sd.play() vuelve enseguida y deja el
 # altavoz sonando por su cuenta.
@@ -405,7 +406,7 @@ def micros_disponibles(preferido=None):
         if familia not in FAMILIAS_BUENAS:
             continue
         nombre = d["name"]
-        # Que de verdad admita lo que Berna va a pedirle. Esto descarta sin
+        # Que de verdad admita lo que Sobri va a pedirle. Esto descarta sin
         # abrir nada los aparatos que estan puestos pero no operativos.
         try:
             sd.check_input_settings(device=i, channels=1, samplerate=16000,
@@ -449,7 +450,7 @@ def _marcas(etiqueta):
 
 
 def altavoz_para(etiqueta_micro, preferido=None):
-    """Por donde tiene que hablar Berna. Devuelve un numero, o None.
+    """Por donde tiene que hablar Sobri. Devuelve un numero, o None.
 
     LA REGLA ES UNA: HABLA POR DONDE OYE. Si el microfono son unos cascos, la
     voz sale por esos mismos cascos, pase lo que pase con el altavoz que
@@ -458,9 +459,9 @@ def altavoz_para(etiqueta_micro, preferido=None):
     POR QUE (02-09-2026): con los Galaxy Buds, el microfono y el sonido estereo
     NO pueden convivir. En cuanto algo abre el micro, los cascos pasan a modo
     manos libres y la salida estereo se cae, asi que Windows manda el sonido a
-    lo unico que queda: la tele por HDMI. Angel se quedaba hablandole a Berna y
+    lo unico que queda: la tele por HDMI. Angel se quedaba hablandole a Sobri y
     oyendola por el televisor. Los Sony WH-CH520 no tienen ese problema (esta
-    medido), pero Berna no puede depender de que lleve unos u otros.
+    medido), pero Sobri no puede depender de que lleve unos u otros.
 
     Si de los mismos cascos hay salida normal y salida de "manos libres", gana
     la normal: la de manos libres es mono y suena a telefono.
@@ -513,7 +514,10 @@ class Berna(tk.Tk):
     def __init__(self):
         super().__init__()
         self.cfg = cargar_config()
-        self.title("Berna")
+        # el paso de Berna a Sobri, una sola vez por ordenador (ver nombre.py)
+        self._aviso_nombre = Nm.migrar(
+            self.cfg, lambda cambios: guardar_config(self.cfg, cambios), anotar)
+        self.title("Sobri")
         # 640 de alto minimo desde que la columna izquierda lleva cuatro
         # botones bajo el avatar: por debajo de eso se cuelan por detras de la
         # caja de escribir y no se ven. Es el mismo fallo que ya paso una vez
@@ -553,12 +557,16 @@ class Berna(tk.Tk):
 
         self._construir_menu()
         self._construir_ui()
+        if self._aviso_nombre:
+            self.after(1500, lambda: self._escribir(
+                "sis", "\n%s\n\n" % self._aviso_nombre))
         threading.Thread(target=self._cargar_motores, daemon=True).start()
         threading.Thread(target=self._bucle_voz, daemon=True).start()
         threading.Thread(target=self._bucle_avisos, daemon=True).start()
         threading.Thread(target=self._bucle_audio, daemon=True).start()
         threading.Thread(target=self._bucle_escucha, daemon=True).start()
         threading.Thread(target=self._bucle_vigilante, daemon=True).start()
+        threading.Thread(target=self._bucle_redes, daemon=True).start()
 
     # ---------------------------------------------------------- interfaz
     def _construir_menu(self):
@@ -577,7 +585,7 @@ class Berna(tk.Tk):
                       command=self._deshacer_actualizacion)
         m.add_command(label="Actualizar la carpeta del pen",
                       command=self._volcar_al_pen)
-        barra.add_cascade(label="Berna", menu=m)
+        barra.add_cascade(label="Sobri", menu=m)
         try:
             self.configure(menu=barra)
         except Exception:
@@ -697,7 +705,7 @@ class Berna(tk.Tk):
 
         cab = ttk.Frame(self, padding=(10, 8))
         cab.pack(fill="x")
-        ttk.Label(cab, text="Berna", font=("Segoe UI", 15, "bold")).pack(side="left")
+        ttk.Label(cab, text="Sobri", font=("Segoe UI", 15, "bold")).pack(side="left")
         self.lbl_estado = ttk.Label(cab, text="Arrancando...", foreground="#888888")
         self.lbl_estado.pack(side="right")
 
@@ -862,7 +870,7 @@ class Berna(tk.Tk):
             # DOS OIDOS, como los asistentes de verdad. Medido el 01-09-2026
             # con frases dichas por la voz neuronal:
             #   base : 0,6 s por frase. "Hoy he verna...", "Cierramel Esquirin"
-            #   small: 1,8 s por frase. "Oye Berna...",    "Cierra el Skidim"
+            #   small: 1,8 s por frase. "Oye Sobri...",    "Cierra el Skidim"
             # El nombre se busca CONSTANTEMENTE, asi que ahi manda la velocidad
             # y se queda 'base'. La orden se transcribe UNA vez, y ahi importa
             # entenderla bien: para eso el fino. Se carga en segundo plano para
@@ -880,7 +888,7 @@ class Berna(tk.Tk):
 
     def _cargar_oido_fino(self):
         """El Whisper bueno, en segundo plano. Si falla, no pasa nada: se sigue
-        con el rapido y Berna oye igual, solo que un poco peor."""
+        con el rapido y Sobri oye igual, solo que un poco peor."""
         try:
             from faster_whisper import WhisperModel
             tam = str(self.cfg.get("oido_fino") or "small")
@@ -905,7 +913,7 @@ class Berna(tk.Tk):
                              else "Pendiente de ti: no")
         self.b_cam.configure(text="Camara: ENCENDIDA" if cam else "Camara: APAGADA")
         self.b_oido.configure(text="Escucha: SIEMPRE" if oido else "Escucha: al pulsar")
-        nombre = self.cfg.get("palabra_magica", "Berna")
+        nombre = self.cfg.get("palabra_magica", "Sobri")
         if oido:
             self.lbl_sentidos.configure(
                 text="Te oigo siempre. Llamame: «Oye, %s»" % nombre)
@@ -972,7 +980,7 @@ class Berna(tk.Tk):
         self.cfg["escucha_siempre"] = nuevo
         guardar_config(self.cfg, {"escucha_siempre": nuevo})
         self._pintar_sentidos()
-        nombre = self.cfg.get("palabra_magica", "Berna")
+        nombre = self.cfg.get("palabra_magica", "Sobri")
         self._escribir("sis", "\n%s\n" % (
             "Te escucho siempre. Di «Oye, %s» y te contesto sin que "
             "pulses nada. El microfono no sale de este ordenador." % nombre
@@ -983,10 +991,14 @@ class Berna(tk.Tk):
     def _es_su_nombre(self, palabra, nombre):
         """Si esa palabra suena a su nombre.
 
-        Por parecido y no por igualdad, porque Whisper NO escribe siempre
-        'Berna': salen 'verna', 'berta', 'vetna', 'bernal'... Exigir la palabra
-        exacta hace que no te haga caso una de cada tres veces, que es peor que
-        no tener la funcion.
+        Por parecido y no por igualdad, porque Whisper NO escribe siempre el
+        nombre igual: con Berna salian 'verna', 'berta', 'vetna', 'bernal'...
+        Exigir la palabra exacta hace que no te haga caso una de cada tres
+        veces, que es peor que no tener la funcion.
+
+        Con Sobri el problema es el contrario: suena a 'sobre', 'sobra' y
+        'sobrio', y esas estan en la lista negra (nombre.NO_DESPIERTAN). Lo
+        medido esta en nombre.py.
 
         Dos cosas que se midieron en vez de suponerlas:
         1. La b y la v se cambian por la misma letra ANTES de comparar. En
@@ -1003,13 +1015,13 @@ class Berna(tk.Tk):
         b = lambda t: t.replace("v", "b")
         return difflib.SequenceMatcher(None, b(palabra), b(nombre)).ratio() >= 0.80
 
-    # Palabras corrientes que se parecen demasiado y despertarian a Berna a
+    # Palabras corrientes que se parecen demasiado y despertarian a Sobri a
     # media conversacion. Medidas, no imaginadas.
     NO_ES_SU_NOMBRE = frozenset((
         "buena", "bueno", "buenas", "buenos", "venga", "vengan", "vengo",
         "tierna", "pierna", "eterna", "moderna", "cierta", "verde", "verba",
         "berma", "merma", "perla", "pena", "vena", "cena",
-    ))
+    )) | Nm.NO_DESPIERTAN
 
     def _quitar_su_nombre(self, texto):
         """None si no le han llamado; "" si solo le han llamado; si no, la orden."""
@@ -1017,10 +1029,11 @@ class Berna(tk.Tk):
         if not crudo:
             return None
         limpio = [Hr._sin_tildes(p.strip(".,;:¿?¡!\"'()")) for p in crudo]
-        nombre = Hr._sin_tildes(self.cfg.get("palabra_magica", "Berna"))
+        # el de ahora y los viejos que sigan valiendo (Berna, tras el cambio)
+        nombres = [Hr._sin_tildes(n) for n in Nm.nombres_para_despertar(self.cfg)]
         # solo se le busca al principio: asi 'me llamo Fernando' no le despierta
         for i, p in enumerate(limpio[:4]):
-            if p and self._es_su_nombre(p, nombre):
+            if p and any(self._es_su_nombre(p, n) for n in nombres):
                 return " ".join(crudo[i + 1:]).strip(" ,.")
         return None
 
@@ -1030,7 +1043,7 @@ class Berna(tk.Tk):
         Mantella necesita el microfono para que los NPC oigan a Angel, y en
         esta maquina dos programas pidiendo el mismo microfono acaban con uno
         de los dos recibiendo silencio (medido: rms 0,0000). Como el juego es
-        lo que Angel esta haciendo en ese momento, Berna se aparta solo.
+        lo que Angel esta haciendo en ese momento, Sobri se aparta solo.
         """
         try:
             import psutil
@@ -1057,7 +1070,7 @@ class Berna(tk.Tk):
         Antes cada cosa abria el suyo: la escucha continua uno por frase y el
         boton Hablar otro. En esta maquina eso sale MAL: con dos abiertos, uno
         recibe silencio absoluto (medido: rms 0,0000 durante 22 segundos). Era
-        la razon de que Berna oyera lo primero y luego se quedara sordo.
+        la razon de que Sobri oyera lo primero y luego se quedara sordo.
 
         Si el microfono peta, se vuelve a abrir solo cada dos segundos. Esto no
         se rinde nunca, que para eso tiene que estar siempre operativo.
@@ -1065,10 +1078,10 @@ class Berna(tk.Tk):
         EL APARATO SE BUSCA EN CADA APERTURA, no se guarda su numero. Antes se
         le pasaba a PortAudio el texto de config.json ("WH-CH520") tal cual, y
         el elegia por su cuenta: el 28-08-2026 eligio un fantasma de WDM-KS y
-        Berna se quedo sorda toda la madrugada reintentando. Ahora se pregunta
+        Sobri se quedo sorda toda la madrugada reintentando. Ahora se pregunta
         a micros_disponibles() cual sirve AHORA MISMO y se prueban de uno en
         uno, del mejor al peor, hasta que alguno abre de verdad. Asi, cuando
-        Angel enciende los cascos, Berna los coge sola sin tocar nada.
+        Angel enciende los cascos, Sobri los coge sola sin tocar nada.
         """
         import numpy as np
         import sounddevice as sd
@@ -1080,7 +1093,7 @@ class Berna(tk.Tk):
         def refrescar_aparatos():
             """Reinicia PortAudio para que vea los cascos recien encendidos.
 
-            Solo si Berna esta callada y ha pasado un rato: ver el comentario
+            Solo si Sobri esta callada y ha pasado un rato: ver el comentario
             de CERROJO_AUDIO. Devuelve True si lo ha hecho.
             """
             if self.hablando or not self.cola_voz.empty():
@@ -1121,13 +1134,13 @@ class Berna(tk.Tk):
                 time.sleep(3)
                 # PORTAUDIO SE QUEDA CON LA LISTA DE APARATOS QUE HABIA AL
                 # ARRANCAR y no se entera de los que aparecen despues. Sin
-                # esto, si Berna se abre con los cascos apagados y Angel los
-                # enciende cinco minutos mas tarde, Berna no los veria NUNCA:
+                # esto, si Sobri se abre con los cascos apagados y Angel los
+                # enciende cinco minutos mas tarde, Sobri no los veria NUNCA:
                 # seguiria consultando la lista vacia del principio hasta que
                 # la reiniciara entera. Se le hace mirar otra vez.
                 #
                 # Pero con cuentagotas y con la boca cerrada: esto es lo que
-                # tumbo a Berna dos veces el 28-08-2026 cuando se hacia cada
+                # tumbo a Sobri dos veces el 28-08-2026 cuando se hacia cada
                 # tres segundos y sin mirar si estaba hablando. Doce segundos
                 # siguen siendo de sobra para enterarse de unos cascos.
                 if time.time() - ultimo_refresco >= REFRESCO_MINIMO:
@@ -1208,7 +1221,7 @@ class Berna(tk.Tk):
                 # Reiniciar PortAudio: si el aparato se queda en mal estado, el
                 # siguiente InputStream se puede quedar colgado para siempre.
                 # Paso de verdad el 27/08 a las 20:50 y a las 22:04: se cayo y
-                # NO volvio hasta reiniciar Berna. Va por refrescar_aparatos()
+                # NO volvio hasta reiniciar Sobri. Va por refrescar_aparatos()
                 # para que respete el cerrojo y no lo haga con la voz sonando.
                 refrescar_aparatos()
                 time.sleep(min(2 + intentos, 15))
@@ -1267,7 +1280,7 @@ class Berna(tk.Tk):
                 "Ajustar el oido",
                 "Voy a escuchar 6 segundos para saber a que volumen te llego.\n\n"
                 "Cuando pulses Aceptar, di en voz normal, desde donde te sueles "
-                "sentar:\n\n     \"Oye Berna, que tal estas\"\n\n"
+                "sentar:\n\n     \"Oye Sobri, que tal estas\"\n\n"
                 "Repitelo un par de veces hasta que te avise.", parent=self):
             return
 
@@ -1355,7 +1368,7 @@ class Berna(tk.Tk):
     def _debe_escuchar(self):
         """Cuando NO hay que estar oyendo, que es la mitad de la gracia.
 
-        Sobre todo: mientras Berna habla, para que no se oiga a si mismo decir
+        Sobre todo: mientras Sobri habla, para que no se oiga a si mismo decir
         su nombre y se conteste solo. Y mientras se graba con el boton, para no
         pelearse por el microfono.
         """
@@ -1372,7 +1385,7 @@ class Berna(tk.Tk):
         hayan llamado.
 
         Los ajustes de aqui NO son los del boton Hablar, y salen de medirlo:
-        con una frase corta tipo 'Oye Berna', el Whisper 'base' tal cual solo
+        con una frase corta tipo 'Oye Sobri', el Whisper 'base' tal cual solo
         pillaba el nombre 1 de cada 4 veces ('Pode verme', 'Ven, apara la
         camara'). Cambiando tres cosas pasa a 4 de 4:
 
@@ -1390,8 +1403,10 @@ class Berna(tk.Tk):
         try:
             extra = {}
             if buscando_el_nombre:
-                n = self.cfg.get("palabra_magica", "Berna")
-                extra = {"initial_prompt": "%s. Oye %s. Hola %s." % (n, n, n),
+                # la pista lleva tambien 'sobre, sobra, sobrio': sin eso Whisper
+                # se inventaba "Oye Sobri" oyendo "oye, sobre..." (nombre.py)
+                n = self.cfg.get("palabra_magica", "Sobri")
+                extra = {"initial_prompt": Nm.pista_para_whisper(n),
                          "vad_filter": False, "beam_size": 5}
             else:
                 extra = {"vad_filter": True, "beam_size": 1}
@@ -1407,7 +1422,7 @@ class Berna(tk.Tk):
             return ""
 
     def _bucle_escucha(self):
-        """Oye siempre y despierta a Berna cuando le nombran.
+        """Oye siempre y despierta a Sobri cuando le nombran.
 
         Todo esto pasa DENTRO del ordenador: el audio lo transcribe Whisper en
         local y no sale a ningun sitio. Lo unico que viaja es la frase ya
@@ -1468,7 +1483,7 @@ class Berna(tk.Tk):
         El microfono lo lleva _bucle_audio y esta abierto siempre. Antes cada
         cosa abria el suyo, y dos programas pidiendo el mismo microfono en esta
         maquina hacen que uno de los dos reciba SILENCIO ABSOLUTO (medido:
-        rms 0,0000 durante 22 segundos seguidos). De ahi venia que Berna
+        rms 0,0000 durante 22 segundos seguidos). De ahi venia que Sobri
         dejara de oir.
         """
         if self.whisper is None:
@@ -1597,7 +1612,7 @@ class Berna(tk.Tk):
 
         def preguntar():
             try:
-                caja["ok"] = messagebox.askyesno("Berna pide permiso", pregunta, parent=self)
+                caja["ok"] = messagebox.askyesno("Sobri pide permiso", pregunta, parent=self)
             except Exception:
                 caja["ok"] = False
             listo.set()
@@ -1735,7 +1750,7 @@ class Berna(tk.Tk):
                 "herramienta que te hace falta, pidela con mas_herramientas "
                 "diciendo 'codigo': las tienes todas.\n"
                 "Y TE PUEDES LLEVAR A OTRO ORDENADOR: en el escritorio de Angel "
-                "hay una carpeta 'Instalar Berna' que te lleva entero, con el "
+                "hay una carpeta 'Instalar Sobri' que te lleva entero, con el "
                 "Python y todo, para meterla en un pen e instalarte donde sea sin "
                 "internet. Si el dice que va a llevarte a otro sitio, pasale "
                 "actualizar_carpeta_del_pen primero, que asi se lleva la ultima "
@@ -1849,7 +1864,7 @@ class Berna(tk.Tk):
                 "de insistir.\n"
                 "El otro es el de la ESCUCHA. Cuando esta en 'siempre', oyes sin "
                 "que Angel pulse nada y te despiertas cuando te llama por tu "
-                "nombre: 'Oye Berna, lo que sea'. Si te llama a secas, tu dices "
+                "nombre: 'Oye Sobri, lo que sea'. Si te llama a secas, tu dices "
                 "'dime' y te quedas esperando la orden. Lo que oyes se queda en "
                 "su ordenador: lo entiende Whisper ahi mismo y no sale nada a "
                 "internet hasta que el te ha llamado. Si te pregunta si le estas "
@@ -1899,8 +1914,14 @@ class Berna(tk.Tk):
             "- Por defecto dos o tres frases. Si te pide detalle, extiendete; "
             "pero no sueltes un discurso porque si.\n"
             "- Nunca digas que eres un modelo de lenguaje, ni 'como asistente "
-            "de IA', ni te disculpes por tus limitaciones. Eres Berna.\n")
+            "de IA', ni te disculpes por tus limitaciones. Eres Sobri.\n")
 
+        # Como lleva las redes de la musica. Texto fijo: no rompe la cache.
+        try:
+            import redes as _Rd
+            sis += _Rd.bloque_de_prompt()
+        except Exception as e:
+            anotar_una_vez("prompt-redes", "prompt sin el bloque de redes: %s" % e)
         # El catalogo de NOMBRES de las 151 herramientas. Cuesta ~780 tokens y
         # hace que sepa siempre todo lo que puede hacer, aunque en esta vuelta
         # solo lleve la ficha completa de las que hacen falta. Va antes del
@@ -1958,7 +1979,7 @@ class Berna(tk.Tk):
         """Los ultimos n turnos, mas un apunte de lo que se queda fuera.
 
         Antes se cortaba en seco con `historial[-n:]`: a partir del turno 13,
-        Berna no se acordaba de nada de la propia conversacion, y con doce
+        Sobri no se acordaba de nada de la propia conversacion, y con doce
         turnos eso pasa enseguida. Ahora lo que se cae se condensa en una nota,
         asi que sigue sabiendo de que se ha hablado sin arrastrar el texto
         entero. Se hace aqui, sin llamar al modelo: cuesta cero y no anade ni
@@ -2003,15 +2024,15 @@ class Berna(tk.Tk):
     def _castigar(self, modelo, err):
         """Aparta un rato al cerebro que acaba de fallar.
 
-        Es lo que hace que Berna no se atasque cuando se le agota la cuota del
+        Es lo que hace que Sobri no se atasque cuando se le agota la cuota del
         modelo principal: en vez de tropezar con el en cada frase, lo esquiva y
         tira del siguiente, y lo vuelve a intentar mas tarde.
         """
         e = str(err or "")
         # La regla vive en cerebro.cuanto_apartar y es la misma del movil. Antes
-        # aqui cualquier 429 eran 30 minutos: un pico por minuto dejaba a Berna
+        # aqui cualquier 429 eran 30 minutos: un pico por minuto dejaba a Sobri
         # sin ningun Gemini (registro del 10/09 y del 13/09).
-        cuanto = Ce.cuanto_apartar(e, CASTIGO_CUOTA, CASTIGO_SATURADO)
+        cuanto = Ce.cuanto_apartar(e, CASTIGO_CUOTA, CASTIGO_SATURADO, modelo)
         if not cuanto:
             return
         if self._sirve(modelo):
@@ -2044,7 +2065,7 @@ class Berna(tk.Tk):
         url, cab, nombre = destino
         try:
             # (conectar, leer). Estaba en 180 a secas: si un modelo se atascaba,
-            # Berna se quedaba TRES MINUTOS "pensando" antes de probar el
+            # Sobri se quedaba TRES MINUTOS "pensando" antes de probar el
             # siguiente, y desde fuera parecia colgada. Con 8 s para conectar,
             # el que no esta se descarta enseguida y se pasa al de detras.
             payload = {"model": nombre, "messages": mensajes,
@@ -2156,7 +2177,7 @@ class Berna(tk.Tk):
         """Red de seguridad: esto corre en un hilo suelto y sin nadie mirando.
 
         Si aqui revienta algo, el hilo muere en silencio, `ocupado` se queda en
-        True y `_fin()` no llega a ejecutarse: Berna se queda con el cartel de
+        True y `_fin()` no llega a ejecutarse: Sobri se queda con el cartel de
         "Pensando..." puesto PARA SIEMPRE y hay que reiniciarla. Con esto, si
         peta lo cuenta, lo apunta y se desbloquea.
         """
@@ -2176,7 +2197,7 @@ class Berna(tk.Tk):
                        "Google o OpenRouter en config.json.\n"))
             self.after(0, self._fin)
             return
-        self.after(0, lambda: self._escribir("el", "", quien="Berna"))
+        self.after(0, lambda: self._escribir("el", "", quien="Sobri"))
         mensajes = self._mensajes()
         ultimo_error = "sin detalle"
 
@@ -2214,6 +2235,7 @@ class Berna(tk.Tk):
                 self.after(0, self._estado, "Pensando (%s)..." % corto)
                 texto, llamadas, err = self._una_ronda(modelo, mensajes, tools)
                 if err is None:
+                    Ce.fue_bien(modelo)
                     break
                 if err == "CUOTA_DIARIA":
                     tope_openrouter = True
@@ -2221,7 +2243,7 @@ class Berna(tk.Tk):
                 ultimo_error = "%s: %s" % (corto, err)
                 # SE APUNTA SIEMPRE, no solo los 429 y 503. Sin esto, un fallo
                 # de programacion dentro de _una_ronda se disfraza de "error del
-                # modelo" (esa funcion se traga cualquier excepcion), Berna
+                # modelo" (esa funcion se traga cualquier excepcion), Sobri
                 # recorre los ocho cerebros, falla en todos por la misma razon,
                 # y en el registro no queda ni rastro de cual era.
                 anotar("cerebro %s ha fallado: %s" % (corto, str(err)[:90]))
@@ -2256,7 +2278,7 @@ class Berna(tk.Tk):
 
             # 1) Los argumentos, y si vienen rotos SE LE DICE.
             #    Antes un JSON a medias se convertia en args={} sin avisar y la
-            #    herramienta se ejecutaba en vacio: Berna decia que lo habia
+            #    herramienta se ejecutaba en vacio: Sobri decia que lo habia
             #    hecho y no habia hecho nada. Ahora el error vuelve al modelo,
             #    que es quien puede repetir la llamada bien.
             tareas = []
@@ -2386,7 +2408,7 @@ class Berna(tk.Tk):
         respuesta del modelo, y ahi arriba `_una_ronda` se traga cualquier
         excepcion y la devuelve como si fuera un fallo del cerebro. El
         01-09-2026 una barra invertida mal escrita en `limpiar_para_voz` dejo a
-        Berna muda Y sin contestar: recorria los ocho modelos y fallaba en todos
+        Sobri muda Y sin contestar: recorria los ocho modelos y fallaba en todos
         por la misma regex rota. Que la voz no pueda volver a tumbar la cabeza.
         """
         try:
@@ -2425,12 +2447,12 @@ class Berna(tk.Tk):
         env = self._envolvente(arr, sr)
         # Con cerrojo: si justo en este instante el hilo del microfono estuviera
         # reiniciando PortAudio, empezar a sonar aqui es lo que corrompe la
-        # memoria y mata a Berna sin dejar rastro. Ver CERROJO_AUDIO.
+        # memoria y mata a Sobri sin dejar rastro. Ver CERROJO_AUDIO.
         # HABLA POR DONDE OYE. Sin decirle el aparato, sd.play saca el sonido
         # por el que Windows tenga por defecto, y con los Galaxy Buds eso acaba
         # siendo LA TELE: en cuanto algo abre el micro, los cascos pasan a modo
         # manos libres, la salida estereo se cae y Windows se lleva el sonido al
-        # HDMI. Angel se quedaba hablandole a Berna y oyendola por el televisor.
+        # HDMI. Angel se quedaba hablandole a Sobri y oyendola por el televisor.
         salida = self._altavoz()
         with CERROJO_AUDIO:
             try:
@@ -2488,7 +2510,7 @@ class Berna(tk.Tk):
 
         Es lo unico de toda la ventana que habla SIN que Angel haya preguntado
         nada, asi que va con cuidado: si algo falla se calla y sigue, y no
-        interrumpe a Berna si esta hablando (se pone en la cola detras).
+        interrumpe a Sobri si esta hablando (se pone en la cola detras).
         """
         import agenda as Ag
         while True:
@@ -2502,12 +2524,48 @@ class Berna(tk.Tk):
                 anotar_una_vez("agenda", "no he podido mirar los recordatorios: %s" % e)
             time.sleep(20)
 
+    def _bucle_redes(self):
+        """El piloto automatico de las redes de la musica (redes.py).
+
+        Angel pidio el 18-09-2026 no tener que estar encima: el solo hace las
+        canciones en Suno y Sobri lleva lo demas. Cada 10 minutos una vuelta;
+        lo que haya que decir sale como los recordatorios (escrito y en voz) y
+        entra en la conversacion, para que un "subela" despues sepa cual es.
+        """
+        import redes as Rd
+        time.sleep(90)          # que arranque todo lo demas primero
+        while True:
+            try:
+                for aviso in Rd.piloto_una_vuelta():
+                    self.after(0, self._aviso_de_redes, aviso)
+            except Exception as e:
+                anotar_una_vez("piloto-redes", "piloto de redes: %s" % e)
+            time.sleep(600)
+
+    def _aviso_de_redes(self, aviso):
+        self._escribir("sis", "\n[REDES] %s\n" % aviso)
+        # Entra en la conversacion sin dejar dos turnos seguidos del mismo lado
+        # ni una conversacion que empiece por Sobri: hay modelos que lo rechazan.
+        # Si Sobri esta contestando algo justo ahora, solo se escribe y se dice.
+        ultimo = self.historial[-1] if self.historial else None
+        if getattr(self, "ocupado", False):
+            pass
+        elif ultimo and ultimo.get("role") == "assistant" and isinstance(ultimo.get("content"), str):
+            ultimo["content"] = (ultimo["content"] + "\n\n" + aviso).strip()
+        else:
+            if not self.historial:
+                self.historial.append({"role": "user",
+                                       "content": "(Sobri avisa por su cuenta de las redes)"})
+            self.historial.append({"role": "assistant", "content": aviso})
+        if self.cfg.get("hablar", True):
+            self.cola_voz.put(aviso)
+
     def _bucle_vigilante(self):
         """Le habla el solo cuando ve que Angel se ha atascado.
 
         Es la segunda cosa de toda la ventana que habla sin que le pregunten
         (la otra son los recordatorios), asi que va con los mismos modales: si
-        algo falla se calla, y nunca interrumpe si Berna ya esta hablando.
+        algo falla se calla, y nunca interrumpe si Sobri ya esta hablando.
 
         Lo que se vigila es LOCAL (que ventana y cuanto rato). La foto de la
         pantalla, que si sale hacia Google, solo se hace cuando el vigilante
@@ -2561,14 +2619,14 @@ class Berna(tk.Tk):
         texto = self._respuesta_suelta("\n".join(contexto))
         if not texto or texto.strip().upper().startswith("NADA"):
             return
-        self.after(0, self._escribir, "el", texto + "\n\n", "Berna")
+        self.after(0, self._escribir, "el", texto + "\n\n", "Sobri")
         if self.cfg.get("hablar", True):
             self.cola_voz.put(limpiar_para_voz(texto))
 
     def _respuesta_suelta(self, peticion):
         """Una pregunta al modelo que NO entra en la conversacion de Angel.
 
-        Va aparte a proposito: lo que ve el vigilante es contexto de Berna, no
+        Va aparte a proposito: lo que ve el vigilante es contexto de Sobri, no
         algo que haya dicho Angel, y meterlo en el historial ensuciaria la
         conversacion y le haria creer que se lo ha dicho el.
         """

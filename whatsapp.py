@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
-Berna leyendo conversaciones de WhatsApp que Angel le exporta.
+Sobri leyendo conversaciones de WhatsApp que Angel le exporta.
 
 POR QUE ASI Y NO DE OTRA FORMA
   No existe manera oficial de que un programa lea el WhatsApp personal.
@@ -8,11 +8,11 @@ POR QUE ASI Y NO DE OTRA FORMA
   y Meta las detecta y cierra la cuenta. Perder el numero no compensa.
 
   Pero WhatsApp trae su propia funcion "Exportar chat". Angel exporta la
-  conversacion que quiera, y Berna la lee de ahi. Es legitimo, no
+  conversacion que quiera, y Sobri la lee de ahi. Es legitimo, no
   arriesga la cuenta, y sobre todo: Angel elige QUE conversacion comparte
   en lugar de abrirlas todas de golpe.
 
-  Aun asi, en un chat hay mensajes de otras personas. Conviene que Berna
+  Aun asi, en un chat hay mensajes de otras personas. Conviene que Sobri
   se lo recuerde a Angel cuando exporte conversaciones ajenas.
 """
 import os, re, glob, datetime

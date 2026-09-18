@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 """Indice de la biblioteca de pistas y loops grabados.
 
-Berna traia cinco loops de fabrica y renunciaba a ellos en cuanto le pedias
+Sobri traia cinco loops de fabrica y renunciaba a ellos en cuanto le pedias
 otra velocidad. Desde el 04/09/2026 hay 13.244 trozos grabados en
 C:\\Users\\alaga\\Documents\\lmms\\samples\\Pistas, con la velocidad y muchas
 veces el tono escritos en el propio nombre del fichero.
 
 Este modulo los lee una vez, se apunta de cada uno su estilo, su papel, su
 velocidad, su tono y cuantos compases dura, y guarda la lista en un json.
-Asi Berna puede pedir "un break de 118 pulsaciones en La" y que se lo den.
+Asi Sobri puede pedir "un break de 118 pulsaciones en La" y que se lo den.
 
 La regla de oro sigue siendo la de siempre: UN TROZO GRABADO NO SE ESTIRA.
 Si suena a otra velocidad se va de tiempo. Por eso aqui solo se devuelven
@@ -63,7 +63,7 @@ _PAPELES = (
                  "synths", "sinte", "chord", "chords")),
 )
 
-# Que carpeta de la biblioteca sirve para cada estilo de los que Berna conoce.
+# Que carpeta de la biblioteca sirve para cada estilo de los que Sobri conoce.
 # Un estilo puede tirar de varias carpetas; se prueban en ese orden.
 ESTILO_CARPETAS = {
     "reggaeton":   ("04_Dancehall_Regueton", "08_808_Graves", "07_Percusion"),
@@ -358,7 +358,7 @@ def velocidades(estilo, papel="bateria"):
 
 
 def loop_para(estilo, bpm=None, tono=None, papel="bateria", az=None):
-    """Un loop listo para Berna: (ruta, compases, bpm). None si no hay.
+    """Un loop listo para Sobri: (ruta, compases, bpm). None si no hay.
 
     Las carpetas de cada estilo se prueban EN ORDEN, y manda la primera que
     tenga algo. Es a proposito: para el reggaeton, la primera es la del

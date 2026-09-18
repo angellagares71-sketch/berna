@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 r"""
-Acceso de Berna a las cuentas de Angel: Google (Gmail, Calendar, Drive)
+Acceso de Sobri a las cuentas de Angel: Google (Gmail, Calendar, Drive)
 y correo por IMAP.
 
 COMO FUNCIONA LA AUTORIZACION DE GOOGLE
   No se guarda ninguna contrasena en ningun sitio. La primera vez que
-  Berna necesita Google se abre el navegador de Angel en la pagina
+  Sobri necesita Google se abre el navegador de Angel en la pagina
   oficial de Google, Angel pulsa "Permitir", y Google devuelve un permiso
   (un token) que se guarda en google\token.json. Ese permiso es revocable
   en cualquier momento desde myaccount.google.com/permissions.
@@ -65,9 +65,11 @@ def _credenciales():
             creds = None
     if not os.path.exists(CRED):
         raise FileNotFoundError(FALTA_CRED)
-    # esto abre el navegador de Angel para que pulse "Permitir"
+    # esto abre el navegador de Angel para que pulse "Permitir". Con tope: sin
+    # el, si Angel no llegaba a pulsar, la ventana de Sobri se quedaba colgada
+    # para siempre esperando (el bucle de herramientas es sincrono).
     flow = InstalledAppFlow.from_client_secrets_file(CRED, ALCANCES)
-    creds = flow.run_local_server(port=0, prompt="consent",
+    creds = flow.run_local_server(port=0, prompt="consent", timeout_seconds=180,
                                   authorization_prompt_message="")
     with open(TOKEN, "w", encoding="utf-8") as f:
         f.write(creds.to_json())
@@ -89,6 +91,25 @@ def estado_google():
         return ("Google esta a medio configurar: las credenciales estan puestas pero "
                 "Angel todavia no ha dado el permiso. La proxima vez que uses una "
                 "herramienta de Google se le abrira el navegador para autorizarlo.")
+    # Antes decia "autorizado" solo porque el archivo existia, y el permiso
+    # llevaba muerto desde el 02-09-2026: con la app de Google en modo
+    # "Prueba", Google lo caduca a los 7 dias. Ahora se prueba de verdad.
+    try:
+        from google.oauth2.credentials import Credentials
+        from google.auth.transport.requests import Request
+        creds = Credentials.from_authorized_user_file(TOKEN, ALCANCES)
+        if not creds.valid:
+            creds.refresh(Request())
+            with open(TOKEN, "w", encoding="utf-8") as f:
+                f.write(creds.to_json())
+    except Exception as e:
+        if "invalid_grant" in str(e):
+            return ("El permiso de Google ha CADUCADO (Google lo corta a los 7 dias si la "
+                    "app esta en modo Prueba). Para que no vuelva a pasar: en "
+                    "console.cloud.google.com/auth/audience pulsa 'Publicar app' (En "
+                    "produccion). Luego, al usar cualquier cosa de Google, se abre el "
+                    "navegador para dar permiso otra vez.")
+        return "No he podido comprobar el permiso de Google: %s" % e
     return "Google esta configurado y autorizado. Puedo leer correo, agenda y Drive."
 
 
@@ -224,7 +245,7 @@ def google_crear_evento(titulo, inicio, fin=None, descripcion="", permiso=None):
                 fin = d.isoformat()
             except Exception:
                 return "No entiendo la fecha de inicio. Usa 2026-08-27T18:00:00."
-        pregunta = ("Berna quiere crear este evento en tu Google Calendar:\n\n"
+        pregunta = ("Sobri quiere crear este evento en tu Google Calendar:\n\n"
                     "%s\nDesde: %s\nHasta: %s\n\nLe dejas?" % (titulo, inicio, fin))
         if permiso is None or not permiso(pregunta):
             return "El usuario no ha dado permiso, no se ha creado el evento."

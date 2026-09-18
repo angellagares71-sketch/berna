@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 r"""
-Berna compone una cancion entera en LMMS, ella sola.
+Sobri compone una cancion entera en LMMS, ella sola.
 
-Angel lo pidio el 2026-09-02: "que solo Berna pueda generar una cancion del
+Angel lo pidio el 2026-09-02: "que solo Sobri pueda generar una cancion del
 estilo que yo le diga". Y ese mismo dia, oyendo la primera version, dijo lo que
 habia que oir: "parecen politonos". Tenia razon, y esta segunda version existe
 por eso.
@@ -906,7 +906,7 @@ def _pista_preset(nombre, rel, patrones, tics_compas, vol=100, pan=0,
 # ------------------------------------------------- instrumentos de verdad
 
 # Bancos de sonidos, del que mejor suena al que peor. Se coge el primero que
-# exista, asi que si algun dia se borra uno, Berna sigue funcionando con el
+# exista, asi que si algun dia se borra uno, Sobri sigue funcionando con el
 # siguiente. Los tres son libres: se puede publicar lo que se componga.
 #
 #   MuseScore General  206 MB, 272 instrumentos. El que mejor suena, sobre
@@ -1089,7 +1089,7 @@ def _cadena_master():
 
 def _proyecto(bpm, numerador, pistas, titulo, compases=32):
     return ('<?xml version="1.0"?>\n<!DOCTYPE lmms-project>\n'
-            '<lmms-project creator="Berna" version="1.0" type="song"'
+            '<lmms-project creator="Sobri" version="1.0" type="song"'
             ' creatorversion="1.2.2">\n'
             '<head timesig_numerator="%d" bpm="%d" timesig_denominator="4"'
             ' mastervol="%d" masterpitch="0"/>\n<song>\n'
@@ -1190,7 +1190,7 @@ def _motivo(az, pasos):
 
 # ------------------------------------------------------------------ componer
 def componer(estilo, compases=32, tono="", bpm=0, permiso=None):
-    r"""El cerebro musical de Berna, SIN atarlo a LMMS.
+    r"""El cerebro musical de Sobri, SIN atarlo a LMMS.
 
     Hace exactamente lo mismo que el principio de `crear_cancion` (mismo
     estilo, misma clave de son, mismo tumbao, mismo bombeo, misma cadencia
@@ -1198,7 +1198,7 @@ def componer(estilo, compases=32, tono="", bpm=0, permiso=None):
     los datos en crudo: los patrones de percusion y las notas de cada
     instrumento, por compas, en TICS (48 por pulso, como todo en este
     modulo). Con esto, cualquier otro programa que sepa tocar notas -REAPER,
-    por ejemplo- puede usar el MISMO criterio musical sin que Berna tenga que
+    por ejemplo- puede usar el MISMO criterio musical sin que Sobri tenga que
     aprenderselo dos veces.
 
     ESTO ES UNA COPIA A PROPOSITO, no una funcion compartida con
@@ -1265,7 +1265,7 @@ def componer(estilo, compases=32, tono="", bpm=0, permiso=None):
     swing = float(e.get("swing", 0.0))
 
     titulo = ("%s con %s" % (mezcla_de, mezcla_con)) if mezcla_de else \
-        ("%s de Berna" % clave)
+        ("%s de Sobri" % clave)
 
     az = random.Random("%s|%s|%d|%d" % (clave, titulo, compases, pulsaciones))
     plan = _secciones(compases)
@@ -1434,9 +1434,9 @@ def crear_cancion(estilo, nombre="", compases=32, tono="", bpm=0,
 
     titulo = str(nombre or "").strip() or (
         ("%s con %s" % (mezcla_de, mezcla_con)) if mezcla_de
-        else ("%s de Berna" % clave))
+        else ("%s de Sobri" % clave))
 
-    aviso = ("Berna va a componer una cancion:\n\n"
+    aviso = ("Sobri va a componer una cancion:\n\n"
              "  estilo: %s\n  ritmo: %d pulsaciones por minuto\n"
              "  duracion: %d compases (medio minuto largo)\n"
              "  se guarda en: %s\n\n"
@@ -1851,7 +1851,7 @@ def comprobar_que_suena(ruta, guardar_mp3=True, segundos_max=SEGUNDOS_RENDER):
 
     POR QUE SE MIDE: un proyecto puede estar perfectamente escrito y sonar a
     silencio (una ruta de muestra mal puesta, un preset que no esta, un volumen
-    a cero). Sin esto, Berna diria "ya esta tu cancion" y le estaria dando a
+    a cero). Sin esto, Sobri diria "ya esta tu cancion" y le estaria dando a
     Angel un archivo mudo.
 
     Y DE PASO SE APROVECHA: el mismo renderizado deja el mp3 al lado del

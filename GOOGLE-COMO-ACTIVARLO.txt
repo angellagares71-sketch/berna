@@ -1,5 +1,5 @@
 ============================================================
-  DARLE A BERNA ACCESO A TU GOOGLE
+  DARLE A SOBRI ACCESO A TU GOOGLE
   (Gmail, Calendar y Drive)
 
   Guia actualizada al 25/08/2026 para la consola NUEVA
@@ -14,7 +14,7 @@ POR QUE TIENES QUE HACER ESTO TU
   Ese sistema exige unas credenciales que solo puedes generar
   tu, desde tu propia cuenta.
 
-  Tu contrasena no se escribe en ningun sitio y Berna
+  Tu contrasena no se escribe en ningun sitio y Sobri
   nunca la ve. El permiso se revoca cuando quieras en
   myaccount.google.com/permissions
 
@@ -28,7 +28,7 @@ POR QUE TIENES QUE HACER ESTO TU
 
   Si arriba a la izquierda ya te sale un proyecto elegido
   (por ejemplo "My Project 1369"), YA LO TIENES. El nombre
-  da igual, no hace falta que se llame Berna.
+  da igual, no hace falta que se llame Sobri.
 
 
 ------------------------------------------------------------
@@ -58,7 +58,7 @@ POR QUE TIENES QUE HACER ESTO TU
   te dara error justo al final, cuando vayas a autorizar. ***
 
   Si te pide antes rellenar "Marca" (nombre de la app y
-  correo de contacto), rellenalo: nombre Berna y tu
+  correo de contacto), rellenalo: nombre Sobri y tu
   correo. Tipo de usuario: EXTERNO.
 
 
@@ -73,7 +73,7 @@ POR QUE TIENES QUE HACER ESTO TU
   1. Pulsa "+ CREAR CLIENTE".
   2. Tipo de aplicacion:  APLICACION DE ESCRITORIO
      *** NO elijas "Aplicacion web". No funcionaria. ***
-  3. Nombre: Berna.  Pulsa CREAR.
+  3. Nombre: Sobri.  Pulsa CREAR.
 
 
 ------------------------------------------------------------
@@ -83,7 +83,7 @@ POR QUE TIENES QUE HACER ESTO TU
   Pulsa "DESCARGAR JSON".
 
   Si ya cerraste esa ventana: en la lista de Clientes,
-  a la derecha de la fila de Berna hay un ICONO DE
+  a la derecha de la fila de Sobri hay un ICONO DE
   DESCARGA (una flecha hacia abajo). Pulsalo.
 
   Se descarga un archivo llamado algo como
@@ -106,17 +106,32 @@ POR QUE TIENES QUE HACER ESTO TU
 ------------------------------------------------------------
   PASO 7  -  Autorizar
 ------------------------------------------------------------
-  1. Cierra Berna y vuelve a abrirlo.
+  1. Cierra Sobri y vuelve a abrirlo.
   2. Escribele:  "mira mi correo"
   3. Se abre tu navegador en la pagina de Google.
   4. Elige tu cuenta y pulsa Continuar.
   5. Google avisa de que la app "no esta verificada".
      Es normal: la app la has creado tu. Pulsa
-     "Configuracion avanzada" > "Ir a Berna (no seguro)".
+     "Configuracion avanzada" > "Ir a Sobri (no seguro)".
   6. Acepta los permisos.
 
-  Listo. El permiso queda en google\token.json y no te
-  vuelve a preguntar.
+  Listo. El permiso queda en google\token.json.
+
+
+------------------------------------------------------------
+  PASO 8  -  Que el permiso NO caduque  (IMPORTANTE)
+------------------------------------------------------------
+  Mientras la app este en modo "Prueba", Google corta el
+  permiso a los 7 DIAS y Sobri deja de ver tu correo sin
+  avisar.
+
+  console.cloud.google.com/auth/audience
+  Pulsa "PUBLICAR APLICACION" y confirma. Queda "En
+  produccion". No hace falta que Google la revise: es
+  solo para ti. Despues, vuelve a autorizar (paso 7).
+
+  Si Sobri dice que el permiso ha CADUCADO, es esto.
+  Para YouTube y TikTok mira REDES-COMO-ACTIVARLO.txt.
 
 
 ------------------------------------------------------------
@@ -139,6 +154,6 @@ POR QUE TIENES QUE HACER ESTO TU
 ------------------------------------------------------------
   PARA CORTARLE EL ACCESO
 ------------------------------------------------------------
-  Rapido:   dile a Berna "desconecta mi Google".
+  Rapido:   dile a Sobri "desconecta mi Google".
   Del todo: myaccount.google.com/permissions > Quitar acceso.
   A mano:   borra C:\Asistente\google\token.json

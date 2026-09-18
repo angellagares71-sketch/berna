@@ -30,7 +30,7 @@ import datetime
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 PERFIL = os.path.join(BASE, "perfil.json")
-SALIDA = os.path.join(os.path.expanduser("~"), "Documents", "Berna")
+SALIDA = os.path.join(os.path.expanduser("~"), "Documents", "Sobri")
 
 IVA = 21.0
 A4 = (595, 842)
@@ -147,7 +147,7 @@ def hacer_presupuesto(cliente, conceptos, notas="", validez_dias=30, permiso=Non
     iva = base * IVA / 100.0
     total = base + iva
     resumen = "\n".join("  %s x%g = %s" % (d, u, _euros(u * p)) for d, u, p in filas)
-    aviso = ("Berna va a hacer un PRESUPUESTO en PDF:\n\nPara: %s\n\n%s\n\n"
+    aviso = ("Sobri va a hacer un PRESUPUESTO en PDF:\n\nPara: %s\n\n%s\n\n"
              "Base: %s\nIVA (21%%): %s\nTOTAL: %s\n\n"
              "Es un presupuesto, NO una factura. Revisa los numeros. Le dejas?"
              % (cliente, resumen, _euros(base), _euros(iva), _euros(total)))
@@ -269,7 +269,7 @@ def unir_pdfs(rutas, salida="", permiso=None):
     salida = salida or os.path.join(_carpeta(), "unido-%s.pdf"
                                     % datetime.datetime.now().strftime("%Y%m%d-%H%M"))
     if permiso is None or not permiso(
-            "Berna va a UNIR %d PDF en uno solo:\n\n%s\n\nSe guardara en:\n%s\n\n"
+            "Sobri va a UNIR %d PDF en uno solo:\n\n%s\n\nSe guardara en:\n%s\n\n"
             "Los originales no se tocan. Le dejas?"
             % (len(trozos), "\n".join(os.path.basename(r) for r in trozos[:8]), salida)):
         return "No me has dado permiso, no he unido nada."
@@ -303,7 +303,7 @@ def fotos_a_pdf(carpeta, salida="", ancho=1600, permiso=None):
     salida = salida or os.path.join(_carpeta(), "%s.pdf"
                                     % os.path.basename(os.path.normpath(carpeta)))
     if permiso is None or not permiso(
-            "Berna va a meter %d fotos en un PDF:\n\nDe: %s\nA:  %s\n\n"
+            "Sobri va a meter %d fotos en un PDF:\n\nDe: %s\nA:  %s\n\n"
             "Le dejas?" % (len(fotos), carpeta, salida)):
         return "No me has dado permiso, no he hecho nada."
     try:

@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 r"""
-Recordatorios, alarmas y temporizadores de Berna.
+Recordatorios, alarmas y temporizadores de Sobri.
 
 Era el agujero mas gordo que tenia: sabia hacer de todo, pero **solo cuando
 le hablabas**. No podia avisar de nada por su cuenta. Con esto, Angel le dice
-"recuerdame a las cinco que llame al cliente" y a las cinco Berna **habla
+"recuerdame a las cinco que llame al cliente" y a las cinco Sobri **habla
 solo** y se lo dice en voz alta.
 
 COMO FUNCIONA
   Los avisos se guardan en `recordatorios.json` con su fecha y hora exactas,
-  asi que **sobreviven a cerrar el programa**: si Berna estaba apagado cuando
+  asi que **sobreviven a cerrar el programa**: si Sobri estaba apagado cuando
   tocaba, al abrirlo te lo dice igual (con retraso, pero te lo dice).
 
   La ventana tiene un hilo que llama a `vencidos()` cada pocos segundos. Esa

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""La voz de Berna. Neuronal si hay internet, Piper si no.
+"""La voz de Sobri. Neuronal si hay internet, Piper si no.
 
 POR QUE (01-09-2026): Piper suena a robot. Es rapido y funciona sin internet,
 y por eso SIGUE SIENDO EL RESPALDO y no se quita, pero las voces "medium" que
@@ -9,7 +9,7 @@ verdad) respiran, entonan y hacen pausas donde las haria una persona.
 
 COMO ENCAJA SIN TOCAR NADA MAS: esta clase imita la interfaz de Piper. Devuelve
 trozos con `.audio_int16_array` y `.sample_rate`, que es lo que `_bucle_voz` ya
-sabe reproducir. Se cambia el motor y el resto de Berna ni se entera.
+sabe reproducir. Se cambia el motor y el resto de Sobri ni se entera.
 
 EL ACENTO AHORA ES DE VERDAD: antes "ponte mexicano" cargaba una voz mexicana
 de Piper y para el resto de paises no habia nada. Microsoft tiene voz masculina
@@ -103,7 +103,7 @@ class VozNeural(object):
         """Devuelve el audio ya en crudo, listo para sonar.
 
         Acepta `syn_config` porque asi la llama `cantar.py`, que espera la
-        firma de Piper. Sin esto reventaba con un TypeError y Berna decia
+        firma de Piper. Sin esto reventaba con un TypeError y Sobri decia
         que no sabia cantar.
         """
         ajustes = ajustes if ajustes is not None else syn_config
@@ -127,7 +127,7 @@ class VozNeural(object):
         cont.close()
         if not partes:
             raise RuntimeError("el audio venia vacio")
-        # UN SOLO TROZO, y esto importa: Berna hace sd.play() + sd.wait() con
+        # UN SOLO TROZO, y esto importa: Sobri hace sd.play() + sd.wait() con
         # cada trozo que le des. Descodificando se sacan 225 fotogramas para
         # cinco segundos, y devolverlos sueltos era abrir y cerrar el altavoz
         # 225 veces: se oia entrecortado o no se oia. Piper devuelve pocos y
@@ -146,7 +146,7 @@ def probar(nombre=POR_DEFECTO, texto="Probando la voz nueva."):
 
 
 class VozConRespaldo(object):
-    """La neuronal, y si falla, Piper. Sin que Berna se quede muda nunca.
+    """La neuronal, y si falla, Piper. Sin que Sobri se quede muda nunca.
 
     El respaldo NO es un adorno: el kit de instalacion presume de funcionar sin
     internet, y ademas Microsoft puede cortar o tardar. Si la neuronal falla una

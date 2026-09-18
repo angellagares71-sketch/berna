@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
-Berna pendiente de lo que hace Angel, sin que se lo tenga que pedir.
+Sobri pendiente de lo que hace Angel, sin que se lo tenga que pedir.
 
 Angel lo pidio el 2026-08-27: "que desde que lo enciendo siempre este
 monitoreando la pantalla, siempre este pendiente de lo que estoy haciendo,
@@ -23,7 +23,7 @@ LA DECISION QUE LO ORDENA TODO
     hay un banco, un pago, un gestor de contrasenas o una pantalla de entrar
     en una cuenta.
 
-  Angel eligio esto sabiendo la alternativa, y eligio tambien que Berna le
+  Angel eligio esto sabiendo la alternativa, y eligio tambien que Sobri le
   HABLE el solo cuando lo vea atascado.
 
 LO QUE NO HACE, Y ES A PROPOSITO
@@ -68,7 +68,7 @@ def _lista_sensible():
 
 
 # Programas que no cuentan como "estar trabajando en algo": si esta en el
-# escritorio o en el propio Berna, no hay nada que vigilar.
+# escritorio o en el propio Sobri, no hay nada que vigilar.
 IGNORAR = ("berna", "program manager", "")
 
 
@@ -276,7 +276,7 @@ def el_vigilante(config=None):
     return _EL
 
 
-# ------------------------------------------------ herramientas para Berna
+# ------------------------------------------------ herramientas para Sobri
 def _cfg():
     try:
         with open(os.path.join(BASE, "config.json"), "r", encoding="utf-8") as f:
@@ -301,7 +301,7 @@ def estado_de_la_vigilancia():
 
 
 def dejar_de_vigilar():
-    """Berna puede APAGARLA (como con la camara), pero no encenderla."""
+    """Sobri puede APAGARLA (como con la camara), pero no encenderla."""
     ruta = os.path.join(BASE, "config.json")
     try:
         with open(ruta, "r", encoding="utf-8") as f:

@@ -1,5 +1,5 @@
 ============================================================
-  QUE BERNA SE ACTUALICE SOLO POR INTERNET
+  QUE SOBRI SE ACTUALICE SOLO POR INTERNET
 
   Guia del 27/08/2026. Se hace UNA vez, y a partir de ahi
   publicar una version nueva es una sola orden.
@@ -7,9 +7,9 @@
 
 
 QUE VAS A CONSEGUIR
-  Que cualquiera que tenga a Berna en su ordenador pueda
-  ponerse al dia el solo: abre Berna, pincha arriba en el
-  desplegable "Berna", elige "Buscar actualizaciones por
+  Que cualquiera que tenga a Sobri en su ordenador pueda
+  ponerse al dia el solo: abre Sobri, pincha arriba en el
+  desplegable "Sobri", elige "Buscar actualizaciones por
   internet", le sale una ventana diciendo que archivos
   cambian, dice que si, y ya esta.
 
@@ -27,8 +27,8 @@ POR QUE ESTOS PASOS LOS TIENES QUE DAR TU
 
 
 ANTES DE EMPEZAR, LEE ESTO
-  El sitio de donde Berna se baja las actualizaciones es la
-  llave de todos los ordenadores que lo tengan: Berna teclea,
+  El sitio de donde Sobri se baja las actualizaciones es la
+  llave de todos los ordenadores que lo tengan: Sobri teclea,
   pincha, ejecuta ordenes y entra en cuentas. Quien controle
   ese sitio, controla esos ordenadores.
 
@@ -37,7 +37,7 @@ ANTES DE EMPEZAR, LEE ESTO
     - ACTIVA LA VERIFICACION EN DOS PASOS. Esto no es un
       consejo de manual, es la unica defensa de verdad.
 
-  Y por eso Berna, por su parte, ya viene atado: solo se baja
+  Y por eso Sobri, por su parte, ya viene atado: solo se baja
   de GitHub y de ningun otro sitio, comprueba la firma de
   cada archivo, no acepta nombres con rutas, no toca nunca tu
   configuracion ni tus claves ni tu memoria, prueba que el
@@ -79,7 +79,7 @@ ANTES DE EMPEZAR, LEE ESTO
                  github.com/TUUSUARIO/berna
 
   POR QUE PUBLICO
-    Para que Berna pueda bajarse las actualizaciones sin
+    Para que Sobri pueda bajarse las actualizaciones sin
     pedirle a nadie usuario ni contrasena. Ahi solo va el
     programa: tus claves, tu memoria, tu perfil, tus caras y
     tu configuracion NO se suben nunca. El programa que
@@ -96,11 +96,11 @@ ANTES DE EMPEZAR, LEE ESTO
       C:\Asistente\Enlazar-con-GitHub.bat
 
   Te pide tu nombre de usuario de GitHub y hace el resto: deja
-  apuntado de donde se baja Berna las actualizaciones, enlaza
+  apuntado de donde se baja Sobri las actualizaciones, enlaza
   la carpeta con tu repositorio y sube la version actual.
 
   La primera vez, GitHub te abrira el navegador para que entres
-  en tu cuenta. Eso lo haces TU: ni Berna ni Claude escriben tu
+  en tu cuenta. Eso lo haces TU: ni Sobri ni Claude escriben tu
   contrasena en ningun sitio.
 
   (La carpeta C:\Asistente\publicacion ya es un repositorio con
@@ -116,7 +116,7 @@ ANTES DE EMPEZAR, LEE ESTO
     cd C:\Asistente
     venv\Scripts\python.exe publicar_actualizacion.py 1.2.0 "Lo que trae" "Y otra cosa"
 
-  O, mas facil: doble clic en C:\Asistente\Publicar Berna.bat,
+  O, mas facil: doble clic en C:\Asistente\Publicar Sobri.bat,
   que te pregunta el numero y lo que trae antes de subir nada.
 
   El numero sube siempre: 1.2.0, luego 1.2.1, luego 1.3.0...
@@ -135,27 +135,27 @@ ANTES DE EMPEZAR, LEE ESTO
   Ellos no tienen que configurar nada: el sitio viaja dentro
   del programa.
 
-  Abren Berna, y arriba del todo:
+  Abren Sobri, y arriba del todo:
 
-    Berna  >  Buscar actualizaciones por internet
+    Sobri  >  Buscar actualizaciones por internet
 
   Les dice que version tienen, cual hay, que trae y que
   archivos cambian. Si dicen que si, se actualiza y les avisa
-  de que cierren Berna y lo vuelvan a abrir.
+  de que cierren Sobri y lo vuelvan a abrir.
 
   Tambien se lo pueden pedir hablando: "mira si hay una
   version nueva tuya".
 
   Y si algo va raro justo despues:
 
-    Berna  >  Deshacer la ultima actualizacion
+    Sobri  >  Deshacer la ultima actualizacion
 
 
 ------------------------------------------------------------
   EL HUEVO Y LA GALLINA
 ------------------------------------------------------------
 
-  Las copias de Berna que ya andan por ahi no traen el
+  Las copias de Sobri que ya andan por ahi no traen el
   actualizador dentro, asi que no pueden enterarse de nada
   por internet.
 
@@ -182,11 +182,11 @@ ANTES DE EMPEZAR, LEE ESTO
       identificate tu en la ventana que te salga.
 
   "el archivo no coincide con su firma"
-      Se ha bajado mal, o alguien lo ha tocado. Berna no
+      Se ha bajado mal, o alguien lo ha tocado. Sobri no
       instala nada en ese caso. Vuelve a intentarlo; si
       sigue igual, publica otra vez desde tu ordenador.
 
   "tiene un fallo de programacion. No instalo nada"
-      Has publicado codigo roto. Berna se ha protegido solo
+      Has publicado codigo roto. Sobri se ha protegido solo
       y se ha quedado con la version de antes, que es lo que
       tiene que hacer. Arreglalo y publica otra vez.

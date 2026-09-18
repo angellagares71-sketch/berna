@@ -1,0 +1,91 @@
+============================================================
+  SOBRI COMO MANAGER DE TUS REDES
+  (YouTube, TikTok y Suno)
+============================================================
+
+QUE HACE YA, SIN CONFIGURAR NADA
+  - "Como va mi canal": vistas de cada video y Short, lo que
+    mejor funciona, como va cada genero y lo que falta subir.
+  - "Que canciones subo": una nota de 0 a 100 por cancion y
+    el porque (mercado, lo que funciona en tu canal, duracion,
+    volumen y gancho). Lo del plan gratis de Suno lo deja
+    fuera: no se puede monetizar.
+  - "Prepara tal cancion": monta el video para YouTube, el
+    Short vertical de 45 s con el tramo mas fuerte, la
+    miniatura y una ficha con titulo, descripcion con la
+    letra, etiquetas y texto de TikTok.
+  - "Hazme el plan": que subir cada dia y a que hora.
+    "Que toca hoy": lo del dia.
+  - "Subela a YouTube" / "a TikTok": abre la pagina, te
+    ensena el archivo y te copia los textos para pegar.
+  - "Que cancion hago ahora": el genero que mas conviene y
+    la receta. "Preparame una para Suno": te escribe estilo
+    y letra, abre Suno y te copia cada casilla.
+
+  Y NO HACE FALTA PEDIRSELO: el PILOTO AUTOMATICO da una
+  vuelta cada 10 minutos con Sobri abierto. Ve las canciones
+  nuevas que bajas de Suno, las puntua, monta video y Short,
+  rehace el plan, mira las cifras y el mercado, y te avisa
+  cuando toca publicar. Tu solo haces canciones.
+
+  Todo se apunta en C:\Asistente\redes.json.
+
+
+------------------------------------------------------------
+  PARA QUE VEA MAS (suscriptores, analiticas, comentarios)
+------------------------------------------------------------
+  Hace falta haber hecho antes GOOGLE-COMO-ACTIVARLO.txt
+  (el archivo google\credentials.json). Luego:
+
+  1. Encender las dos APIs de YouTube (boton HABILITAR):
+     console.cloud.google.com/apis/library/youtube.googleapis.com
+     console.cloud.google.com/apis/library/youtubeanalytics.googleapis.com
+
+  2. Que el permiso no caduque a los 7 dias:
+     console.cloud.google.com/auth/audience
+     -> "PUBLICAR APLICACION" (queda "En produccion").
+
+  3. Dile a Sobri: "conecta YouTube".
+     Se abre el navegador: elige la cuenta de tu canal
+     y pulsa Permitir. Si sale "Google no ha
+     verificado esta aplicacion": Configuracion avanzada >
+     Ir a Sobri. Al acabar sale una ventanita de Sobri.
+
+  Con eso ya puede: ver suscriptores y analiticas, medir
+  lo que esta de moda en YouTube de verdad, leer y (con tu
+  permiso) contestar comentarios, y mejorar titulos y
+  etiquetas de lo ya subido.
+
+
+------------------------------------------------------------
+  POR QUE LA SUBIDA ES "ASISTIDA"
+------------------------------------------------------------
+  YouTube: lo que sube un programa por la API se queda
+  BLOQUEADO EN PRIVADO hasta que Google revise la app
+  (es gratis, pero tarda semanas). Formulario:
+     support.google.com/youtube/contact/yt_api_form
+  Cuando la aprueben, dile a Sobri:
+     "pon youtube_auditado a si"
+  y desde ese momento el piloto sube solo a YouTube, con un
+  dia de antelacion y PROGRAMADO a la hora del plan (YouTube
+  lo publica aunque el ordenador este apagado).
+
+  TikTok: igual (lo que publica una app sin revisar sale
+  privado) y ademas pide una app aprobada. Se queda en
+  asistida.
+
+  Suno: NO tiene API y sus condiciones prohiben manejar la
+  cuenta con un programa. Sobri prepara todo y tu pulsas
+  Crear y Descargar. Asi no arriesgas tu cuenta Pro.
+
+
+------------------------------------------------------------
+  LAS REGLAS QUE SOBRI NO SE SALTA
+------------------------------------------------------------
+  - Solo publica lo hecho con Suno DE PAGO (la fecha en
+    que empezaste a pagar se le dice con: "pon
+    suscripcion_desde a 2026-09-16T11:20").
+  - Siempre marca el contenido como hecho con IA.
+  - Nunca compra visitas ni sube dos veces lo mismo.
+  - Todo lo que publica, abre o escribe en tus redes lo
+    pregunta antes.

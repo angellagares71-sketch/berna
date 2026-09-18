@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-"""Lo que hace que Berna piense mas rapido y se equivoque menos.
+"""Lo que hace que Sobri piense mas rapido y se equivoque menos.
 
 Aqui vive lo que NO es ni la ventana ni las herramientas: decidir que
 herramientas merece la pena ensenarle al modelo en cada frase, y resumir lo
 viejo de la conversacion para que no se pierda al pasar de doce turnos.
 
 POR QUE EXISTE (medido el 01-09-2026):
-  Berna mandaba los 151 esquemas de herramientas EN CADA PETICION: 60.723
+  Sobri mandaba los 151 esquemas de herramientas EN CADA PETICION: 60.723
   caracteres, unos 15.180 tokens. Mas 2.689 del prompt de sistema. O sea que
   cada "hola" arrastraba ~18.000 tokens antes de empezar. Eso es lento, se come
   la cuota y ademas hace al modelo MAS TONTO: con 151 opciones delante acierta
@@ -24,6 +24,7 @@ COMO SE ARREGLA, sin perder ni una capacidad:
 
 import math
 import re
+import time
 import unicodedata
 
 # Las que van SIEMPRE. Son las que sirven para casi cualquier peticion y las
@@ -63,6 +64,13 @@ TEMAS = {
     "casa":     ("ventana", "programa", "instalar", "abrir", "cerrar", "pantalla"),
     "dinero":   ("precio", "oferta", "comprar", "chollo", "oportunidad"),
     "berna":    ("actualizar", "version", "voz", "acento", "caracter", "muneco"),
+    # la musica en redes: que casi cualquier frase de canal o subida traiga
+    # el bloque entero, que ahi se encadenan preparar, subir y apuntar
+    "redes":    ("youtube", "tiktok", "redes", "canal", "suscriptores", "visitas",
+                 "vistas", "short", "shorts", "subir", "publicar", "comentarios",
+                 "miniatura", "mercado", "tendencia", "tendencias", "suno", "viral",
+                 "seguidores", "hashtag", "etiquetas", "estadisticas", "analiticas",
+                 "manager", "subo", "sube"),
     # El tema de la "opcion code". Es el mas largo a proposito: cuando Angel
     # esta programando, casi cualquier palabra suya (error, funcion, linea,
     # libreria) tiene que traer las herramientas de codigo de golpe, que es
@@ -106,7 +114,7 @@ def _palabras(t):
 
     Comparar palabras enteras se quedaba corto en castellano: "cantame",
     "cantale", "cante" y "cantar" son la misma cosa y no casaban entre si, asi
-    que a "echate un cante" NO se le mandaba la herramienta de cantar y Berna
+    que a "echate un cante" NO se le mandaba la herramienta de cantar y Sobri
     contestaba que no sabia. Con la raiz de cuatro letras, "cant" las une todas.
     Cuatro y no cinco porque "cante" y "canta" ya se separan en la quinta.
     """
@@ -260,7 +268,7 @@ def bloque_de_prompt(esquemas):
 # Cuanto tiempo se deja sin llamar a un modelo que acaba de fallar. Vive aqui
 # para que la ventana y el movil apliquen LA MISMA regla (14-09-2026): el movil
 # ya distinguia la cuota del dia, pero la ventana apartaba 30 minutos CUALQUIER
-# 429, y un simple pico por minuto dejaba a Berna sin ningun Gemini a la vez.
+# 429, y un simple pico por minuto dejaba a Sobri sin ningun Gemini a la vez.
 UN_DIA_DE_CUOTA = 6 * 60 * 60
 
 
@@ -282,14 +290,32 @@ def detalle_429(cuerpo):
     return "".join(" " + x for x in trozos)
 
 
-def cuanto_apartar(error, cuota=30 * 60, saturado=3 * 60):
+# Un cerebro que cae UNA Y OTRA VEZ por saturacion se aparta cada vez mas: el
+# 18-09-2026 gemini-3.8-flash dio 503 o se quedo sin contestar en casi cada
+# frase, y con 3 minutos fijos Sobri volvia a tropezar con el en la siguiente.
+# Ahora: 3 min, 15 min, 1 h. La racha se olvida con un acierto (fue_bien) o si
+# pasan dos horas sin fallar.
+ESCALONES = (1, 5, 20)
+OLVIDO_RACHA = 2 * 60 * 60
+_racha = {}
+_CORTES = ("timeout", "timed out", "connectionpool", "connection aborted",
+           "connection reset", "max retries")
+
+
+def _es_saturado(e):
+    b = e.lower()
+    return "503" in e or "HTTP 5" in e or any(x in b for x in _CORTES)
+
+
+def cuanto_apartar(error, cuota=30 * 60, saturado=3 * 60, modelo=None):
     """Segundos que se aparta un cerebro segun su error. 0 = no apartarlo.
 
     - cuota del dia agotada ("PerDay"): horas, que antes de manana no vuelve.
     - pico por minuto: lo que pide Google (+5 s), entre 30 s y 5 min; si no lo
       dice, un minuto.
     - otro 429 (o el tope diario de OpenRouter): `cuota`, como siempre.
-    - saturado (5xx o se ha agotado el tiempo): `saturado`.
+    - saturado (5xx, se ha agotado el tiempo o se ha cortado la conexion):
+      `saturado`, y si se pasa el `modelo`, multiplicado por su racha.
     """
     e = str(error or "")
     if "PerDay" in e:
@@ -301,9 +327,21 @@ def cuanto_apartar(error, cuota=30 * 60, saturado=3 * 60):
         if "PerMinute" in e:
             return 60
         return cuota
-    if "503" in e or "HTTP 5" in e or "timeout" in e.lower():
-        return saturado
+    if _es_saturado(e):
+        if modelo is None:
+            return saturado
+        veces, cuando = _racha.get(modelo, (0, 0.0))
+        if time.time() - cuando > OLVIDO_RACHA:
+            veces = 0
+        veces += 1
+        _racha[modelo] = (veces, time.time())
+        return saturado * ESCALONES[min(veces, len(ESCALONES)) - 1]
     return 0
+
+
+def fue_bien(modelo):
+    """Ese cerebro ha contestado: se le olvida la racha de fallos."""
+    _racha.pop(modelo, None)
 
 
 def rato(segundos):

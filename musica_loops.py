@@ -3,7 +3,7 @@
 
 POR QUE EXISTE ESTE MODULO (04/09/2026)
 ---------------------------------------
-Berna componia todo con un banco General MIDI y patrones programados. Se midio
+Sobri componia todo con un banco General MIDI y patrones programados. Se midio
 lo que salia y el resultado era malo de forma objetiva, no opinable:
 
     energia entre 60 y 250 Hz .... 94 %   (un disco de verdad: 65 %)
@@ -172,7 +172,7 @@ def montar(estilo, compases=32, bpm=None, semilla=None):
     maestro = "".join(cadena)
     xml = (
         '<?xml version="1.0"?>\n<!DOCTYPE lmms-project>\n'
-        '<lmms-project creator="Berna" version="1.0" type="song"'
+        '<lmms-project creator="Sobri" version="1.0" type="song"'
         ' creatorversion="1.2.2">\n'
         '<head timesig_numerator="4" bpm="%d" timesig_denominator="4"'
         ' mastervol="100" masterpitch="0"/>\n<song>\n'
@@ -206,7 +206,7 @@ def crear(estilo, nombre="", compases=32, bpm=None, permiso=None,
         return "No he podido: %s." % datos
 
     kit = datos["kit"]
-    aviso = ("Berna va a montar una cancion con grabaciones de verdad:\n\n"
+    aviso = ("Sobri va a montar una cancion con grabaciones de verdad:\n\n"
              "  estilo: %s\n  velocidad: %d pulsaciones\n  tono: %s\n"
              "  material: %s\n  duracion: %d compases\n\nLe dejas?"
              % (clave, kit["bpm"], kit["tono"] or "sin tono definido",
@@ -215,7 +215,7 @@ def crear(estilo, nombre="", compases=32, bpm=None, permiso=None,
         return "No me has dado permiso, no he montado nada."
 
     carpeta = musica._carpeta_musica()
-    base = musica._limpio(nombre or ("%s de Berna" % clave))
+    base = musica._limpio(nombre or ("%s de Sobri" % clave))
     destino = os.path.join(carpeta, base + ".mmp")
     n = 2
     while os.path.exists(destino):

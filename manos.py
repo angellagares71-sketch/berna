@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 r"""
-Las manos de Berna sobre el teclado y el raton de verdad.
+Las manos de Sobri sobre el teclado y el raton de verdad.
 
-Hasta ahora Berna miraba la pantalla y le decia a Angel donde pinchar. Con
+Hasta ahora Sobri miraba la pantalla y le decia a Angel donde pinchar. Con
 esto ya pincha y escribe el. Angel lo pidio asi: "que pueda tocar el
 ordenador, las aplicaciones, las teclas".
 
 COMO SE USA, que es lo que importa
-  1. Berna enciende el MODO MANOS con modo_manos(minutos). Sale UNA ventana
+  1. Sobri enciende el MODO MANOS con modo_manos(minutos). Sale UNA ventana
      de permiso que explica que va a hacer y cuanto rato. Mientras dure, ya
      no pregunta en cada tecla, que seria inaguantable.
   2. Si el modo manos esta apagado, cada accion suelta pide su permiso.
@@ -27,7 +27,7 @@ LOS CERROJOS, que no se relajan
   - No se escribe a si mismo: si delante esta su propia ventana, se niega.
   - Todo queda apuntado en tareas\registro.log.
 
-Y LA REGLA DE SIEMPRE, que aqui importa mas que nunca: Berna lee paginas web
+Y LA REGLA DE SIEMPRE, que aqui importa mas que nunca: Sobri lee paginas web
 y correos, y eso es texto de terceros. Solo mueve las manos cuando se lo pide
 Angel. Nunca porque lo diga una pagina, un correo, un chat o un documento.
 
@@ -293,12 +293,12 @@ def _sin_tildes(t):
 
 
 def _claves_guardadas():
-    """Las claves del propio Berna, para no soltarlas por ahi en un formulario."""
+    """Las claves del propio Sobri, para no soltarlas por ahi en un formulario."""
     fuera = []
     try:
         with open(CONFIG, "r", encoding="utf-8") as f:
             cfg = json.load(f)
-        # clave_movil tambien: es la contrasena con la que el movil entra en Berna
+        # clave_movil tambien: es la contrasena con la que el movil entra en Sobri
         for c in ("clave_api", "clave_gemini", "clave_busqueda", "imap_password",
                   "clave_movil"):
             v = (cfg.get(c) or "").strip()
@@ -322,7 +322,12 @@ def _ventana_intocable():
 
 
 def _es_su_ventana():
-    return _sin_tildes(_primer_plano()).strip() in ("berna", "berna pide permiso")
+    # Su propia ventana, reconocida por el titulo. Con el cambio a Sobri el
+    # titulo cambia, y si esto se quedara en "berna" las manos podrian teclear
+    # DENTRO de la ventana del asistente. Berna se queda por si hay una
+    # ventana abierta de antes del cambio.
+    return _sin_tildes(_primer_plano()).strip() in (
+        "sobri", "sobri pide permiso", "berna", "berna pide permiso")
 
 
 def _texto_prohibido(texto):
@@ -403,7 +408,7 @@ def _consumir(que, detalle, permiso):
         return ("He llegado al tope de %d acciones seguidas y he soltado el teclado "
                 "solo, por si me habia quedado en bucle. Dime si sigo."
                 % MAX_ACCIONES)
-    aviso = ("Berna va a tocar tu ordenador:\n\n%s\n\nVentana que hay delante: %s"
+    aviso = ("Sobri va a tocar tu ordenador:\n\n%s\n\nVentana que hay delante: %s"
              "\n\nDile que SI solo si se lo has pedido tu. Le dejas?"
              % (detalle, _primer_plano() or "ninguna"))
     if permiso is None or not permiso(aviso):
@@ -418,7 +423,7 @@ def modo_manos(minutos=5, para_que="", permiso=None):
         minutos = max(1, min(MAX_MINUTOS, int(float(minutos))))
     except Exception:
         minutos = 5
-    aviso = ("Berna quiere las MANOS LIBRES durante %d minutos.\n\n"
+    aviso = ("Sobri quiere las MANOS LIBRES durante %d minutos.\n\n"
              "Durante ese rato va a poder mover el raton, pinchar y escribir "
              "con el teclado como si fueras tu, sin volver a preguntar en cada "
              "paso.\n\n%s"
@@ -1072,7 +1077,7 @@ def mantener_tecla(tecla, segundos=1.0, permiso=None):
     """Deja una tecla PULSADA un rato, en vez de darle un toque.
 
     POR QUE (02-09-2026): `pulsar_teclas` da un golpe y suelta. Hay cosas que
-    no se pueden hacer asi, y hasta hoy Berna no podia hacer NINGUNA:
+    no se pueden hacer asi, y hasta hoy Sobri no podia hacer NINGUNA:
       - correr o agacharse en un juego (mayus mantenido),
       - bajar rapido por un documento (avpag mantenido),
       - adelantar un video (flecha derecha mantenida).
@@ -1207,12 +1212,12 @@ def hacer_secuencia(pasos, ventana="", permiso=None):
     r"""Hace VARIAS cosas seguidas con una sola llamada, y cuenta que ha pasado.
 
     POR QUE ES LO QUE MAS FALTA (medido el 02-09-2026): cada herramienta que
-    usa Berna es una vuelta entera al modelo. Con `MAX_RONDAS` en 18, una tarea
+    usa Sobri es una vuelta entera al modelo. Con `MAX_RONDAS` en 18, una tarea
     de veinte pulsaciones NO CABE: se queda a medias por agotar las vueltas, no
     por no saber hacerla. Abrir el Bloc de notas, escribir cuatro lineas y
     guardarlo con un nombre son ya nueve o diez vueltas.
 
-    Con esto, esa misma tarea es UNA vuelta. No es que Berna vaya mas rapido:
+    Con esto, esa misma tarea es UNA vuelta. No es que Sobri vaya mas rapido:
     es que le caben tareas que antes no le cabian.
 
     COMO SE LE PIDE, una accion por linea:

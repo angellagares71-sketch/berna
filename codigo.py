@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 r"""
-Los ojos de Berna para el codigo.
+Los ojos de Sobri para el codigo.
 
-Angel lo pidio el 2026-09-09: "anade todas las funciones posibles a Berna en
+Angel lo pidio el 2026-09-09: "anade todas las funciones posibles a Sobri en
 la opcion code".
 
 QUE FALTABA, Y POR QUE IMPORTA
-  Berna ya sabia escribir un archivo (taller.py) y cambiar un trozo de otro
+  Sobri ya sabia escribir un archivo (taller.py) y cambiar un trozo de otro
   (editor.py). Pero para programar de verdad sobre codigo QUE YA EXISTE hace
   falta antes otra cosa: ENTENDER donde esta cada cosa. Un programador no abre
   un archivo de 2.600 lineas y lo lee entero; busca, mira el indice, encuentra
@@ -513,7 +513,7 @@ def reemplazar_en_varios(carpeta, buscar, poner, archivos="", permiso=None):
     detalle = "\n".join("  %s  (%d veces)" % (os.path.relpath(r, raiz), n)
                         for r, n in candidatos[:25])
     veces = sum(n for _r, n in candidatos)
-    aviso = ("Berna va a CAMBIAR TEXTO EN %d ARCHIVOS de golpe (%d veces en total):"
+    aviso = ("Sobri va a CAMBIAR TEXTO EN %d ARCHIVOS de golpe (%d veces en total):"
              "\n\n%s\n\nDonde pone:\n%s\n\nVa a poner:\n%s\n\n"
              "Hace copia de seguridad de cada uno antes. Le dejas?"
              % (len(candidatos), veces, detalle, viejo[:400],
@@ -636,7 +636,7 @@ def insertar_en_archivo(ruta, texto, despues_de="", antes_de="", al_final=False,
             nuevo = cuerpo.replace(ancla_real, trozo + salto + ancla_real, 1)
             donde = "justo antes de ese trozo"
 
-    aviso = ("Berna va a ANADIR esto en %s:\n\n%s\n\n%s\n\n"
+    aviso = ("Sobri va a ANADIR esto en %s:\n\n%s\n\n%s\n\n"
              "(hace copia de seguridad antes). Le dejas?"
              % (os.path.basename(r), trozo[:800], donde))
     if permiso is None or not permiso(aviso):
@@ -655,7 +655,7 @@ def _copias_por_fecha(carpeta, marca):
 
     Antes se ordenaban por nombre, y con nombres como `.bak-voz-natural-20260907`
     y `.bak-code-20260909` el orden alfabetico no es el de las fechas: el
-    14-09-2026, en 8 archivos de Berna "la ultima copia" era una de dias antes, y
+    14-09-2026, en 8 archivos de Sobri "la ultima copia" era una de dias antes, y
     restaurarla habria borrado el trabajo de despues.
     """
     def fecha(nombre):
@@ -750,7 +750,7 @@ def restaurar_copia(ruta, copia="", permiso=None):
         return "No encuentro esa copia: %s" % vieja
     cuando = datetime.datetime.fromtimestamp(
         os.path.getmtime(vieja)).strftime("%d/%m/%Y a las %H:%M")
-    aviso = ("Berna va a DEVOLVER este archivo a como estaba:\n\n%s\n\n"
+    aviso = ("Sobri va a DEVOLVER este archivo a como estaba:\n\n%s\n\n"
              "Vuelve a la copia %s (del %s) y se pierde lo de despues.\n\n"
              "Antes guarda otra copia de como esta ahora, por si acaso. Le dejas?"
              % (r, os.path.basename(vieja), cuando))
@@ -877,7 +877,7 @@ def formatear_json(ruta, permiso=None):
     if bonito.strip() == crudo.strip():
         return "Ya estaba bien puesto, no he tocado nada."
     if permiso is None or not permiso(
-            "Berna va a REORDENAR este JSON para que se lea:\n\n%s\n\nLos datos "
+            "Sobri va a REORDENAR este JSON para que se lea:\n\n%s\n\nLos datos "
             "son los mismos, solo cambia la forma. Hace copia antes. Le dejas?" % r):
         return "No me has dado permiso, no he tocado nada."
     try:

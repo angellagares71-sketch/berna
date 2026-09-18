@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-"""Escrituras resistentes para los datos que Berna no puede perder.
+"""Escrituras resistentes para los datos que Sobri no puede perder.
 
 Los JSON de configuracion, memoria y recordatorios se escribian directamente
-o mediante un unico ``.tmp`` compartido. Si dos partes de Berna guardaban a la
+o mediante un unico ``.tmp`` compartido. Si dos partes de Sobri guardaban a la
 vez, o Windows cortaba el proceso a mitad, se podia perder el fichero bueno.
 
 Este modulo escribe primero un temporal unico en la misma carpeta, fuerza los

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
-El avatar de Berna en 3D de verdad.
+El avatar de Sobri en 3D de verdad.
 
 Angel lo pidio el 2026-08-27: "que el avatar sea en 3D y de buena calidad".
 Antes era un dibujo plano de Tk (ovalos y lineas). Esto es geometria 3D con
@@ -23,7 +23,7 @@ CUERPO ENTERO DESDE EL 2026-09-03
   antebrazo acompana al brazo sin recalcular donde ha quedado el codo.
 
 POR QUE ESTA HECHO ASI Y NO CON UNA TARJETA GRAFICA
-  Este portatil lleva una Radeon integrada con 0,5 GB de VRAM, y ademas Berna
+  Este portatil lleva una Radeon integrada con 0,5 GB de VRAM, y ademas Sobri
   es una ventana de Tkinter, que no tiene lienzo 3D. Montar OpenGL aqui seria
   fragil y encima competiria con el Skyrim por la grafica.
 

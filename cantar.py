@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
-Berna cantando. Tercera version, y la buena.
+Sobri cantando. Tercera version, y la buena.
 
 LAS DOS QUE NO FUNCIONARON, para no repetirlas
   1. Remuestrear cada silaba para subirle el tono. Mueve las formantes (voz de
@@ -30,7 +30,7 @@ LO QUE SE HACE AHORA
   inconsistente, que es lo que produce ese timbre metalico de robot.
 
 SOBRE LAS CANCIONES DE OTROS
-  Aqui no hay ninguna letra guardada, y no se debe anadir. Berna canta lo
+  Aqui no hay ninguna letra guardada, y no se debe anadir. Sobri canta lo
   que le dicte Angel o lo que se invente el. Las melodias son escalas y
   arpegios, no son de nadie.
 """

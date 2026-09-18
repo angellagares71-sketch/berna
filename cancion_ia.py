@@ -29,7 +29,7 @@ LO QUE CUESTA (consultado el 03-09-2026)
   la tiene la API contesta con "limit: 0" y aqui se le explica a Angel que
   hacer, en vez de soltarle el error tal cual.
 
-LA CLAVE ES LA MISMA que ya usa Berna para ver por la camara y mirar la
+LA CLAVE ES LA MISMA que ya usa Sobri para ver por la camara y mirar la
 pantalla (`clave_gemini` en config.json). No hay que dar de alta nada nuevo.
 """
 import base64
@@ -154,7 +154,7 @@ def crear_cancion_ia(peticion, letra="", completa="si", con_voz="si",
 
     encargo = _describir(peticion, letra, voz)
 
-    aviso = ("Berna va a encargarle una cancion a la inteligencia artificial de "
+    aviso = ("Sobri va a encargarle una cancion a la inteligencia artificial de "
              "musica de Google:\n\n%s\n\nDura %s y cuesta unos %s. Le dejas?"
              % (encargo[:400], dura, precio))
     if permiso is not None and not permiso(aviso):

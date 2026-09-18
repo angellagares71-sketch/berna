@@ -3,19 +3,19 @@
 
 POR QUE ESTE MODULO (04/09/2026)
 --------------------------------
-Berna monta bases con trozos grabados (musica_loops.py), y para eso vale. Pero
+Sobri monta bases con trozos grabados (musica_loops.py), y para eso vale. Pero
 una cancion terminada y actual no la hace: apilar bloques prefabricados tiene
 un techo, y Angel lo describio perfecto: suena a musica de Mega Drive, que es
 exactamente el mismo principio (muestras + patrones).
 
 Lo que si hace canciones de verdad hoy es Suno. Y Suno NO tiene API publica
--solo un programa cerrado de socios-, asi que Berna no puede pedirselas sola.
+-solo un programa cerrado de socios-, asi que Sobri no puede pedirselas sola.
 Las "APIs" de terceros que circulan incumplen sus condiciones de uso, que
 prohiben el acceso automatizado, y pueden costar la cuenta. NO USARLAS.
 
 Lo que si se puede hacer, que ademas es donde esta la diferencia entre una
 cancion mediocre y una buena, es escribir bien la peticion. Eso es lo que hay
-aqui: Berna redacta el texto y Angel lo pega.
+aqui: Sobri redacta el texto y Angel lo pega.
 
 LAS REGLAS, sacadas de las guias de 2026:
   - Entre 8 y 15 etiquetas. Menos de 5 es vago; mas de 20 se diluye.

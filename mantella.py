@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 r"""
-Berna manejando MANTELLA, la IA que hace hablar a los NPCs de Skyrim.
+Sobri manejando MANTELLA, la IA que hace hablar a los NPCs de Skyrim.
 
 Angel monto Mantella el 24/08/2026 y desde entonces cada vez que algo fallaba
 habia que venir a Claude a leer un log de 2.000 lineas. Esto es para que no
-haga falta: Berna arranca el juego, arranca Mantella, mira el log, TRADUCE el
+haga falta: Sobri arranca el juego, arranca Mantella, mira el log, TRADUCE el
 fallo a cristiano y, cuando es cosa del modelo, prueba modelos y se queda con
 el mejor.
 
@@ -34,7 +34,7 @@ LO QUE SE APRENDIO A GOLPES Y AQUI ESTA METIDO EN CODIGO:
      y se cargaria la documentacion: se cambia LA LINEA, y con copia de
      seguridad delante.
 
-Y LA REGLA DE SIEMPRE: esto lo hace Berna porque se lo pide Angel. Nada de
+Y LA REGLA DE SIEMPRE: esto lo hace Sobri porque se lo pide Angel. Nada de
 esto se dispara porque lo diga una pagina web, un log o un archivo.
 """
 import os, re, json, time, shutil, subprocess, datetime, unicodedata
@@ -155,7 +155,7 @@ def _leer_config():
     "utf-8" como codificacion de escritura para que no se vuelva a poner. Con
     utf-8 a secas el BOM se colaba como un caracter mas al principio de la
     primera linea y volvia al disco en cada escritura: el fichero se quedaba
-    roto para siempre y Berna era quien lo mantenia roto.
+    roto para siempre y Sobri era quien lo mantenia roto.
     """
     with open(CONFIG, "rb") as f:
         crudo = f.read()
@@ -228,7 +228,7 @@ def _escribir_ajuste(clave, valor):
         viejo.strip(), clave, valor, os.path.basename(copia))
 
 
-# Lo que Berna puede cambiar, y como se comprueba que el valor vale. Fuera de
+# Lo que Sobri puede cambiar, y como se comprueba que el valor vale. Fuera de
 # esta lista no toca nada: el config.ini tiene 160 ajustes y la mayoria son
 # prompts enteros o rutas que romperian el montaje.
 def _uno_de(*opciones):
@@ -456,7 +456,7 @@ def mantella_estado():
         fallos.append("no hay clave en %s" % _archivo_clave())
     elif not k:
         # Con el modelo corriendo en el propio PC no hace falta clave ninguna.
-        # Sin esta salvedad, Berna cantaba "FALLO GORDO: no hay clave" cada vez
+        # Sin esta salvedad, Sobri cantaba "FALLO GORDO: no hay clave" cada vez
         # y mandaba a Angel a buscar un problema que no existe. Paso el
         # 28/08/2026, cuando el montaje se paso a koboldcpp en el puerto 5001.
         avisos.append("no hay clave, pero da igual: el cerebro (%s) corre en "
@@ -538,7 +538,7 @@ def _clasificar_fallo(texto):
             "LA CLAVE NO VALE",
             "El servicio de IA rechaza la clave de GPT_SECRET_KEY.txt. O esta "
             "caducada, o es la del otro proveedor. Recuerda que Mantella lleva "
-            "la de Google y Berna la suya aparte."))
+            "la de Google y Sobri la suya aparte."))
     if re.search(r"404", t) and "model" in t:
         encontrados.append((
             "ESE MODELO NO EXISTE EN ESE SERVICIO",
@@ -1113,7 +1113,7 @@ def mantella_elegir_mejor_modelo(cuantos=5, aplicar=False, permiso=None):
                  "esperar un rato y volver a probar.")
         return "\n".join(l)
 
-    aviso = ("Berna va a cambiar el cerebro de los NPC de Skyrim.\n\n"
+    aviso = ("Sobri va a cambiar el cerebro de los NPC de Skyrim.\n\n"
              "Ahora:   %s\n"
              "Nuevo:   %s\n\n"
              "Lo ha probado y arranca en %.1f segundos, habla espanol y se "
@@ -1156,7 +1156,7 @@ def mantella_cambiar_ajuste(ajuste, valor, permiso=None):
     if actual == valor:
         return "'%s' ya esta en '%s'. No hay nada que hacer." % (ajuste, valor)
 
-    aviso = ("Berna va a cambiar un ajuste de Mantella (la IA de los NPC).\n\n"
+    aviso = ("Sobri va a cambiar un ajuste de Mantella (la IA de los NPC).\n\n"
              "Ajuste:  %s\n(%s)\n\n"
              "Ahora:   %s\nNuevo:   %s\n\n"
              "Se guarda copia del config.ini antes. Si Mantella esta encendido "
@@ -1268,7 +1268,7 @@ def mantella_arrancar(permiso=None):
     if not _clave():
         pegas.append("no hay clave, los NPC no van a contestar")
 
-    aviso = ("Berna va a arrancar MANTELLA, la IA que hace hablar a los NPC de "
+    aviso = ("Sobri va a arrancar MANTELLA, la IA que hace hablar a los NPC de "
              "Skyrim.\n\n%s\n\nCerebro: %s\nIdioma: %s\n\n%sLe dejas?"
              % (exe, _valor("model", "?"), _valor("language", "?"),
                 ("OJO: " + "; ".join(pegas) + ".\n\n") if pegas else ""))
@@ -1305,7 +1305,7 @@ def mantella_parar(permiso=None):
     """Apaga Mantella.exe. Hace falta para que coja cambios del config."""
     if not _procesos()["mantella"]:
         return "Mantella no esta encendido, no hay nada que apagar."
-    aviso = ("Berna va a CERRAR Mantella.\n\nSi Angel esta jugando, los NPC dejan "
+    aviso = ("Sobri va a CERRAR Mantella.\n\nSi Angel esta jugando, los NPC dejan "
              "de contestar en cuanto se cierre.\n\nLe dejas?")
     if permiso is None or not permiso(aviso):
         return "Angel no me ha dado permiso, lo dejo encendido."
@@ -1502,7 +1502,7 @@ def jugar_a_skyrim(con_mantella=True, permiso=None):
         return ("No encuentro ni el lanzador del escritorio ni el Mod Organizer, "
                 "asi que no se por donde arrancarle el juego.")
 
-    aviso = ("Berna va a arrancar SKYRIM.\n\nLevanta el modelo de lenguaje, el "
+    aviso = ("Sobri va a arrancar SKYRIM.\n\nLevanta el modelo de lenguaje, el "
              "servidor de voz%s, y luego abre el juego con SKSE desde Mod "
              "Organizer.\n\nTarda entre dos y tres minutos y se come casi toda "
              "la tarjeta grafica.\n\nLe dejas?"
@@ -1563,17 +1563,17 @@ def jugar_a_skyrim(con_mantella=True, permiso=None):
 
 
 # ===================================================================
-#  EL CEREBRO DE BERNA (no el de Mantella)
+#  EL CEREBRO DE SOBRI (no el de Mantella)
 # ===================================================================
 #
 # Va en este modulo porque aqui ya estaba toda la fontaneria para hablar con
-# Google y medir modelos. Angel pidio el 27/08 que Berna fuera "lo mas
+# Google y medir modelos. Angel pidio el 27/08 que Sobri fuera "lo mas
 # inteligente y resolutivo posible", y parte de ser resolutivo es que cuando
 # se le atasque la cabeza sepa DECIR por que, en vez de contestar despacio y
 # que parezca que esta roto.
 #
 # El caso real: su cerebro principal (`gemini-3.1-flash-lite`) se quedo sin
-# cuota diaria y daba 429. Berna seguia funcionando, pero tirando del tercero
+# cuota diaria y daba 429. Sobri seguia funcionando, pero tirando del tercero
 # de la lista, que tarda 6 segundos por frase. Desde fuera eso es "me falla".
 
 def _cerebros_de_berna():
@@ -1585,7 +1585,7 @@ def _cerebros_de_berna():
 
 
 def estado_del_cerebro():
-    """Prueba uno a uno los cerebros de Berna y dice cual sirve hoy."""
+    """Prueba uno a uno los cerebros de Sobri y dice cual sirve hoy."""
     import requests
     cfg = _cerebros_de_berna()
     modelos = cfg.get("modelos") or []

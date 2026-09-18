@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
-Berna ejecuta y toca REAPER.
+Sobri ejecuta y toca REAPER.
 
 Angel lo pidio el 2026-09-03: "configura a berna para que sepa ejecutar y
 tocar reaper". REAPER es un programa de grabacion y edicion musical (un DAW,
@@ -46,7 +46,7 @@ QUE INSTRUMENTO TOCA
 
 EL FRENO DE SIEMPRE
   Todo lo que toca el proyecto (crear pistas, cambiar tempo, guardar,
-  renderizar) pide permiso como el resto de las manos de Berna. Lo que solo
+  renderizar) pide permiso como el resto de las manos de Sobri. Lo que solo
   mira (estado, reproducir para escuchar) no pregunta.
 """
 import io
@@ -217,7 +217,7 @@ def reaper_abrir(permiso=None):
     """Arranca REAPER si no esta ya abierto."""
     if _reaper_en_marcha():
         return "REAPER ya esta abierto."
-    if permiso is not None and not permiso("Berna va a abrir REAPER. Le dejas?"):
+    if permiso is not None and not permiso("Sobri va a abrir REAPER. Le dejas?"):
         return "No me has dado permiso, no lo he abierto."
     if _abrir_reaper():
         return "REAPER abierto y listo."
@@ -231,7 +231,7 @@ def reaper_crear_pista(nombre="", instrumento="", permiso=None):
     fabrica. Si Angel tiene instalado algun VST de verdad, aqui se puede
     poner su nombre exacto.
     """
-    aviso = ("Berna va a crear una pista nueva en REAPER%s%s. Le dejas?"
+    aviso = ("Sobri va a crear una pista nueva en REAPER%s%s. Le dejas?"
              % ((" llamada '%s'" % nombre) if nombre else "",
                 (" con el instrumento %s" % instrumento) if instrumento else
                 " con un sintetizador basico"))
@@ -239,7 +239,7 @@ def reaper_crear_pista(nombre="", instrumento="", permiso=None):
         return "No me has dado permiso, no he creado nada."
 
     ins = instrumento.strip() if instrumento else INSTRUMENTO_DEFECTO
-    nom = (nombre or "Pista de Berna").replace('"', "'").replace("]]", "] ]")
+    nom = (nombre or "Pista de Sobri").replace('"', "'").replace("]]", "] ]")
     ins_lua = ins.replace('"', "'")
     codigo = (
         'reaper.Undo_BeginBlock()\n'
@@ -249,7 +249,7 @@ def reaper_crear_pista(nombre="", instrumento="", permiso=None):
         'reaper.GetSetMediaTrackInfo_String(t, "P_NAME", "%s", true)\n'
         'local fx = reaper.TrackFX_AddByName(t, "%s", false, -1)\n'
         'if fx < 0 then error("no encuentro el instrumento %s") end\n'
-        'reaper.Undo_EndBlock("Berna: crear pista", -1)\n'
+        'reaper.Undo_EndBlock("Sobri: crear pista", -1)\n'
         'reaper.UpdateArrange()\n'
     ) % (nom, ins_lua, ins_lua)
     ok, err = _ejecutar_lua(codigo)
@@ -269,7 +269,7 @@ def reaper_poner_bpm(bpm, permiso=None):
     except Exception:
         return "Dame el tempo en un numero, por ejemplo 100."
     if permiso is not None and not permiso(
-            "Berna va a poner el proyecto a %s pulsaciones por minuto. Le dejas?"
+            "Sobri va a poner el proyecto a %s pulsaciones por minuto. Le dejas?"
             % bpm):
         return "No me has dado permiso, no he tocado el tempo."
     ok, err = _ejecutar_lua('reaper.SetCurrentBPM(0, %s, true)' % bpm)
@@ -366,7 +366,7 @@ def reaper_tocar_notas(melodia, pista=-1, bpm=0, permiso=None):
             pass
 
     fin_pulsos = max(i + d for _p, i, d, _v in notas)
-    aviso = ("Berna va a meter una melodia de %d notas en REAPER, a %s "
+    aviso = ("Sobri va a meter una melodia de %d notas en REAPER, a %s "
              "pulsaciones por minuto. Le dejas?" % (len(notas), int(tempo_actual)))
     if permiso is not None and not permiso(aviso):
         return "No me has dado permiso, no he tocado nada."
@@ -399,7 +399,7 @@ def reaper_tocar_notas(melodia, pista=-1, bpm=0, permiso=None):
         'local toma = reaper.GetActiveTake(item)\n'
         '%s\n'
         'reaper.MIDI_Sort(toma)\n'
-        'reaper.Undo_EndBlock("Berna: melodia", -1)\n'
+        'reaper.Undo_EndBlock("Sobri: melodia", -1)\n'
         'reaper.UpdateArrange()\n'
     ) % (poner_bpm, int(pista),
          INSTRUMENTO_DEFECTO, fin_pulsos, tempo_actual, lineas_notas)
@@ -448,7 +448,7 @@ def _pista_percusion_lua(nombre, archivo, notas_por_compas, seg_por_tic,
 def reaper_crear_cancion(estilo, nombre="", compases=16, tono="", bpm=0,
                          permiso=None):
     r"""Compone una cancion ENTERA dentro de REAPER: bateria, bajo, acordes y
-    melodia, con el mismo criterio musical que usa Berna para LMMS (la clave
+    melodia, con el mismo criterio musical que usa Sobri para LMMS (la clave
     de son, el tumbao, la cadencia andaluza, el bombeo del bajo con el
     bombo...), pero volcado en pistas de verdad de REAPER.
 
@@ -460,7 +460,7 @@ def reaper_crear_cancion(estilo, nombre="", compases=16, tono="", bpm=0,
     piano de cola, metales...). Es un punto de partida para grabar y editar
     de verdad, no el timbre final.
     """
-    aviso_previo = ("Berna va a componer una cancion entera en REAPER: "
+    aviso_previo = ("Sobri va a componer una cancion entera en REAPER: "
                     "bateria, bajo, acordes y melodia, en varias pistas. "
                     "Tarda un poco. Le dejas?")
     if permiso is not None and not permiso(aviso_previo):
@@ -557,7 +557,7 @@ def reaper_crear_cancion(estilo, nombre="", compases=16, tono="", bpm=0,
         'local pista_bateria = nil\n'
         '%s\n'
         '%s\n'
-        'reaper.Undo_EndBlock("Berna: cancion completa", -1)\n'
+        'reaper.Undo_EndBlock("Sobri: cancion completa", -1)\n'
         'reaper.UpdateArrange()\n'
     ) % (pulsaciones,
          ('reaper.InsertTrackAtIndex(0, true)\n'
@@ -646,7 +646,7 @@ def reaper_poner_mezcla_profesional(permiso=None):
     beneficia.
     """
     if permiso is not None and not permiso(
-            "Berna va a poner un compresor y un limitador en el Master de "
+            "Sobri va a poner un compresor y un limitador en el Master de "
             "REAPER, para que suene mas profesional. Le dejas?"):
         return "No me has dado permiso, no he tocado la mezcla."
     if _aplicar_master_profesional():
@@ -720,20 +720,20 @@ def _en_frente_reaper(permiso):
 def reaper_guardar_proyecto(nombre, permiso=None):
     r"""Guarda el proyecto de REAPER. La primera vez pide donde, por Windows.
 
-    Se guarda en Documentos\REAPER Media\Proyectos de Berna, para que Angel
+    Se guarda en Documentos\REAPER Media\Proyectos de Sobri, para que Angel
     sepa siempre donde buscarlos.
     """
     import manos
     nombre = _limpio_archivo(nombre) or "proyecto_de_berna"
     carpeta = os.path.join(os.path.expanduser("~"), "Documents",
-                           "REAPER Media", "Proyectos de Berna")
+                           "REAPER Media", "Proyectos de Sobri")
     try:
         os.makedirs(carpeta, exist_ok=True)
     except Exception as ex:
         return "No he podido preparar la carpeta: %s" % ex
     ruta = os.path.join(carpeta, nombre)
 
-    aviso = "Berna va a guardar el proyecto de REAPER como '%s'. Le dejas?" % nombre
+    aviso = "Sobri va a guardar el proyecto de REAPER como '%s'. Le dejas?" % nombre
     if permiso is not None and not permiso(aviso):
         return "No me has dado permiso, no he guardado nada."
 
@@ -777,7 +777,7 @@ def renderizar_a_audio(nombre="", permiso=None):
     except Exception as ex:
         return "No he podido preparar la carpeta: %s" % ex
 
-    aviso = ("Berna va a renderizar el proyecto de REAPER a un archivo de "
+    aviso = ("Sobri va a renderizar el proyecto de REAPER a un archivo de "
              "audio ('%s.wav'). Le dejas?" % nombre)
     if permiso is not None and not permiso(aviso):
         return "No me has dado permiso, no he renderizado nada."
@@ -858,7 +858,7 @@ def reaper_ejecutar_accion(accion, permiso=None):
     except Exception:
         return "Dame el numero de la accion, por ejemplo 40022."
     if permiso is not None and not permiso(
-            "Berna va a ejecutar la accion %d de REAPER. Le dejas?" % cid):
+            "Sobri va a ejecutar la accion %d de REAPER. Le dejas?" % cid):
         return "No me has dado permiso, no he hecho nada."
     ok, err = _ejecutar_lua('reaper.Main_OnCommand(%d, 0)' % cid)
     if not ok:

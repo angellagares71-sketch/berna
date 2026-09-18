@@ -1,5 +1,5 @@
 ============================================================
-  DARLE A BERNA ACCESO A TU CORREO POR IMAP
+  DARLE A SOBRI ACCESO A TU CORREO POR IMAP
 ============================================================
 
 CUANDO USAR ESTO
@@ -28,7 +28,7 @@ POR QUE TIENES QUE HACERLO TU
   GMAIL
     1. Necesitas la verificacion en dos pasos activada.
     2. Entra en   myaccount.google.com/apppasswords
-    3. Nombre: Berna.  Pulsa Crear.
+    3. Nombre: Sobri.  Pulsa Crear.
     4. Te da 16 letras. Copialas (sin los espacios).
 
   OUTLOOK / HOTMAIL
@@ -77,7 +77,7 @@ POR QUE TIENES QUE HACERLO TU
 ------------------------------------------------------------
   PASO 3  -  Probar
 ------------------------------------------------------------
-  Cierra Berna y vuelve a abrirlo (hay que reiniciarlo
+  Cierra Sobri y vuelve a abrirlo (hay que reiniciarlo
   para que lea la configuracion nueva).
 
   Escribele:  "comprueba mi correo"

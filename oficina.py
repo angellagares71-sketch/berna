@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Documentos, hojas de calculo, PDF, ZIP y archivos para Berna.
+"""Documentos, hojas de calculo, PDF, ZIP y archivos para Sobri.
 
 Las operaciones que escriben o mueven datos reciben ``permiso`` desde la
 ventana principal. Las lecturas son libres. Nada escribe en carpetas del
@@ -20,7 +20,7 @@ import zipfile
 
 
 BASE_USUARIO = os.path.expanduser("~")
-DOCUMENTOS = os.path.join(BASE_USUARIO, "Documents", "Documentos de Berna")
+DOCUMENTOS = os.path.join(BASE_USUARIO, "Documents", "Documentos de Sobri")
 SISTEMA = tuple(os.path.abspath(p).lower() for p in (
     os.environ.get("WINDIR", r"C:\Windows"),
     os.environ.get("ProgramFiles", r"C:\Program Files"),
@@ -119,7 +119,7 @@ def crear_documento_word(titulo, contenido, salida="", permiso=None):
     """Crea un DOCX cuidado a partir de texto sencillo o Markdown basico."""
     nombre = _nombre_seguro(titulo, "Documento")
     ruta = _salida(salida, nombre, ".docx")
-    aviso = ("Berna quiere crear%s este documento Word:\n\n%s\n\nLe dejas?" %
+    aviso = ("Sobri quiere crear%s este documento Word:\n\n%s\n\nLe dejas?" %
              (" o reemplazar" if os.path.exists(ruta) else "", ruta))
     if not _permitido(permiso, aviso):
         return "No me has dado permiso, no he creado el documento."
@@ -160,7 +160,7 @@ def crear_documento_word(titulo, contenido, salida="", permiso=None):
             else:
                 doc.add_paragraph(linea)
         doc.core_properties.title = str(titulo)
-        doc.core_properties.author = "Berna"
+        doc.core_properties.author = "Sobri"
         doc.save(ruta)
         return "Documento Word creado: %s%s" % (ruta, "\nCopia anterior: " + copia if copia else "")
     except Exception as e:
@@ -175,7 +175,7 @@ def crear_hoja_excel(nombre, datos, salida="", hoja="Datos",
         return "No me has dado ningun dato para la hoja."
     nombre_limpio = _nombre_seguro(nombre, "Hoja de calculo")
     ruta = _salida(salida, nombre_limpio, ".xlsx")
-    if not _permitido(permiso, "Berna quiere crear una hoja de calculo con %d filas:\n\n%s\n\nLe dejas?" % (len(filas), ruta)):
+    if not _permitido(permiso, "Sobri quiere crear una hoja de calculo con %d filas:\n\n%s\n\nLe dejas?" % (len(filas), ruta)):
         return "No me has dado permiso, no he creado la hoja."
     try:
         import openpyxl
@@ -218,7 +218,7 @@ def actualizar_celda_excel(ruta, celda, valor, hoja="", permiso=None):
         return "No existe la hoja %s" % ruta
     if not re.match(r"^[A-Za-z]{1,3}[1-9][0-9]{0,6}$", str(celda or "").strip()):
         return "La celda no es valida. Dime algo como A1, B7 o AA20."
-    aviso = "Berna quiere cambiar %s%s en:\n\n%s\n\nGuardara una copia anterior. Le dejas?" % (
+    aviso = "Sobri quiere cambiar %s%s en:\n\n%s\n\nGuardara una copia anterior. Le dejas?" % (
         celda.upper(), " de la hoja " + hoja if hoja else "", ruta)
     if not _permitido(permiso, aviso):
         return "No me has dado permiso, no he cambiado la hoja."
@@ -239,7 +239,7 @@ def actualizar_celda_excel(ruta, celda, valor, hoja="", permiso=None):
 def crear_pdf_texto(titulo, contenido, salida="", permiso=None):
     nombre = _nombre_seguro(titulo, "Documento")
     ruta = _salida(salida, nombre, ".pdf")
-    if not _permitido(permiso, "Berna quiere crear este PDF:\n\n%s\n\nLe dejas?" % ruta):
+    if not _permitido(permiso, "Sobri quiere crear este PDF:\n\n%s\n\nLe dejas?" % ruta):
         return "No me has dado permiso, no he creado el PDF."
     try:
         import pymupdf as fitz
@@ -262,7 +262,7 @@ def crear_pdf_texto(titulo, contenido, salida="", permiso=None):
             bloque, pendientes = pendientes[:caben], pendientes[caben:]
             pagina.insert_textbox(fitz.Rect(55, y, 540, 790), "\n".join(bloque),
                                   fontsize=10.5, fontname="helv", lineheight=1.35)
-        doc.set_metadata({"title": str(titulo), "author": "Berna"})
+        doc.set_metadata({"title": str(titulo), "author": "Sobri"})
         doc.save(ruta)
         paginas = doc.page_count
         doc.close()
@@ -298,7 +298,7 @@ def extraer_paginas_pdf(ruta, paginas, salida="", permiso=None):
         numeros = _numeros_paginas(paginas, len(lector.pages))
         nombre = _nombre_seguro(os.path.splitext(os.path.basename(ruta))[0] + " paginas", "Paginas")
         destino = _salida(salida, nombre, ".pdf")
-        if not _permitido(permiso, "Berna quiere sacar las paginas %s de:\n%s\n\ny guardarlas en:\n%s\n\nLe dejas?" % (", ".join(map(str, numeros)), ruta, destino)):
+        if not _permitido(permiso, "Sobri quiere sacar las paginas %s de:\n%s\n\ny guardarlas en:\n%s\n\nLe dejas?" % (", ".join(map(str, numeros)), ruta, destino)):
             return "No me has dado permiso, no he extraido paginas."
         _preparar_salida(destino)
         copia = _copia_si_existe(destino)
@@ -324,7 +324,7 @@ def dividir_pdf(ruta, destino="", permiso=None):
             os.path.dirname(ruta), os.path.splitext(os.path.basename(ruta))[0] + " - paginas")
         if not _es_destino_seguro(carpeta):
             return "No voy a escribir en una carpeta del sistema."
-        if not _permitido(permiso, "Berna quiere dividir este PDF en %d archivos:\n\n%s\n\nDestino: %s\n\nLe dejas?" % (len(lector.pages), ruta, carpeta)):
+        if not _permitido(permiso, "Sobri quiere dividir este PDF en %d archivos:\n\n%s\n\nDestino: %s\n\nLe dejas?" % (len(lector.pages), ruta, carpeta)):
             return "No me has dado permiso, no he dividido nada."
         os.makedirs(carpeta, exist_ok=True)
         base = _nombre_seguro(os.path.splitext(os.path.basename(ruta))[0], "pagina")
@@ -374,7 +374,7 @@ def crear_zip(rutas, salida="", permiso=None):
                 if len(archivos) > 20000:
                     return "Hay mas de 20.000 archivos. Divide la copia en varias partes."
     tamano = sum(os.path.getsize(p) for p, _ in archivos)
-    if not _permitido(permiso, "Berna quiere comprimir %d archivos (%.1f MB) en:\n\n%s\n\nLe dejas?" % (len(archivos), tamano / 1048576, destino)):
+    if not _permitido(permiso, "Sobri quiere comprimir %d archivos (%.1f MB) en:\n\n%s\n\nLe dejas?" % (len(archivos), tamano / 1048576, destino)):
         return "No me has dado permiso, no he creado el ZIP."
     try:
         _preparar_salida(destino)
@@ -411,7 +411,7 @@ def extraer_zip(ruta, destino="", permiso=None):
                 modo = (info.external_attr >> 16) & 0o170000
                 if (not objetivo.startswith(base) or ":" in nombre or modo == 0o120000):
                     return "El ZIP contiene una ruta peligrosa y no lo voy a extraer: %s" % info.filename
-            if not _permitido(permiso, "Berna quiere extraer %d elementos (%.1f MB) de:\n%s\n\nen:\n%s\n\nLe dejas?" % (len(infos), total / 1048576, ruta, carpeta)):
+            if not _permitido(permiso, "Sobri quiere extraer %d elementos (%.1f MB) de:\n%s\n\nen:\n%s\n\nLe dejas?" % (len(infos), total / 1048576, ruta, carpeta)):
                 return "No me has dado permiso, no he extraido el ZIP."
             os.makedirs(carpeta, exist_ok=True)
             for info in infos:
@@ -437,7 +437,7 @@ def copiar_archivo_o_carpeta(origen, destino, permiso=None):
         return "No voy a copiar dentro de una carpeta del sistema."
     if os.path.isdir(origen) and os.path.exists(destino):
         return "La carpeta de destino ya existe. Dime otro nombre para no mezclar datos."
-    if not _permitido(permiso, "Berna quiere copiar:\n%s\n\na:\n%s\n\nLe dejas?" % (origen, destino)):
+    if not _permitido(permiso, "Sobri quiere copiar:\n%s\n\na:\n%s\n\nLe dejas?" % (origen, destino)):
         return "No me has dado permiso, no he copiado nada."
     try:
         os.makedirs(os.path.dirname(destino), exist_ok=True)
@@ -463,7 +463,7 @@ def mover_archivo_o_carpeta(origen, destino, permiso=None):
         return "El destino ya existe. No voy a sobrescribirlo al mover."
     if not _es_destino_seguro(destino):
         return "No voy a mover nada dentro de una carpeta del sistema."
-    if not _permitido(permiso, "Berna quiere MOVER:\n%s\n\na:\n%s\n\nEl original cambiara de sitio. Le dejas?" % (origen, destino)):
+    if not _permitido(permiso, "Sobri quiere MOVER:\n%s\n\na:\n%s\n\nEl original cambiara de sitio. Le dejas?" % (origen, destino)):
         return "No me has dado permiso, no he movido nada."
     try:
         os.makedirs(os.path.dirname(destino), exist_ok=True)
@@ -479,7 +479,7 @@ def crear_carpeta(ruta, permiso=None):
         return "La carpeta ya existe: %s" % ruta
     if not _es_destino_seguro(ruta):
         return "No voy a crear carpetas dentro del sistema."
-    if not _permitido(permiso, "Berna quiere crear esta carpeta:\n\n%s\n\nLe dejas?" % ruta):
+    if not _permitido(permiso, "Sobri quiere crear esta carpeta:\n\n%s\n\nLe dejas?" % ruta):
         return "No me has dado permiso, no he creado la carpeta."
     try:
         os.makedirs(ruta)

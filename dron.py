@@ -2,7 +2,7 @@
 r"""
 Volar el dron: si hoy se puede, a que hora conviene y cuando hay buena luz.
 
-Es lo que mas le puede servir a Angel de todo lo que tiene Berna, porque es
+Es lo que mas le puede servir a Angel de todo lo que tiene Sobri, porque es
 lo suyo: tiene equipo DJI pagado y de ahi puede sacar trabajo. Y la pregunta
 que se hace cada manana es siempre la misma: **"¿puedo volar hoy?"**.
 
@@ -29,7 +29,7 @@ LOS LIMITES SON DE FABRICA, EL CRITERIO ES MIO Y SE DICE
 
 LO QUE NO HACE, Y ES A PROPOSITO
   Esto NO dice si es LEGAL volar ahi. Las zonas restringidas se miran en
-  ENAIRE Drones y las obligaciones son las de AESA. Berna lo recuerda, pero
+  ENAIRE Drones y las obligaciones son las de AESA. Sobri lo recuerda, pero
   la decision y la responsabilidad son de Angel, que es quien tiene el
   titulo y quien responde.
 """

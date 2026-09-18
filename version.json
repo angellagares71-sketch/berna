@@ -1,28 +1,24 @@
 {
-  "version": "1.10.1",
-  "fecha": "2026-09-14",
+  "version": "1.11.0",
+  "fecha": "2026-09-18",
   "novedades": [
-    "Restaurar una copia vuelve de verdad a la mas nueva (antes podia elegir una de dias antes).",
-    "Si Gemini se satura un momento, Berna ya no se queda media hora sin cerebro: espera solo lo que pide Google.",
-    "Elige mejor sus herramientas: entiende pdf, git, dji o bpm y manda menos datos en cada pregunta.",
-    "Protege tambien la clave del movil y apunta en el registro los fallos que antes se callaba.",
-    "Al reducir fotos avisa de las que no ha podido abrir."
+    "Ahora se llama Sobri (sigue respondiendo a Oye Berna).",
+    "Manager de redes: YouTube, TikTok y Suno. Elige que canciones subir segun el mercado y tu canal, monta video, Short y miniatura, y escribe titulos, descripciones y hashtags.",
+    "Piloto automatico: cada 10 minutos detecta canciones nuevas, las prepara, hace el plan de publicacion y te avisa a la hora de publicar.",
+    "Suno asistido: te escribe estilo y letra y te copia cada casilla.",
+    "Si un cerebro falla seguido lo aparta mas tiempo, y avisa si el permiso de Google ha caducado."
   ],
   "archivos": {
     "ACTUALIZACIONES-COMO-ACTIVARLO.txt": {
-      "sha256": "614266b6a71dd54005692a5371dfca092d2e5b2bd2dde178487e080cebcf6f9d",
+      "sha256": "cfe21684b81614f37d43b831deb2ee7a084bb9aeb9efca35d40739446b3131da",
       "bytes": 6713
     },
     "Asistente.bat": {
       "sha256": "5d0b718fe5392e2d350ce4799660b8492965e1a0cf7e8095e47ab19388cbcd0a",
       "bytes": 87
     },
-    "Berna-Movil.bat": {
-      "sha256": "80b902d1649a4ba199cd1b0616ede43b2ff95afcda8693f961b70186f281db33",
-      "bytes": 173
-    },
     "CORREO-COMO-ACTIVARLO.txt": {
-      "sha256": "98e4bd9523d8ff22607e5eb49205cc8202ae9c6bb06230a25f45431053d8e7eb",
+      "sha256": "cb935ff078d323bb42dc458f27cf3629108e13248a8b2391400f428005baceb2",
       "bytes": 3854
     },
     "Diagnostico (si falla).bat": {
@@ -30,135 +26,151 @@
       "bytes": 209
     },
     "GOOGLE-COMO-ACTIVARLO.txt": {
-      "sha256": "21f779e784dd28cfd16c538141f68abce9a41e81a891b311c9fee836c5b185b6",
-      "bytes": 5056
+      "sha256": "6bdbdf9dad3cfeba0fff17f09d3c56313203ec630bbb4c6acbbc95ed2c04de32",
+      "bytes": 5639
     },
     "LEEME.txt": {
-      "sha256": "6d6982e3c4d2ac5cfded108575599079e7e3fc13f35c83ddfad683332a09ff5a",
-      "bytes": 31319
+      "sha256": "f70cd08b0e960d2a83fa998fadb2fccd50acbcc84cd629e46a6e68243e315658",
+      "bytes": 33811
+    },
+    "REDES-COMO-ACTIVARLO.txt": {
+      "sha256": "ce7ee0231f5df3ebc4bb5113b646d1cde59e7cccc3f0817e2fe7761acc0a4cb4",
+      "bytes": 4025
+    },
+    "Sobri-Movil.bat": {
+      "sha256": "88138d080de444258e7bceee50697feda6d0a41c93f0d09ca9cdafaf52ea642a",
+      "bytes": 173
     },
     "actualizaciones.py": {
-      "sha256": "ad6a938bd4ca98b5981d8770591cb710a8b1fcf87bf23fb9f96260e8638550a6",
+      "sha256": "8804e21979094427ffdd7985ab8433c4d391366272426975e037593b613893c1",
       "bytes": 21066
     },
     "agenda.py": {
-      "sha256": "95e3d22d66448eb7cc7622cf68de35b1385173594d988316557457b846354f97",
+      "sha256": "f4e7a16a8994d60eacf6abd790f3eb0f7db08414b0c8eb4a12254dbd2e89b0fa",
       "bytes": 13379
     },
     "asistente.py": {
-      "sha256": "3ba7fee8ee27a24ead7e60136c7f72ef07897e8e6b54883422a6fc77db12de96",
-      "bytes": 141255
+      "sha256": "504e28a428cb66322a3fa7908edc60529d5b05f65849450457fe29a6f4c6432f",
+      "bytes": 144353
     },
     "autorizar_google.py": {
-      "sha256": "fc6e085a0740f16c7f04c4872c0eac1c8bb4b7994447bae0e3002da390bec065",
+      "sha256": "73d01d7777d0108a8ed8d950b9d8dd8390d25b82a068e36269e99c881bec4a7a",
       "bytes": 381
     },
+    "autorizar_youtube.py": {
+      "sha256": "e69833cae32c8663592574f83ca55be3e24ec4ab7011dd1235a5c07df518ef76",
+      "bytes": 848
+    },
     "biblioteca.py": {
-      "sha256": "a7c9f0a4ba7b4bd25f02b70b46e2c69e614f5800b9607c0ec11d077be6699aa4",
+      "sha256": "958e8e3245e10715e9c21c54f0524d4085390a840a5d35662cc048c3f5f3a570",
       "bytes": 16597
     },
     "camara.py": {
-      "sha256": "8fc3109c544fa755f3807c4efed72f1f400009bf959cb530b0183b039d83c629",
+      "sha256": "52fd41dc67ca9a72302fd22e9275ed4d721b9c54ed209d3f80263fd4365a857d",
       "bytes": 20596
     },
     "cancion_ia.py": {
-      "sha256": "3c583374c870a0c6700b78e1636e76c08e30e21b279cdadfff90ca8f8a44f848",
+      "sha256": "5a1e5405f10875c552ca32ac164688ac21f3adf1a2780086feba8d7d5efd14af",
       "bytes": 9917
     },
     "cantar.py": {
-      "sha256": "2294480dc13bab617d09b34ddc159360c8f5a37fabc2c988d8c3b61f9898e923",
+      "sha256": "6d35a6e289ce26a8b4789faabb5ea19b73a147179b696479160a60719d21d4c4",
       "bytes": 15903
     },
     "cerebro.py": {
-      "sha256": "0f0df71f6aceb1b8218e809cc3c03d3f741d47b39bd2d2422467d4fec275d074",
-      "bytes": 13420
+      "sha256": "0d85dcd4e5ff0e1030c1a710b4493761edc850b67543003dd00c45b35ade61f7",
+      "bytes": 15069
     },
     "codigo.py": {
-      "sha256": "8449ef0840ef7acd86d63aa20f8174014bda9d23db8a0e2854ad456c40554f22",
+      "sha256": "68cf8ed62998a66ac021ffdeddc55c640be18103a20168a890d0117f2b3a9730",
       "bytes": 40591
     },
     "consejo.py": {
-      "sha256": "a24bcf93952b9d752cbaa9f3efcc0626f556aa475dda2a599c50c251e41de677",
+      "sha256": "ec99f6a170547611dcf5214120bfca0d1faab1de0e047b0632904ce466e911c2",
       "bytes": 10673
     },
     "control_version.py": {
-      "sha256": "799354d192aaacf466386320637729297437f656871256785642e7986702d51a",
+      "sha256": "1c7a4f436d26f9e0dc94fa256df8a6cf4c09fd4af3523d3420aced66a171240a",
       "bytes": 19226
     },
     "controles.py": {
-      "sha256": "b2c473d6ec4ef58d2decd71903bb17830ffd2b505e0d475cb0d6583cba4157af",
+      "sha256": "f464acefe5be677e61a32d7d2ebbf1bb456757b659c15493c1bd122dc74d3c65",
       "bytes": 10452
     },
     "cuentas.py": {
-      "sha256": "643a9dc43f412cfe62557a133fd4738265059a0d438f5c34e9c142059cf14119",
-      "bytes": 15433
+      "sha256": "b2a99f4a2f7204dfe94bf5fba3c656b85f6f76551c67713a670e59398a0338c9",
+      "bytes": 16740
     },
     "dron.py": {
-      "sha256": "37a5149d75c791db63195c3fd5b83923934e82a4c4c7886cd5c36363021dcd40",
+      "sha256": "fdb85d85b9c8a665b07765ad49c80117f0dbd3728754b528412d309c8115415f",
       "bytes": 13129
     },
     "editor.py": {
-      "sha256": "568a62d7a7aab28fd3f3fa3e94ff59eb3683ce384ca4ac0c0ebfe9d79711a4bd",
+      "sha256": "d36d00be1b694bb63e8ff48897146269eca76cc1250ae6b8b489e0a4027450ed",
       "bytes": 15698
     },
     "estilos.py": {
-      "sha256": "ca69011f18ffc3ea40ef1b6fc79d30a5893e4d8c848f0f7cc1c2c58cdb577055",
+      "sha256": "07e2f6c6426c4259884450a71fa84d9c483ef54a7740511d278640da5b9f1786",
       "bytes": 25799
     },
     "herramientas.py": {
-      "sha256": "4982f994aab4f4587b20ce612b9ed07db2aaef537f3f95d0475a1488417a2de3",
-      "bytes": 155777
+      "sha256": "c6402d5fec0c0093c120d1fd50ad7dd79c7bfab6599f270a5026786dfefdabb8",
+      "bytes": 168006
     },
     "instalador.py": {
-      "sha256": "4204fc777665f8105f4f4a73c3ae65c56a67ca6fedd7afbce3a1f577072e13a5",
-      "bytes": 29536
+      "sha256": "9e57ade3791e00bedaee93f5412ac870526f648e74fd904d4d2a2db05ff97bc8",
+      "bytes": 29585
     },
     "internet.py": {
-      "sha256": "d0a22200a940cb397fcf425bf7e3aeae584c11f84de06a93b7123231d23b13a0",
+      "sha256": "791340cfe7aa41e9ecb056589786f67af0e297993d388c8d47dcfa9a7fd5b01f",
       "bytes": 12379
     },
     "manos.py": {
-      "sha256": "b1690c4963bdb5fab370af8f2b0e27980be08e574ad9a6d3371571cdbeec0432",
-      "bytes": 60215
+      "sha256": "ea0f01639244331b13e1282453b7ec1d3d1880f7158ca5e7e89bc736efc2b499",
+      "bytes": 60530
     },
     "mantella.py": {
-      "sha256": "1e072fe0b763a97d893e12cfd8777a981e3791dd58a4ef8602b9e53982e46c6e",
+      "sha256": "33a17c01e724df5e6ff42bba282814f9d970c9b97869b5e4e68e540df252fd1d",
       "bytes": 72565
     },
     "medios.py": {
-      "sha256": "10245a7e788b11b1baa97c9a79f628153341db0a383ab5297b9ef3c1c5eb57c4",
+      "sha256": "f259b150115afb7a83c5a780c10b1284146787729f9daedab94aaee392259110",
       "bytes": 20674
     },
     "movil.py": {
-      "sha256": "7fe155615eac1e1088ef9628df036269a6d72ba27d99a99eb4bbaf5571f53585",
-      "bytes": 78617
+      "sha256": "bdcb9e54aead0be67d157fe52dc443ecfffd808275112a51fd8e55189f31b91b",
+      "bytes": 79931
     },
     "muneco.py": {
-      "sha256": "75e874fe7ae5d16298400fe91202769b974fb78beb28a65e8ec88fb86b68119c",
+      "sha256": "f6dd7f772e8c331dd2e8bcebc154cf90f327f20bcadf4cfe71b307285eb07d53",
       "bytes": 38562
     },
     "muneco3d.py": {
-      "sha256": "df0e96264898510d587149397babb0858395a2d06cdde5086635d7ae94f4bb24",
+      "sha256": "78eb0748ff1ac620bfb5fb3074718022d70aa889bdfc5c76190065b325890d1a",
       "bytes": 34983
     },
     "music2000_experto.py": {
-      "sha256": "4b3fb48f1b8eca9275b42e787f9a918c6248ed467276d334d3b4147656a28fa5",
+      "sha256": "d3cf205b731be11ff5aaf222dee0e10ec89cfa4189f4b856584d28bdb8ce2b0b",
       "bytes": 5725
     },
     "musica.py": {
-      "sha256": "589aa21a3ea62ae02e38ecbcf285eb9cbf5529359e47e78bfd7a94d3a15cd82a",
+      "sha256": "d4f507569f567118073adc33e7bf470630ebda3b85dd072ffb00e1a9a6fc1281",
       "bytes": 94772
     },
     "musica_ia_local.py": {
-      "sha256": "c9f4b2eecbf7c1d26c83b3b60059e61ea046cdce7f71d877519de2bc980201c2",
+      "sha256": "c945db322abb05e64a8ccf8bac4201fd251e79c15aa127e0cc89ddb7f042afb7",
       "bytes": 23386
     },
     "musica_loops.py": {
-      "sha256": "8e0d0c2d542c3bfe1da2eb50efb358ec1bfd3183af39593a8614431247c46e3d",
+      "sha256": "53fedcfc28c27d9ae9c4fdf7034ca4cc01ded6f75a4edd4c90fcc7ac671373fc",
       "bytes": 11638
     },
+    "nombre.py": {
+      "sha256": "f1b2cd90a76037235641756a02898b55895c5a7fe4a4ac5aa1d6fffaef427888",
+      "bytes": 7288
+    },
     "oficina.py": {
-      "sha256": "e424a8827b788c3023e0d3d2a4d2c06b67f6d599ec8eff2c684c28de3dd5d0d6",
+      "sha256": "94cfcde302cac6a4e32540a9ffbaa03cd164ee0011435d6e4992f0eb003c378c",
       "bytes": 25102
     },
     "oido_por_lotes.py": {
@@ -166,57 +178,60 @@
       "bytes": 2046
     },
     "operar.py": {
-      "sha256": "365f237edc7cd43b79da5a9efbfdd5c01a71e4dfc996cb81509228cb5a097689",
+      "sha256": "3ff7aace3b8744f6808c993954962f99b932ae2091cc13b73a0ca71d6726faf0",
       "bytes": 11205
     },
     "oportunidades.py": {
-      "sha256": "24c74fde18d553caf8cfc2212c671c0eeedee8ea81d6122724afd8334cd6bd5a",
+      "sha256": "3d367a70bd3b786701712741db251744f6a94fabc671f72d1ee3853bb687c6e4",
       "bytes": 15014
     },
     "papeles.py": {
-      "sha256": "04396b274bbb35e157ddc53e5ed05e92759b14679a70b4bfdd8bcd2f7d81a37f",
+      "sha256": "0a9c81232d4dab8f46f2a41dc67a37c1377b280793341d8a2af222146c3261cf",
       "bytes": 14370
     },
     "persistencia.py": {
-      "sha256": "b8b37c0da917dccf10dbe929bd25127dc3f86a26c56000ffd32ee2cc50806c8b",
+      "sha256": "aa33d2b55a5cd61586452df6b3289b55a569390d3549fa4851febee3ccd0a273",
       "bytes": 4035
     },
     "reaper_ctl.py": {
-      "sha256": "10b00ae5589f455576d633b696c055d86a37d78797850a338315c8bb2bb7e0a1",
+      "sha256": "77bd9b257d8895b9b049f240a75f6849f0f4a52f9e993f648d8fc231902100c3",
       "bytes": 37438
     },
+    "redes.py": {
+      "sha256": "b916c9ed571088cb5c0e808348789b656f47201f1760eadf9106174a0b2990b5",
+      "bytes": 118197
+    },
     "suno.py": {
-      "sha256": "aeae19f6be9da06ba4113ded3c70a10751d93a3c6303134d7e5fcaf636653e58",
+      "sha256": "1e217c2505b80b051fb4be08f8f7a6abee4eb182bcf64f00ae815589fe1f6d7a",
       "bytes": 7424
     },
     "taller.py": {
-      "sha256": "9050a7ff0cd24d180ce29c309adb292f842138646090399ec40cc1285f4dc10b",
+      "sha256": "9a9f9b2bacde6a5eccecdc48dd7eaa08c60da8f2cb35922f2bacad8dff7ab4bb",
       "bytes": 26542
     },
     "taller_extra.py": {
-      "sha256": "d88d11bd2f2e157dc095b39f9cf57840db036af5466ada3bc3245ba127108937",
+      "sha256": "bec12256ad00a75f82ef860c42cfe7b705b16a891566571c72ee0297a32407a8",
       "bytes": 54821
     },
     "tareas.py": {
-      "sha256": "07ed878a9421f3512ee01c12052d39d4b2798af0528b06ced0b1af036af4eebb",
+      "sha256": "5699723fb66837d9c88c809f2e33f5484649e840fd5967c4a53659e9a6713b4d",
       "bytes": 17575
     },
     "vigilante.py": {
-      "sha256": "c765fa4f5ce6258837dc4c949dba86a655fe8c80f6d8176588bff0538c238c74",
+      "sha256": "eeae7ea79f130c6b7b077384aab2f7cf11b0bffc1dd23224a0375a3e8e2b9156",
       "bytes": 12389
     },
     "vista.py": {
-      "sha256": "02c64b71aa552d44e5da4fc006a2146856e0bef4d0197efc9d7e9f9f3c978ac8",
+      "sha256": "c7f0c29ece38036abfedc0c108a6382dbd09a53667debe8a4294bb3a4edb2fd4",
       "bytes": 12195
     },
     "voz.py": {
-      "sha256": "e823ed5cf542560c3e0a639a39333e790f1d1d0a5945152b88f9d9a198988739",
+      "sha256": "cd1f92b3b0734d7f5317a997a5f97d86103dfb25859cb63285ad034a44ff146a",
       "bytes": 8603
     },
     "whatsapp.py": {
-      "sha256": "7c831700a294529aea7160a3bfc8612cd6e782bc44c7423ef3df23c4218b0616",
+      "sha256": "75753c6747b9b9103bc932c438945bf73e34d09f37e5d0cb1c5240b398aa5f02",
       "bytes": 8792
     }
-  },
-  "commit": "9b7445f4e91af37e751bbd280571712346cd13db"
+  }
 }

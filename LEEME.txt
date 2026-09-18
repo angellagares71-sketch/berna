@@ -1,11 +1,33 @@
 ========================================================
-  BERNA  -  tu asistente personal
+  SOBRI  -  tu asistente personal
 ========================================================
 
 COMO ABRIRLO
-  Doble clic en el icono "Berna" del escritorio.
+  Doble clic en el icono "Sobri" del escritorio.
   Tarda unos 10 segundos en arrancar. Cuando la cara
   pone "Listo" en verde, ya puedes hablarle.
+
+
+ANTES SE LLAMABA BERNA                         NUEVO
+  Desde el 16/09/2026 se llama Sobri. Para llamarle:
+  "Oye, Sobri". Si se te escapa "Oye, Berna", tambien
+  te hace caso.
+
+  Al abrir la version nueva por primera vez lo cambia
+  todo solo: su nombre, su forma de presentarse, el
+  icono del escritorio y la carpeta Imagenes\Sobri.
+  Si le habias puesto otro nombre tu, lo respeta.
+
+  OJO: "Sobri" suena casi igual que "sobre". Esta
+  medido y ajustado para que "sobre las cinco..." no
+  le despierte, pero si algun dia salta solo, avisa.
+
+  Por dentro hay cosas que siguen llamandose "berna"
+  y tienen que seguir asi: la carpeta de canciones
+  (Musica\Canciones de Berna), el archivo berna.log y
+  el paquete de la app del movil. Nadie los ve, y si
+  cambiaran se perderian las canciones enlazadas, las
+  llaves del movil o las actualizaciones.
 
 
 LA CARA
@@ -38,7 +60,7 @@ SUS HERRAMIENTAS  (las usa solo, no hay que pedirlas)
     Leer una pagina web         entra y te la resume
     El tiempo                   ahora y proximos dias
 
-  MIRAR COSAS  (Berna VE)
+  MIRAR COSAS  (Sobri VE)
     Mirar tu pantalla           "mira mi pantalla y dime que
                                 me esta pidiendo esto"
     Mirar una imagen            cualquier foto o captura del PC
@@ -75,7 +97,7 @@ SUS HERRAMIENTAS  (las usa solo, no hay que pedirlas)
     Ver tus ventanas abiertas
     Volumen                     subir, bajar, silenciar
     Multimedia                  play, pausa, siguiente, anterior
-    Captura de pantalla         va a Imagenes\Berna
+    Captura de pantalla         va a Imagenes\Sobri
     Portapapeles                leer lo que copiaste,
                                 o dejarte algo copiado
 
@@ -96,7 +118,7 @@ SUS HERRAMIENTAS  (las usa solo, no hay que pedirlas)
     Cartera de oportunidades    guardar, ver como va cada una
     Vigilar un precio           te dice la verdad: si no consigue
                                 el precio, no se lo inventa
-    Berna NO toca dinero. Ni compra, ni paga, ni opera, ni
+    Sobri NO toca dinero. Ni compra, ni paga, ni opera, ni
     mete datos de tarjeta. Te deja el trabajo hecho hasta la
     puerta; presentarte, comprar o firmar lo haces tu.
 
@@ -108,12 +130,12 @@ SUS HERRAMIENTAS  (las usa solo, no hay que pedirlas)
 
 TOCAR EL ORDENADOR: EL TECLADO Y EL RATON      NUEVO
                                           TE PIDE PERMISO
-  Berna ya no solo te dice donde pinchar: pincha el.
+  Sobri ya no solo te dice donde pinchar: pincha el.
   Mueve el raton, pulsa botones, escribe textos y usa
   atajos de teclado como si fueras tu.
 
   COMO SE LE PIDE
-    "Berna, rellename este formulario"
+    "Sobri, rellename este formulario"
     "escribe esto en el Word que tengo abierto"
     "ordename los archivos de la carpeta Dron"
     "dale a guardar"
@@ -141,8 +163,46 @@ TOCAR EL ORDENADOR: EL TECLADO Y EL RATON      NUEVO
   Y TODO QUEDA APUNTADO
     En tareas\registro.log: que hizo, cuando y donde.
 
+TU MANAGER DE REDES: YOUTUBE, TIKTOK Y SUNO     NUEVO
+                                          TE PIDE PERMISO
+  Sobri lleva las redes de tu musica como un profesional:
+  mira como va el canal, elige que canciones subir segun el
+  mercado y lo que funciona en TU canal, monta los videos y
+  los Shorts, escribe titulos y descripciones, hace el plan
+  de la semana y te dice que toca hoy.
+
+  PILOTO AUTOMATICO
+    No hace falta pedirle nada: cada 10 minutos mira si has
+    bajado una cancion nueva de Suno, la puntua, le monta el
+    video y el Short, rehace el plan, mira las cifras y te
+    avisa cuando toca publicar (de 23:00 a 9:00 se calla y te
+    lo cuenta por la manana). Tu solo haces canciones.
+    "Apaga el piloto de las redes" / "enciendelo".
+
+  COMO SE LE PIDE
+    "Como va mi canal"          "Que canciones subo"
+    "Hazme el plan"             "Que toca hoy"
+    "Prepara Vida Recia"        "Subela a YouTube"
+    "Que cancion hago ahora"    "Preparame una para Suno"
+    "Que esta de moda"          "Consejos para crecer"
+
+  SUBIDA ASISTIDA
+    YouTube y TikTok dejan en PRIVADO lo que sube un programa
+    hasta que revisan la app, y Suno no deja que un programa
+    maneje la cuenta. Asi que Sobri lo deja TODO listo, abre
+    la pagina, te enseña el archivo y te copia cada texto; tu
+    arrastras y pulsas Publicar (o Crear, en Suno).
+
+  PARA QUE VEA SUSCRIPTORES Y ANALITICAS
+    Sigue REDES-COMO-ACTIVARLO.txt (5 minutos, una vez).
+
+  LO QUE NO VA A HACER
+    - Publicar lo hecho con el plan gratis de Suno.
+    - Subir sin marcar que es contenido hecho con IA.
+    - Comprar visitas ni subir dos veces lo mismo.
+
 ACENTOS Y PERSONALIDADES                       NUEVO
-  Berna sabe hablar con 22 acentos y con 16
+  Sobri sabe hablar con 22 acentos y con 16
   personalidades, y se cambian hablando. Basta con
   decirselo:
 
@@ -180,14 +240,14 @@ ACENTOS Y PERSONALIDADES                       NUEVO
 
 LLEVARTELO A OTRO ORDENADOR                    NUEVO
   Tienes en el escritorio una carpeta que se llama
-  "Instalar Berna". Esa carpeta es Berna entero,
+  "Instalar Sobri". Esa carpeta es Sobri entero,
   preparado para instalarse en cualquier sitio.
 
   COMO SE USA
     1. Copiala a un pen (ocupa unos 613 MB).
     2. En el ordenador nuevo, doble clic en INSTALAR.bat
     3. Espera entre tres y diez minutos.
-    4. Aparece un acceso directo "Berna" en el escritorio.
+    4. Aparece un acceso directo "Sobri" en el escritorio.
 
   NO NECESITA INTERNET NI SER ADMINISTRADOR
     Lleva dentro el Python, los 59 paquetes, las tres
@@ -195,21 +255,21 @@ LLEVARTELO A OTRO ORDENADOR                    NUEVO
 
   OJO CON UNA COSA
     Dentro hay una carpeta TUS-DATOS-PRIVADOS con TUS
-    CLAVES y lo que Berna recuerda de ti. Gracias a ella
+    CLAVES y lo que Sobri recuerda de ti. Gracias a ella
     la instalacion nueva funciona a la primera. Pero si le
     prestas el pen a alguien, BORRA ESA CARPETA.
     (Tu permiso de Google y las caras que conoce NO van
     en el pen a proposito.)
 
   SE MANTIENE SOLA
-    Cada vez que se le cambie algo a Berna, se vuelca a
+    Cada vez que se le cambie algo a Sobri, se vuelca a
     esa carpeta con una orden, para que lo que te lleves
     sea siempre la ultima version:
 
       C:\Asistente
       C:\Asistente\venv\Scripts\python.exe C:\Asistente\instalador.py
 
-BERNA PROGRAMA POR TI                          NUEVO
+SOBRI PROGRAMA POR TI                          NUEVO
                                           TE PIDE PERMISO
   Si necesitas un programa, se lo pides y te lo hace. No
   te explica como se hace: lo escribe, lo prueba, y si
@@ -245,7 +305,7 @@ BERNA PROGRAMA POR TI                          NUEVO
   YA TIENES DOS HECHOS DE PRUEBA: 'dias_fin_ano' y
   'letras_grandes'. Pidele que te los ejecute y los ves.
 
-BERNA TE ARREGLA LOS PROGRAMAS QUE YA TIENES  NUEVO
+SOBRI TE ARREGLA LOS PROGRAMAS QUE YA TIENES  NUEVO
                                           TE PIDE PERMISO
   Lo de arriba es hacer programas nuevos. Esto es otra
   cosa: meterle mano a uno que YA existe, sea suyo o sea
@@ -280,7 +340,7 @@ BERNA TE ARREGLA LOS PROGRAMAS QUE YA TIENES  NUEVO
     el texto que busca aparece dos veces en el archivo se
     para y pregunta, en vez de cambiar el que no era.
 
-LA OPCION CODE: BERNA PROGRAMANDO EN SERIO     NUEVO
+LA OPCION CODE: SOBRI PROGRAMANDO EN SERIO     NUEVO
                                           TE PIDE PERMISO
   Del 09/09/2026. Arriba estaba lo de escribir un programa
   y lo de arreglar un archivo. Esto es todo lo que va en
@@ -360,11 +420,11 @@ LA OPCION CODE: BERNA PROGRAMANDO EN SERIO     NUEVO
 
 SKYRIM Y SUS NPC PARLANTES                     NUEVO
                                           TE PIDE PERMISO
-  Berna te lleva el Skyrim con Mantella, que es lo que hace
+  Sobri te lleva el Skyrim con Mantella, que es lo que hace
   que los NPC hablen de verdad, en espanol y por voz.
 
   Para jugar:
-    "Berna, ponme el Skyrim"
+    "Sobri, ponme el Skyrim"
   Te abre Steam, el juego con SKSE desde Mod Organizer y
   Mantella, todo de una vez.
 
@@ -377,7 +437,7 @@ SKYRIM Y SUS NPC PARLANTES                     NUEVO
     - El modelo piensa en voz alta y Mantella tira lo que
       dice. Tambien se cambia de modelo.
 
-  En los dos ultimos, Berna te lo arregla: prueba varios
+  En los dos ultimos, Sobri te lo arregla: prueba varios
   modelos con las mismas instrucciones que usa Mantella, los
   puntua (si hablan espanol, si se quedan en personaje y
   cuanto tardan) y te ofrece el mejor. No lo cambia sin que
@@ -394,14 +454,14 @@ SKYRIM Y SUS NPC PARLANTES                     NUEVO
 PONERSE AL DIA POR INTERNET                    NUEVO
                                           TE PIDE PERMISO
   Arriba del todo de la ventana hay un desplegable que pone
-  "Berna". Dentro:
+  "Sobri". Dentro:
 
     Buscar actualizaciones por internet
     Que version tengo
     Deshacer la ultima actualizacion
     Actualizar la carpeta del pen
 
-  Con el primero Berna mira si hay version nueva, te dice
+  Con el primero Sobri mira si hay version nueva, te dice
   que trae y que archivos cambian, y solo se actualiza si
   le dices que si. Luego hay que cerrarlo y volverlo a
   abrir.
@@ -427,11 +487,11 @@ LOS DOS INTERRUPTORES: LA CAMARA Y EL OIDO     NUEVO
   que se vea de un vistazo.
 
   CAMARA: ENCENDIDA  /  CAMARA: APAGADA
-    Apagada, Berna no puede ver nada de nada: ni mirarte, ni
+    Apagada, Sobri no puede ver nada de nada: ni mirarte, ni
     reconocer a nadie, ni hacer fotos. No es que se porte
     bien, es que no puede.
 
-    Y esto es importante: BERNA PUEDE APAGARLA PERO NO
+    Y esto es importante: SOBRI PUEDE APAGARLA PERO NO
     ENCENDERLA. Si le dices "apaga la camara", la apaga. Para
     volver a encenderla tienes que pulsar tu el boton. Es a
     proposito: asi no hay texto en una web ni en un correo
@@ -444,8 +504,8 @@ LOS DOS INTERRUPTORES: LA CAMARA Y EL OIDO     NUEVO
     En "siempre" te oye sin que pulses nada y se despierta
     cuando le llamas por su nombre:
 
-        "Oye Berna, que tiempo hace"      -> te contesta
-        "Oye Berna"                       -> dice "dime" y espera
+        "Oye Sobri, que tiempo hace"      -> te contesta
+        "Oye Sobri"                       -> dice "dime" y espera
 
     Lo que oye NO SALE DE TU ORDENADOR: lo entiende Whisper
     ahi mismo, no se graba ningun audio, y no se manda nada a
@@ -461,9 +521,9 @@ LOS DOS INTERRUPTORES: LA CAMARA Y EL OIDO     NUEVO
     SI NO TE OYE CUANDO LE LLAMAS, tiene arreglo en diez
     segundos y lo haces tu:
 
-        Berna  >  Ajustar el oido
+        Sobri  >  Ajustar el oido
 
-    Te pide que digas "Oye Berna, que tal estas" un par de
+    Te pide que digas "Oye Sobri, que tal estas" un par de
     veces, mide a que volumen le llegas y se queda con el
     punto justo. Cada microfono y cada cuarto son distintos,
     y eso no se puede adivinar de fabrica.
@@ -479,7 +539,7 @@ QUE ESTE PENDIENTE DE TI                       NUEVO
 
       PENDIENTE DE TI: SI  /  PENDIENTE DE TI: no
 
-  Encendido, Berna sigue lo que haces desde que lo abres
+  Encendido, Sobri sigue lo que haces desde que lo abres
   hasta que lo apagas, y te habla EL SOLO si te ve atascado
   o si te salta una ventana de error.
 
@@ -509,14 +569,14 @@ QUE ESTE PENDIENTE DE TI                       NUEVO
       "¿me estas vigilando?"
 
   Y si te agobia:
-      "Berna, dejame en paz" -> lo apaga.
+      "Sobri, dejame en paz" -> lo apaga.
   Para volver a encenderlo lo pulsas tu, igual que la camara:
   el solo no puede.
 
 
 LAS MANOS: AHORA SI ACIERTAN                   NUEVO
                                           TE PIDE PERMISO
-  Antes Berna miraba la pantalla y calculaba a ojo donde
+  Antes Sobri miraba la pantalla y calculaba a ojo donde
   estaba cada boton. Fallaba casi siempre, y por dos motivos
   a la vez: la captura se le mandaba ENCOGIDA, asi que sus
   numeros venian en una escala y pinchaba en otra; y ademas
@@ -525,7 +585,7 @@ LAS MANOS: AHORA SI ACIERTAN                   NUEVO
   Ahora no adivina: le pregunta a Windows, que sabe como se
   llama cada boton y donde esta exactamente.
 
-      "Berna, dale al boton de Guardar"
+      "Sobri, dale al boton de Guardar"
       "escribeme el correo en la casilla de Email"
       "que botones hay en esta ventana"
 
@@ -538,7 +598,7 @@ LAS MANOS: AHORA SI ACIERTAN                   NUEVO
     pero te avisa de que va a ojo.
 
   UN DETALLE QUE TE PUEDE EXTRANAR: si el titulo de la
-  ventana lleva la palabra "banco", Berna no la toca, aunque
+  ventana lleva la palabra "banco", Sobri no la toca, aunque
   sea un banco de imagenes. Es su cerrojo de seguridad y esta
   puesto a proposito.
 
@@ -557,16 +617,16 @@ ACTIVAR TUS CUENTAS
       Lee  C:\Asistente\CORREO-COMO-ACTIVARLO.txt
       Necesita una contrasena de aplicacion que generas tu.
 
-  Berna NO puede enviar correos ni borrar nada. Solo leer.
+  Sobri NO puede enviar correos ni borrar nada. Solo leer.
   Para cortarle el acceso, dile "desconecta mi Google".
 
 
 QUE LO HAGA EL POR TI  (nuevo)
   Ya no tienes que pelearte con la consola. Cuando Claude
   o un manual te digan "pega esto en PowerShell", diselo
-  a Berna y lo hace el:
+  a Sobri y lo hace el:
 
-    "Berna, ejecuta esto: pip install pillow"
+    "Sobri, ejecuta esto: pip install pillow"
     "instalame el VLC"
     "mira si tengo algo pendiente"      <- tareas de Claude
     "hazlo"                             <- la ejecuta
@@ -620,7 +680,7 @@ QUE LO HAGA EL POR TI  (nuevo)
 
 
 SU MEMORIA
-  Berna se acuerda de cosas tuyas ENTRE SESIONES.
+  Sobri se acuerda de cosas tuyas ENTRE SESIONES.
   Cuando le cuentes algo que merezca la pena lo apunta
   solo en C:\Asistente\memoria.json.
   Dile "que recuerdas de mi" para que te lo lea, y
@@ -628,13 +688,13 @@ SU MEMORIA
 
 
 SEGURIDAD
-  Lo que Berna lee de internet o de un archivo lo trata
+  Lo que Sobri lee de internet o de un archivo lo trata
   como DATOS, nunca como ordenes. Si una pagina web intenta
   darle instrucciones, las ignora y te avisa.
   Y todo lo que modifica tu ordenador pasa antes por una
   ventana de confirmacion que tienes que aceptar tu.
   Ahora que puede EJECUTAR comandos esto importa el doble:
-  Berna solo obedece ordenes que salgan de tu boca o de
+  Sobri solo obedece ordenes que salgan de tu boca o de
   la carpeta de tareas. Si un comando le llega dentro de
   una web, un correo o un documento, NO lo ejecuta y te
   avisa de que ese texto intentaba darle ordenes.
@@ -645,7 +705,7 @@ SI FALLA
      Abre lo mismo dejando el error escrito en pantalla.
 
   2. "No he podido conectar con ningun modelo"
-     Los modelos gratuitos se saturan a ratos. Berna ya
+     Los modelos gratuitos se saturan a ratos. Sobri ya
      prueba 7 por orden automaticamente: primero los de
      Google (Gemini) y detras los de OpenRouter. Si fallan
      todos, espera un rato.
@@ -687,7 +747,7 @@ AJUSTES  (C:\Asistente\config.json)
 
 ARCHIVOS
   asistente.py .... el programa y la cara
-  herramientas.py . todo lo que Berna sabe hacer
+  herramientas.py . todo lo que Sobri sabe hacer
   vista.py ........ mirar la pantalla y las imagenes
   cuentas.py ...... Gmail, Calendar, Drive y correo IMAP
   operar.py ....... abrir programas, volumen, portapapeles
@@ -721,7 +781,7 @@ ARCHIVOS
 
 
 LAS CLAVES: SON DOS Y NO SE MEZCLAN
-  La de BERNA esta en config.json, aqui mismo, en
+  La de SOBRI esta en config.json, aqui mismo, en
   "clave_gemini" (Google) y "clave_api" (OpenRouter).
 
   La de MANTELLA, para los NPC de Skyrim, esta aparte, en:
@@ -729,19 +789,19 @@ LAS CLAVES: SON DOS Y NO SE MEZCLAN
   Hoy esa es una clave de GOOGLE, no de OpenRouter.
 
   Antes las dos compartian ese fichero y se lio: si vuelves a
-  apuntar Berna ahi, le mandaria a OpenRouter una clave de
+  apuntar Sobri ahi, le mandaria a OpenRouter una clave de
   Google y se quedaria sin cerebro. Cada uno con la suya.
 
-  Si sacas una clave nueva, dictasela a Berna y el te la
+  Si sacas una clave nueva, dictasela a Sobri y el te la
   guarda en su sitio.
 
 
-BERNA EN EL MOVIL
-  Berna vive en este ordenador y no se puede meter en un
+SOBRI EN EL MOVIL
+  Sobri vive en este ordenador y no se puede meter en un
   telefono: tiene cuerpo, camara, manos y voz, y todo eso es
   de Windows. Lo que si viaja es su cabeza.
 
-  Arranca "Berna-Movil.bat" y deja esa ventana negra abierta.
+  Arranca "Sobri-Movil.bat" y deja esa ventana negra abierta.
   Levanta una pagina web con el mismo cerebro y sus mas de 200
   herramientas. Luego abres en el navegador del movil la
   direccion que te sale escrita en esa ventana.
@@ -750,7 +810,7 @@ BERNA EN EL MOVIL
 
   EL INTERRUPTOR "TOCAR EL PC"
   Arriba a la derecha de la pagina. Apagado (por defecto),
-  Berna puede mirar, buscar y leer, pero no escribe archivos
+  Sobri puede mirar, buscar y leer, pero no escribe archivos
   ni abre programas ni mueve el raton: son decenas de
   herramientas y todas fallan a proposito.
   Encendido, puede hacerlo todo, sin preguntar cada vez.
@@ -760,22 +820,22 @@ BERNA EN EL MOVIL
   La direccion lleva al final "?k=" y unas letras. Es la
   llave: sin ella la pagina no abre. Esta en config.json,
   en "clave_movil". Si se la ensenas a alguien, esa persona
-  puede hablar con Berna y leer los archivos de este PC.
+  puede hablar con Sobri y leer los archivos de este PC.
   Para cambiarla, borra esa linea de config.json y vuelve a
   arrancar: se inventa otra.
 
   NO LO ABRAS A INTERNET tal cual. Esto esta pensado para tu
-  casa. Berna lee tus archivos y puede ejecutar cosas: puesto
+  casa. Sobri lee tus archivos y puede ejecutar cosas: puesto
   de cara a internet, es la llave de tu ordenador.
 
   DESDE TERMUX (la terminal del movil)
-  Con Berna-Movil.bat abierto, pega esto en Termux UNA vez.
+  Con Sobri-Movil.bat abierto, pega esto en Termux UNA vez.
   La direccion y la llave te las dice la ventana negra:
 
     curl -s "http://IP:8733/berna.sh?k=LLAVE" -o $PREFIX/bin/berna
     chmod +x $PREFIX/bin/berna
 
-  Se baja el cliente del propio Berna, ya configurado. A partir
+  Se baja el cliente del propio Sobri, ya configurado. A partir
   de ahi, en Termux:
 
     berna que hora es        una pregunta suelta

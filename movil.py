@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
-"""Berna en el movil.
+"""Sobri en el movil.
 
-Berna vive en una ventana de Windows: tiene cuerpo, camara, manos y voz, y nada
+Sobri vive en una ventana de Windows: tiene cuerpo, camara, manos y voz, y nada
 de eso cabe en un telefono. Lo que si cabe es su cabeza. Este modulo levanta un
 servidor web pequeno que reutiliza el mismo cerebro (herramientas.py, sus mas
 de doscientas capacidades) y la misma configuracion, y lo sirve como una pagina que se ve bien
 en el movil.
 
-O sea: Berna sigue viviendo en el ordenador de casa, y el telefono es una
+O sea: Sobri sigue viviendo en el ordenador de casa, y el telefono es una
 ventana mas para hablar con ella desde donde estes.
 
-Se arranca con Berna-Movil.bat, o a mano:
+Se arranca con Sobri-Movil.bat, o a mano:
 
     venv\\Scripts\\python.exe movil.py
 
@@ -80,7 +80,7 @@ ACCIONES_MOVIL = [
             "required": ["accion"]}}},
     {"type": "function", "function": {
         "name": "pulsar_en_movil",
-        "description": "Pulsa un boton o control visible del telefono buscandolo por su texto. Requiere Accesibilidad de Berna.",
+        "description": "Pulsa un boton o control visible del telefono buscandolo por su texto. Requiere Accesibilidad de Sobri.",
         "parameters": {"type": "object", "properties": {
             "texto": {"type": "string", "description": "Texto visible o descripcion del control"}},
             "required": ["texto"]}}},
@@ -344,7 +344,7 @@ def _texto_musica(datos, tipo):
 
 
 # Notas de voz de WhatsApp. La app Android manda el archivo .opus tal cual y
-# aqui lo escucha el mismo Whisper que usa la Berna de escritorio. Todo local:
+# aqui lo escucha el mismo Whisper que usa la Sobri de escritorio. Todo local:
 # el audio no sale de casa. En el registro solo se apunta la duracion, nunca
 # lo que se dice.
 MAX_AUDIO = 25 * 1024 * 1024
@@ -396,7 +396,7 @@ def transcribir_audio(datos, extension=".opus", idioma="es"):
 
 # Chats exportados de WhatsApp: LECTURA COMPLETA (13/09/2026).
 #
-# Angel quiere que Berna lea el chat ENTERO, con todos sus audios e imagenes,
+# Angel quiere que Sobri lea el chat ENTERO, con todos sus audios e imagenes,
 # mida lo que mida, y le de una resolucion de todo. La version anterior solo
 # le mandaba a la IA un trozo y la IA le decia, con razon, que no lo habia visto
 # todo. Ahora se hace asi:
@@ -955,7 +955,7 @@ def _sistema_con_chat(manos, chat_whatsapp, pregunta=""):
         % {"n": chat["nombre"], "c": cabecera, "a": alcance, "t": texto})
 
 def anotar(texto):
-    """Deja constancia en el mismo cuaderno que usa la Berna de escritorio."""
+    """Deja constancia en el mismo cuaderno que usa la Sobri de escritorio."""
     try:
         with open(os.path.join(CARPETA, "berna.log"), "a", encoding="utf-8") as f:
             f.write("[%s] movil: %s\n"
@@ -1014,7 +1014,7 @@ def _castigar(modelo, err):
     cerebro.cuanto_apartar y es la misma que usa la ventana.
     """
     e = str(err or "")
-    cuanto = Ce.cuanto_apartar(e, CASTIGO_CUOTA, CASTIGO_SATURADO)
+    cuanto = Ce.cuanto_apartar(e, CASTIGO_CUOTA, CASTIGO_SATURADO, modelo)
     if not cuanto:
         return
     if _sirve(modelo):
@@ -1024,13 +1024,13 @@ def _castigar(modelo, err):
 
 
 def sistema(manos):
-    """Lo que Berna lee antes de contestar.
+    """Lo que Sobri lee antes de contestar.
 
     Es mas corto que el de la ventana a proposito: aqui no hay cuerpo que
     describir ni camara que mirar, y conviene que lo tenga claro para que no
     prometa cosas que desde el movil no puede hacer.
     """
-    s = ("Eres Berna, el asistente de casa. Hablas en espanol de Espana, con "
+    s = ("Eres Sobri, el asistente de casa. Hablas en espanol de Espana, con "
          "naturalidad y sin florituras. Vas al grano.\n\n"
          "Ahora mismo te estan hablando desde el movil, por la web. Sigues "
          "viviendo en el ordenador de casa y tus herramientas actuan sobre ese "
@@ -1053,6 +1053,11 @@ def sistema(manos):
               "buscar y leer, pero cualquier herramienta que escriba, abra "
               "programas o mueva el raton va a fallar. Si hace falta una de "
                "esas, no lo intentes: dile que encienda el interruptor.")
+    try:
+        import redes as _Rd
+        s += _Rd.bloque_de_prompt()
+    except Exception as e:
+        anotar("prompt del movil sin el bloque de redes: %s" % e)
     return s + Ce.bloque_de_prompt(Hr.ESQUEMAS)
 
 
@@ -1136,6 +1141,12 @@ def responder(texto, historial, manos, chat_whatsapp=""):
                  + [Ce.ESQUEMA_MAS] + ACCIONES_MOVIL)
         salida = None
         tope_openrouter = False
+        if modelos and not any(_sirve(m) for m in modelos):
+            # todos apartados (p. ej. tras un corte de internet): se les perdona
+            # antes que quedarse mudo, igual que en la ventana. Con la racha
+            # creciente podian ser hasta una hora sin contestar.
+            _castigados.clear()
+            anotar("todos los cerebros castigados, se les perdona")
         for modelo in modelos:
             if not _sirve(modelo):
                 continue
@@ -1148,6 +1159,7 @@ def responder(texto, historial, manos, chat_whatsapp=""):
                     tope_openrouter = True
                 _castigar(modelo, err)
                 continue
+            Ce.fue_bien(modelo)
             salida = (contenido, llamadas)
             break
 
@@ -1227,7 +1239,7 @@ PAGINA = """<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#11161d">
-<title>Berna</title>
+<title>Sobri</title>
 <style>
 :root{--fondo:#11161d;--panel:#1a222c;--linea:#2a3542;--texto:#e8eef5;
       --suave:#8fa3b8;--mia:#2f6df6;--acento:#49d17f}
@@ -1287,13 +1299,13 @@ button:disabled{opacity:.45}
 <body>
 <header>
   <span class="punto"></span>
-  <h1>Berna</h1>
+  <h1>Sobri</h1>
   <label class="manos">tocar el PC
     <span class="sw"><input type="checkbox" id="manos"><span class="pista"></span></span>
   </label>
 </header>
 <div id="chat">
-  <div class="aviso">Berna esta en el ordenador de casa. Preguntale lo que quieras.</div>
+  <div class="aviso">Sobri esta en el ordenador de casa. Preguntale lo que quieras.</div>
 </div>
 <footer>
   <textarea id="txt" rows="1" placeholder="Escribe aqui..."></textarea>
@@ -1343,12 +1355,12 @@ async function mandar(){
 """
 
 
-# El cliente de terminal, para Termux. Se sirve desde el propio Berna con la
+# El cliente de terminal, para Termux. Se sirve desde el propio Sobri con la
 # direccion y la llave ya puestas, asi no hay que copiar nada a mano en el
 # telefono: un curl lo baja y ya funciona.
 SCRIPT_TERMUX = r"""#!/data/data/com.termux/files/usr/bin/bash
-# Berna, desde la terminal del movil.
-# Instalado desde el propio Berna el %(fecha)s.
+# Sobri, desde la terminal del movil.
+# Instalado desde el propio Sobri el %(fecha)s.
 #
 #   berna que hora es        una pregunta suelta
 #   berna                    conversacion, hasta que escribas "adios"
@@ -1376,7 +1388,7 @@ if [ $# -gt 0 ]; then
   exit 0
 fi
 
-echo "Berna. Escribe 'adios' para salir."
+echo "Sobri. Escribe 'adios' para salir."
 [ "$MANOS" = "1" ] && echo "(con permiso para tocar el PC)"
 while true; do
   printf '\n> '
@@ -1680,6 +1692,25 @@ class ServidorBerna(ThreadingHTTPServer):
     request_queue_size = 16
 
 
+def _bucle_redes():
+    """El piloto de las redes cuando la ventana de Sobri esta cerrada.
+
+    Este servidor sigue vivo aunque se cierre la ventana, asi que releva a la
+    ventana: redes.piloto_una_vuelta(quien="movil") no hace nada mientras la
+    ventana este dando sus vueltas. Lo que haya que decir sale como
+    notificacion de Windows.
+    """
+    import redes as Rd
+    time.sleep(180)
+    while True:
+        try:
+            for aviso in Rd.piloto_una_vuelta(quien="movil"):
+                Rd.avisar_en_windows("Sobri - tus redes", aviso)
+        except Exception as e:
+            anotar("piloto de redes (movil): %s" % e)
+        time.sleep(600)
+
+
 def main():
     global LLAVE
     cfg = cargar_config()
@@ -1689,11 +1720,11 @@ def main():
 
     if not obtener_clave(cfg) and not (cfg.get("clave_gemini") or "").strip():
         print("AVISO: no hay ninguna clave de cerebro en config.json.")
-        print("Berna arrancara, pero no sabra contestar.\n")
+        print("Sobri arrancara, pero no sabra contestar.\n")
 
     direccion = "http://%s:%d/?k=%s" % (mi_ip(), PUERTO, LLAVE)
     print("=" * 62)
-    print(" Berna, en el movil")
+    print(" Sobri, en el movil")
     print("=" * 62)
     print(" Abre esta direccion en el navegador del telefono:\n")
     print("   " + direccion + "\n")
@@ -1705,6 +1736,7 @@ def main():
     print(" Para cerrar: Ctrl+C, o cierra esta ventana.")
     print("=" * 62)
     anotar("servidor movil abierto en el puerto %d" % PUERTO)
+    threading.Thread(target=_bucle_redes, daemon=True).start()
 
     servidor = ServidorBerna(("0.0.0.0", PUERTO), Manejador)
     try:

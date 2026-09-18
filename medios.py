@@ -231,7 +231,7 @@ def ordenar_fotos(carpeta, destino="", permiso=None):
     resumen = ", ".join("%s (%d)" % (k, v) for k, v in sorted(meses.items())[:8])
     if len(meses) > 8:
         resumen += "..."
-    aviso = ("Berna va a ORDENAR %d archivos por la fecha en que se tomaron.\n\n"
+    aviso = ("Sobri va a ORDENAR %d archivos por la fecha en que se tomaron.\n\n"
              "De: %s\nA:  %s\n\nSe crearan carpetas por ano y mes: %s\n\n"
              "Los archivos SE MUEVEN (no se copian) y no se sobreescribe "
              "ninguno. Le dejas?" % (len(fotos), carpeta, destino, resumen))

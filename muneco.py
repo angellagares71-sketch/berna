@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
-El muneco de Berna: cuerpo entero dibujado a mano, con volumen y movimiento.
+El muneco de Sobri: cuerpo entero dibujado a mano, con volumen y movimiento.
 
 Angel lo pidio asi el 2026-09: "que sea muchisimo mas realista, con brazos y
 piernas, que pueda girar el cuello y hacer movimientos completos".

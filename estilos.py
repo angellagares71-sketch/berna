@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
-Los acentos y las personalidades de Berna.
+Los acentos y las personalidades de Sobri.
 
 Angel lo pidio el 2026-08-26: "que tenga muchas personalidades y muchos
 acentos, de diferentes paises, y que pueda cambiarlos cuando se lo diga".
@@ -16,7 +16,7 @@ EL TRUCO PARA QUE EL ACENTO SE OIGA DE VERDAD
   asi que si el texto se escribe tal como suena -- "ehtamo" en vez de
   "estamos", "cashe" en vez de "calle" -- **el acento sale por el altavoz**.
   Por eso cada acento de aqui no es una etiqueta: son REGLAS DE ESCRITURA
-  que se le meten a Berna en el prompt de sistema.
+  que se le meten a Sobri en el prompt de sistema.
 
   Ademas cada acento lleva su velocidad (length_scale de Piper: por debajo
   de 1 habla mas rapido) y, si existe, su voz. El mexicano usa la voz
@@ -492,7 +492,7 @@ def _parecido(texto, opciones):
 
 # ---------------------------------------------------------------- el prompt
 def bloque_de_prompt():
-    """Lo que se le mete a Berna en el prompt de sistema en cada respuesta."""
+    """Lo que se le mete a Sobri en el prompt de sistema en cada respuesta."""
     a, c = acento_actual(), caracter_actual()
     partes = []
     if a != POR_DEFECTO_ACENTO:

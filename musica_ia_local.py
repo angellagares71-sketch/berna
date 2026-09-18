@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 """Canciones hechas por IA EN ESTE ORDENADOR, gratis y sin limites.
 
-Berna ya sabia pedirle canciones a la IA de Google (cancion_ia.py), pero eso
+Sobri ya sabia pedirle canciones a la IA de Google (cancion_ia.py), pero eso
 cuesta centimos y necesita internet. Esto es la alternativa: ACE-Step 1.5,
 un modelo libre con licencia MIT instalado en C:\\ACEStep. No cuesta nada, no
 tiene limite diario, funciona sin internet y **lo que sale se puede publicar
 y hasta vender**, que era justo lo que Angel pedia.
 
 POR QUE SE LLAMA POR SEPARADO Y NO SE IMPORTA:
-Berna corre en Python 3.14 y ACE-Step exige 3.11 o 3.12. Son dos entornos
+Sobri corre en Python 3.14 y ACE-Step exige 3.11 o 3.12. Son dos entornos
 distintos y no se pueden mezclar en el mismo proceso, asi que se le llama como
 programa aparte con su propio Python. Es feo pero es lo unico que funciona.
 
@@ -45,7 +45,7 @@ PUERTO_ESTUDIO = 51765
 FACTOR = 5.4
 
 # Los estilos, con su velocidad, su tono y la descripcion en ingles, que es lo
-# que entiende el modelo. Son los mismos nombres que usa el resto de Berna.
+# que entiende el modelo. Son los mismos nombres que usa el resto de Sobri.
 ESTILOS = {
     "reggaeton": (95, "A minor",
         "reggaeton, dembow rhythm, deep punchy sub bass, latin percussion, "
@@ -93,9 +93,9 @@ def _si(valor):
 
 
 def _cargar_catalogo_completo():
-    """Lee el catalogo del estudio sin confundirlo con estilos.py de Berna.
+    """Lee el catalogo del estudio sin confundirlo con estilos.py de Sobri.
 
-    Los dos archivos se llaman igual por razones historicas: el de Berna lleva
+    Los dos archivos se llaman igual por razones historicas: el de Sobri lleva
     acentos y personalidades; el del estudio lleva generos musicales. Cargarlo
     con un nombre interno evita que uno pise al otro.
     """
@@ -267,7 +267,7 @@ def _mandar_al_estudio(orden, timeout):
 def abrir_estudio_musica_ia(permiso=None):
     """Abre el programa de Musica IA o trae al frente la copia existente."""
     if permiso is not None and not permiso(
-            "Berna va a abrir el programa Musica IA. Le dejas?"):
+            "Sobri va a abrir el programa Musica IA. Le dejas?"):
         return "No me has dado permiso, no lo he abierto."
     ok, err = _abrir_estudio()
     if not ok:
@@ -278,7 +278,7 @@ def abrir_estudio_musica_ia(permiso=None):
 
 
 def estado_musica_ia():
-    """Cuenta si el estudio esta abierto y si Berna esta componiendo."""
+    """Cuenta si el estudio esta abierto y si Sobri esta componiendo."""
     abierto = _estudio_abierto()
     estado = _leer_estado_puente()
     if estado.get("estado") == "componiendo" and abierto:
@@ -504,7 +504,7 @@ def crear_cancion_local(estilo="reggaeton", peticion="", nombre="",
              "bajamos la calidad o la duracion, o subes el limite en los "
              "ajustes del estudio." % limite)
 
-    aviso = ("Berna va a hacer una cancion con la IA de este ordenador:\n\n"
+    aviso = ("Sobri va a hacer una cancion con la IA de este ordenador:\n\n"
              "  estilo: %s\n  duracion: %d segundos\n"
              "  velocidad: %d pulsaciones\n  tono: %s\n"
              "  motor: %s\n  calidad: %s%s\n"
