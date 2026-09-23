@@ -49,6 +49,8 @@ CODIGO_ESENCIAL = (
 # Palabras que apuntan a un grupo de herramientas. No hace falta que sean
 # exhaustivas: lo que no case por aqui, casa por el nombre y la descripcion.
 TEMAS = {
+    "web":      ("web", "pagina", "navegador", "sitio", "formulario", "enlace",
+                  "boton", "pulsar", "rellenar", "playwright"),
     "dron":     ("dron", "volar", "viento", "racha", "dji", "vuelo"),
     "foto":     ("foto", "imagen", "camara", "exif", "revelar", "raw"),
     "video":    ("video", "subtitulo", "transcribir", "grabacion", "editar"),
@@ -202,6 +204,8 @@ def elegir(esquemas, texto, usadas=(), extra=(), tope=45):
 
     elegidas = []
     fijas = list(NUCLEO)
+    if "web" in temas_activos:
+        fijas += ["web_abrir", "web_leer", "web_actuar", "web_cerrar"]
     if "codigo" in temas_activos:
         fijas += list(CODIGO_ESENCIAL)
     for nombre in fijas + list(extra) + list(usadas):

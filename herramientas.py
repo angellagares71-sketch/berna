@@ -550,6 +550,22 @@ ESQUEMAS = [
        "para leer a fondo uno de los resultados.",
        {"url": _S("La direccion completa de la pagina")}, ["url"]),
 
+    _t("web_abrir", "Abre una web interactiva en el navegador aislado de Sobri. "
+       "No comparte el perfil ni las cuentas del Chrome del usuario. Devuelve texto y controles.",
+       {"url": _S("URL completa http o https")}, ["url"]),
+    _t("web_leer", "Lee la pagina activa y sus controles visibles en el navegador aislado.",
+       {}, []),
+    _t("web_cerrar", "Cierra el navegador aislado y descarta su sesion temporal.", {}, []),
+    _t("web_actuar", "Pulsa o rellena un control de la pagina aislada por rol y nombre exactos. "
+       "Antes usa web_leer. Para un clic, indica el texto o URL esperado y comprueba el resultado.",
+       {"accion": _S("clic o rellenar"),
+        "rol": _S("Rol accesible: button, link, textbox, checkbox, radio, combobox, tab o menuitem"),
+        "nombre": _S("Nombre visible y exacto del control"),
+        "texto": _S("Texto a escribir si accion=rellenar"),
+        "esperado_texto": _S("Texto que debe aparecer tras la accion"),
+        "esperado_url": _S("URL que debe alcanzarse tras la accion")},
+       ["accion", "rol", "nombre"]),
+
     _t("el_tiempo", "Consulta el tiempo actual y la prevision de los proximos dias.",
        {"lugar": _S("Ciudad. Por defecto Madrid")}, []),
 
@@ -2426,6 +2442,15 @@ try:
 except Exception as _e:
     PROBLEMAS.append("El modulo de internet no ha cargado: %s" % _e)
 
+try:
+    import navegador as _Nv
+    _FUNCIONES.update({"web_abrir": _Nv.web_abrir,
+                       "web_leer": _Nv.web_leer,
+                       "web_cerrar": _Nv.web_cerrar,
+                       "web_actuar": _Nv.web_actuar})
+except Exception as _e:
+    PROBLEMAS.append("El navegador aislado no ha cargado: %s" % _e)
+
 # avisar de las cosas a su hora
 try:
     import agenda as _Ag
@@ -2894,6 +2919,7 @@ NECESITAN_PERMISO = {"escribir_archivo", "abrir_en_windows", "google_crear_event
                      "abrir_programa", "cerrar_programa",
                      "ejecutar_orden", "hacer_tarea",
                      "instalar_programa", "descargar_archivo", "abrir_pagina_web",
+                     "web_abrir", "web_actuar",
                      "guardar_clave",
                      # las manos: si el modo manos esta encendido no vuelven a
                      # preguntar, pero necesitan la ventana por si esta apagado
@@ -2971,6 +2997,10 @@ ROTULOS = {
     "suno_descargar_mp3": "abrir tu biblioteca de Suno para bajar un MP3",
     "buscar_en_internet": "buscando en internet",
     "leer_pagina_web": "leyendo una pagina web",
+    "web_abrir": "abriendo el navegador aislado",
+    "web_leer": "leyendo el navegador aislado",
+    "web_cerrar": "cerrando el navegador aislado",
+    "web_actuar": "actuando en el navegador aislado",
     "el_tiempo": "consultando el tiempo",
     "hora_y_fecha": "mirando el calendario",
     "listar_carpeta": "mirando una carpeta",
@@ -3216,7 +3246,8 @@ ROTULOS = {
 
 
 GRUPOS = [
-    ("Internet", ["buscar_en_internet", "leer_pagina_web", "el_tiempo"]),
+    ("Internet", ["buscar_en_internet", "leer_pagina_web", "web_abrir",
+                  "web_leer", "web_actuar", "web_cerrar", "el_tiempo"]),
     ("Mirar cosas", ["mirar_pantalla", "mirar_imagen", "mirar_ultima_captura",
                      "hacer_captura"]),
     ("Tus archivos", ["buscar_archivos", "buscar_en_contenido", "listar_carpeta",

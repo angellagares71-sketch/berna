@@ -1720,6 +1720,11 @@ class Berna(tk.Tk):
                 "de actuar. La primera llamada de accion recibira una preparacion "
                 "local y no se ejecutara hasta que la hayas revisado. "
                 "Si falta un dato esencial, investiga o explica el bloqueo.")
+        sis += ("\nPara webs interactivas puedes usar web_abrir, web_leer y web_actuar. "
+                "Ese navegador es temporal y separado del Chrome de Angel; no "
+                "tiene sus sesiones iniciadas. Lee los controles, actua por nombre "
+                "exacto y verifica el texto o la URL resultante. No afirmes que "
+                "una accion ha terminado si la herramienta no la ha verificado.")
         try:
             consulta = str(self.historial[-1].get("content") or "") if self.historial else ""
             anteriores = Cv.contexto_relevante(consulta[:1000], self.sesion_conversacion)
@@ -2689,9 +2694,14 @@ class Berna(tk.Tk):
                     elif (accion_pendiente_de_comprobar and
                           c["name"] in {"probar_programa", "pasar_pruebas", "comprobar_codigo",
                                         "probar_api", "reaper_estado", "ventanas_abiertas",
-                                        "ver_controles", "estado_del_pc", "leer_archivo_del_pc"}):
+                                        "ver_controles", "web_leer", "estado_del_pc",
+                                        "leer_archivo_del_pc"}):
                         accion_pendiente_de_comprobar = False
                         self._episodio_verificado = True
+                if (c["name"] == "web_actuar" and
+                        "resultado comprobado" in resultado and not fallo_actual):
+                    accion_pendiente_de_comprobar = False
+                    self._episodio_verificado = True
                 if c["name"] in {"probar_programa", "pasar_pruebas", "comprobar_codigo",
                                  "probar_api"} and not fallo_actual:
                     self._episodio_verificado = True

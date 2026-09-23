@@ -31,6 +31,9 @@ QUE DATOS SE USAN Y DONDE SE GUARDAN
   historial desde el menu Sobri. Las notas de memoria.json se borran aparte.
 - La vigilancia de ventanas y el OCR son locales. Por defecto, los avisos
   espontaneos no envian titulos ni capturas al proveedor de IA.
+- El navegador interactivo de Sobri usa una sesion temporal separada: no lee
+  el perfil ni las cookies del navegador habitual. El texto de las paginas
+  consultadas puede enviarse al proveedor de IA configurado para responder.
 
 COMO BORRAR LOS DATOS O RETIRAR EL PERMISO
 - Retirar el permiso: https://security.google.com/settings/security/permissions
@@ -76,6 +79,9 @@ WHAT DATA IS USED AND WHERE IT IS STORED
   separately in memoria.json.
 - Window monitoring and OCR run locally. By default, unsolicited notices do
   not send window titles or screenshots to an AI provider.
+- Sobri's interactive browser uses a separate temporary session. It does not
+  read the usual browser profile or cookies. Page text may be sent to the
+  configured AI provider to answer a request.
 
 HOW TO DELETE DATA OR REVOKE ACCESS
 - Revoke access: https://security.google.com/settings/security/permissions

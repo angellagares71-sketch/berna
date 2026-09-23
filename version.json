@@ -1,10 +1,10 @@
 {
-  "version": "1.12.0",
+  "version": "1.13.0",
   "fecha": "2026-09-23",
   "novedades": [
-    "Conversaciones persistentes y memoria de tareas entre reinicios.",
-    "Mejor control de errores de modelos y respuesta local cuando se agota la cuota.",
-    "Mejoras de OCR y de acciones guiadas en el ordenador."
+    "Navegador aislado para leer y usar webs interactivas con confirmacion del resultado.",
+    "Disponible tambien desde Sobri Movil cuando se permite el modo manos.",
+    "Instalacion guiada de Playwright al usarlo por primera vez y sesion temporal que puede cerrarse."
   ],
   "archivos": {
     "ACTUALIZACIONES-COMO-ACTIVARLO.txt": {
@@ -32,8 +32,8 @@
       "bytes": 33811
     },
     "PRIVACIDAD.txt": {
-      "sha256": "1e2016feeec2d42a6547d4b99fd95fefdd753460527d05b089625b67706c9103",
-      "bytes": 4801
+      "sha256": "22d974440a93137846792aa67156c72f9414e052ed3ae4ea98688ac4255296a3",
+      "bytes": 5226
     },
     "REDES-COMO-ACTIVARLO.txt": {
       "sha256": "ce7ee0231f5df3ebc4bb5113b646d1cde59e7cccc3f0817e2fe7761acc0a4cb4",
@@ -48,7 +48,7 @@
       "bytes": 1996
     },
     "actualizaciones.py": {
-      "sha256": "daab454c8c8be7ba727d1b4433a37450af66015fd19fbca57ce17682f3192534",
+      "sha256": "a64f3ab4e165f793adcc96b5d45c67191e9276a2c387eb63add2c5f9d2bcd327",
       "bytes": 21066
     },
     "agenda.py": {
@@ -56,8 +56,8 @@
       "bytes": 13379
     },
     "asistente.py": {
-      "sha256": "250f1fc61ace436ba518cf1fc9a65108a1f841586b6ca886db45778a0f41b4a3",
-      "bytes": 167214
+      "sha256": "2f139b68ef0aea04494bb37b80bd05ccacdef29faa34521bc51ce10e17419a6f",
+      "bytes": 167929
     },
     "autorizar_google.py": {
       "sha256": "73d01d7777d0108a8ed8d950b9d8dd8390d25b82a068e36269e99c881bec4a7a",
@@ -84,8 +84,8 @@
       "bytes": 15903
     },
     "cerebro.py": {
-      "sha256": "e9d1caa959445ef092f869f6033e31206d10a34cff5c966dd0582f0a67fbfbbc",
-      "bytes": 17496
+      "sha256": "9056dd56e45c5d1bc066c3d8b247d6856d06cf73de41ae999674e49ad3023ff5",
+      "bytes": 17742
     },
     "codigo.py": {
       "sha256": "68cf8ed62998a66ac021ffdeddc55c640be18103a20168a890d0117f2b3a9730",
@@ -132,8 +132,8 @@
       "bytes": 25799
     },
     "herramientas.py": {
-      "sha256": "08dbbdd13764b68721fce1e88d7b6490b24fe9936a16bc87335982a5fa170b92",
-      "bytes": 172065
+      "sha256": "bfbab2cffbc0eaa5f0641635fed1ca81f00fce138ac2ca9154dc31e2cbfd5bf3",
+      "bytes": 173807
     },
     "instalador.py": {
       "sha256": "6f950e966e9f5e72a9897adc2cea362037238e78f8edee8da9a175734a2a2c41",
@@ -187,6 +187,10 @@
       "sha256": "53fedcfc28c27d9ae9c4fdf7034ca4cc01ded6f75a4edd4c90fcc7ac671373fc",
       "bytes": 11638
     },
+    "navegador.py": {
+      "sha256": "e9433e1e8def97f2f61d2e9203e0d5ba8f3292de2004bf5674bb7fd9c65a9479",
+      "bytes": 8933
+    },
     "nombre.py": {
       "sha256": "f1b2cd90a76037235641756a02898b55895c5a7fe4a4ac5aa1d6fffaef427888",
       "bytes": 7288
@@ -204,8 +208,8 @@
       "bytes": 2046
     },
     "operaciones.py": {
-      "sha256": "c3a7adcc1b16e0c57cf3e70391fd40b56b78a24c2cc23f3641cbc9fb35490981",
-      "bytes": 4964
+      "sha256": "04e9386ad8d08c3a9b4b2c7b7a7e399576b89675a48fd5073452dea02e7ced2e",
+      "bytes": 5712
     },
     "operar.py": {
       "sha256": "3ff7aace3b8744f6808c993954962f99b932ae2091cc13b73a0ca71d6726faf0",
@@ -267,6 +271,5 @@
       "sha256": "75753c6747b9b9103bc932c438945bf73e34d09f37e5d0cb1c5240b398aa5f02",
       "bytes": 8792
     }
-  },
-  "commit": "42b4764fb6efb70d8648936ee8aaae1347722105"
+  }
 }
