@@ -2137,7 +2137,19 @@ class Berna(tk.Tk):
                 modelo)
 
     def _sirve(self, modelo):
-        """Si ese cerebro no esta castigado por haber fallado hace poco."""
+        """Consulta tambien las esperas que haya guardado el servidor movil."""
+        try:
+            marca = os.stat(CASTIGOS).st_mtime_ns
+            if marca != getattr(self, "_marca_castigos", None):
+                modelos = list(self.castigados) + list(
+                    (getattr(self, "cfg", {}) or {}).get("modelos") or [])
+                for nombre, hasta in cargar_castigos(modelos).items():
+                    self.castigados[nombre] = max(self.castigados.get(nombre, 0), hasta)
+                self._marca_castigos = marca
+        except FileNotFoundError:
+            pass
+        except OSError as e:
+            anotar_una_vez("esperas_de_modelos", "No he podido leer esperas de modelos: %s" % e)
         return time.time() >= self.castigados.get(modelo, 0)
 
     def _castigar(self, modelo, err):

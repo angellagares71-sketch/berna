@@ -1,10 +1,10 @@
 {
-  "version": "1.13.0",
+  "version": "1.14.0",
   "fecha": "2026-09-23",
   "novedades": [
-    "Navegador aislado para leer y usar webs interactivas con confirmacion del resultado.",
-    "Disponible tambien desde Sobri Movil cuando se permite el modo manos.",
-    "Instalacion guiada de Playwright al usarlo por primera vez y sesion temporal que puede cerrarse."
+    "El movil revisa controles e instrucciones antes de operar programas del ordenador.",
+    "Sobri distingue acciones enviadas a Android de resultados realmente confirmados.",
+    "Escritorio y movil comparten al momento las esperas de modelos que fallan o agotan su cuota."
   ],
   "archivos": {
     "ACTUALIZACIONES-COMO-ACTIVARLO.txt": {
@@ -48,7 +48,7 @@
       "bytes": 1996
     },
     "actualizaciones.py": {
-      "sha256": "a64f3ab4e165f793adcc96b5d45c67191e9276a2c387eb63add2c5f9d2bcd327",
+      "sha256": "37ca076ced03a1dfd73d14161132785ce3de56eddd4f6f02fe78481402f52818",
       "bytes": 21066
     },
     "agenda.py": {
@@ -56,8 +56,8 @@
       "bytes": 13379
     },
     "asistente.py": {
-      "sha256": "2f139b68ef0aea04494bb37b80bd05ccacdef29faa34521bc51ce10e17419a6f",
-      "bytes": 167929
+      "sha256": "5f8487ee32a1906ae8899a2ef8fb67b846c3d1fdf8b7051058471d064efc3e4f",
+      "bytes": 168570
     },
     "autorizar_google.py": {
       "sha256": "73d01d7777d0108a8ed8d950b9d8dd8390d25b82a068e36269e99c881bec4a7a",
@@ -160,8 +160,8 @@
       "bytes": 20674
     },
     "movil.py": {
-      "sha256": "63e8e8fbc9de5a4bd512e5cad3321c4671766d8cf8b15c253d059952526cb4fa",
-      "bytes": 83511
+      "sha256": "27584abb437282bf592e639360d3cf5edd8e461e94574b614d92a276d5540b5a",
+      "bytes": 86410
     },
     "muneco.py": {
       "sha256": "f6dd7f772e8c331dd2e8bcebc154cf90f327f20bcadf4cfe71b307285eb07d53",
@@ -271,6 +271,5 @@
       "sha256": "75753c6747b9b9103bc932c438945bf73e34d09f37e5d0cb1c5240b398aa5f02",
       "bytes": 8792
     }
-  },
-  "commit": "d635cdb352fcec41830a0ce273e7351cd86055b6"
+  }
 }
