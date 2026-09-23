@@ -63,8 +63,9 @@ def _cfg():
 def _destino(modelo, cfg):
     """(url, cabeceras, nombre) para ese modelo, o None si no hay clave."""
     if modelo.startswith("gemini:"):
-        k = (cfg.get("clave_gemini") or "").strip()
-        return (URL_GEMINI, k, modelo.split(":", 1)[1]) if k else None
+        import cerebro as _Ce      # 'gemini:X@2' = otra clave, otro proyecto
+        k, nombre = _Ce.gemini_destino(cfg, modelo)
+        return (URL_GEMINI, k, nombre) if k else None
     k = (cfg.get("clave_api") or "").strip()
     return (URL_OPENROUTER, k, modelo) if k else None
 

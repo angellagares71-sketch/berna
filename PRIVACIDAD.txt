@@ -1,5 +1,5 @@
 SOBRI - POLITICA DE PRIVACIDAD / PRIVACY POLICY
-Ultima actualizacion / Last updated: 2026-09-19
+Ultima actualizacion / Last updated: 2026-09-23
 
 ESPANOL
 Sobri es un asistente personal de escritorio que se instala y funciona en el
@@ -24,6 +24,13 @@ QUE DATOS SE USAN Y DONDE SE GUARDAN
 - Los datos de Google no se usan para publicidad ni se transfieren a nadie.
 - Para hablar con la inteligencia artificial, el texto que el usuario escribe
   se envia al proveedor de IA que el propio usuario haya configurado.
+- Sobri guarda localmente conversaciones e intentos de tareas (herramientas,
+  resultados y errores) en conversaciones.sqlite3 para recordar lo relevante
+  entre reinicios. Al responder, solo extractos relevantes pueden enviarse al
+  proveedor de IA configurado. El usuario puede revisar, buscar y borrar este
+  historial desde el menu Sobri. Las notas de memoria.json se borran aparte.
+- La vigilancia de ventanas y el OCR son locales. Por defecto, los avisos
+  espontaneos no envian titulos ni capturas al proveedor de IA.
 
 COMO BORRAR LOS DATOS O RETIRAR EL PERMISO
 - Retirar el permiso: https://security.google.com/settings/security/permissions
@@ -32,6 +39,8 @@ COMO BORRAR LOS DATOS O RETIRAR EL PERMISO
   carpeta google.
 - Borrar los datos guardados: borrar el archivo redes.json. Las cifras se
   borran solas a los 90 dias. Al desinstalar Sobri se borra todo.
+- Para borrar conversaciones y experiencias: menu Sobri > Borrar historial
+  guardado. Para borrar notas personales: pedirle que use olvidar.
 
 Contacto: alagaresrivas@gmail.com
 
@@ -60,6 +69,13 @@ WHAT DATA IS USED AND WHERE IT IS STORED
   requirements.
 - To talk to the AI, the text the user types is sent to the AI provider the
   user has configured.
+- Conversations and task attempts (tools, results, errors) are saved locally
+  in conversaciones.sqlite3. Only relevant excerpts may be sent to the
+  configured AI provider to answer a new request. Users can review, search,
+  and erase this history from Sobri's menu. Personal notes are stored
+  separately in memoria.json.
+- Window monitoring and OCR run locally. By default, unsolicited notices do
+  not send window titles or screenshots to an AI provider.
 
 HOW TO DELETE DATA OR REVOKE ACCESS
 - Revoke access: https://security.google.com/settings/security/permissions
@@ -67,5 +83,7 @@ HOW TO DELETE DATA OR REVOKE ACCESS
 - Or tell Sobri "disconnect my Google", or delete the "google" folder.
 - Delete stored data: delete the redes.json file. Statistics are deleted
   automatically after 90 days. Uninstalling Sobri deletes everything.
+- Erase conversations and task experiences in the Sobri menu using "Borrar
+  historial guardado". Delete personal notes separately with "olvidar".
 
 Contact: alagaresrivas@gmail.com

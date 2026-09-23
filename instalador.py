@@ -203,6 +203,8 @@ def config_sin_claves():
     for k in CLAVES:
         if k in cfg:
             cfg[k] = ""
+    if cfg.get("claves_gemini_extra"):
+        cfg["claves_gemini_extra"] = []   # las claves de otros proyectos, tambien fuera
     # El microfono elegido a mano son unos cascos concretos de ESTE ordenador.
     # En otro no estan enchufados, y Sobri se quedaba buscando un aparato que
     # no existe en vez de coger el que hubiera. En blanco lo busca sola.

@@ -92,6 +92,24 @@ def _limpio(t):
     return re.sub(r"[^a-z0-9 ]+", " ", t)
 
 
+def promete_ejecucion(texto):
+    """Detecta una promesa de accion que requiere otra vuelta de herramientas."""
+    t = _limpio(str(texto or ""))
+    return bool(re.search(r"\b(?:voy a|ahora voy a|me pongo a|procedo a|"
+                          r"dejame|lo hare|empiezo a)\b", t))
+
+
+def pide_accion(texto):
+    """Distingue una orden de hacer de una pregunta sobre como se haria."""
+    t = _limpio(str(texto or ""))
+    if any(x in t for x in ("que harias", "como harias", "explicame como",
+                            "dime como", "solo explicame")):
+        return False
+    return bool(re.search(r"\b(?:haz\w*|arregla\w*|corrige\w*|cambia\w*|pon\w*|instala\w*|"
+                          r"descarga\w*|ejecuta\w*|abre\w*|crea\w*|marca\w*|senala\w*|quita\w*|"
+                          r"busca y|quiero que|necesito que)\b", t))
+
+
 RAIZ = 4          # cuantas letras del principio valen como raiz
 
 # Las claves de TRES letras de los temas (pdf, git, dji, bpm, npc, api, exe...).
@@ -202,19 +220,35 @@ def elegir(esquemas, texto, usadas=(), extra=(), tope=45):
 
 
 def por_tema(esquemas, tema, tope=25):
-    """Las herramientas que casan con un tema. Para `mas_herramientas`."""
+    """Las herramientas que casan con un tema. Para `mas_herramientas`.
+
+    Primero las que se llaman EXACTAMENTE asi y luego las que llevan esas
+    palabras en el nombre. El 19-09-2026 Sobri pidio 'enfocar_ventana',
+    'ventanas' y 'musica_ia' y le llegaron ejecutar_python, crear_cancion y
+    hacer_ejecutable: la palabra 'ventana' abria dos temas enteros y ganaban
+    las fichas mas largas, no las que se llamaban como lo pedido.
+    """
     idx = indice(esquemas)
-    pal = _palabras(tema)
+    orden = {e["function"]["name"]: e for e in esquemas
+             if (e.get("function") or {}).get("name")}
+    exactos = [t for t in re.split(r"[,;\s]+", (tema or "").strip()) if t in orden]
+    base = _palabras(tema)
+    pal = set(base)
     for _t, claves in TEMAS.items():
         palabras_tema = _palabras(" ".join(claves))
         if pal & palabras_tema:
             pal |= palabras_tema
-    puntos = {n: len(pal & s) for n, s in idx.items() if pal & s}
-    orden = {e["function"]["name"]: e for e in esquemas
-             if (e.get("function") or {}).get("name")}
-    salida = []
-    for n, _p in sorted(puntos.items(), key=lambda x: -x[1])[:tope]:
-        if n in orden:
+    puntos = {}
+    for n, s in idx.items():
+        en_nombre = len(base & _palabras(n.replace("_", " ")))
+        p = len(pal & s) + 10 * en_nombre
+        if p:
+            puntos[n] = p
+    salida = [orden[n] for n in exactos]
+    for n, _p in sorted(puntos.items(), key=lambda x: -x[1]):
+        if len(salida) >= tope:
+            break
+        if n in orden and n not in exactos:
             salida.append(orden[n])
     return salida
 
@@ -337,6 +371,28 @@ def cuanto_apartar(error, cuota=30 * 60, saturado=3 * 60, modelo=None):
         _racha[modelo] = (veces, time.time())
         return saturado * ESCALONES[min(veces, len(ESCALONES)) - 1]
     return 0
+
+
+def gemini_destino(cfg, modelo):
+    """(clave, nombre del modelo) de un 'gemini:MODELO' o 'gemini:MODELO@N'.
+
+    La cuota gratis de Gemini va POR PROYECTO de Google, y el 19-09-2026 se
+    agotaron los tres Gemini a la vez y Sobri acabo en modelos de reserva que
+    no saben usar sus herramientas. Con '@2', '@3'... el mismo modelo tira de
+    `claves_gemini_extra[0]`, `[1]`..., claves de OTROS proyectos: cada uno con
+    su cuota, y el castigo se lleva por separado porque el nombre es distinto.
+    """
+    nombre = modelo.split(":", 1)[1]
+    n = 1
+    if "@" in nombre:
+        nombre, _, num = nombre.rpartition("@")
+        n = int(num) if num.isdigit() else 1
+    if n <= 1:
+        clave = (cfg.get("clave_gemini") or "").strip()
+    else:
+        extra = cfg.get("claves_gemini_extra") or []
+        clave = (extra[n - 2] if len(extra) >= n - 1 else "").strip()
+    return clave, nombre
 
 
 def fue_bien(modelo):

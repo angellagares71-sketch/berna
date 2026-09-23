@@ -15,9 +15,9 @@ QUE HACE
   - Hace el PLAN de publicacion con horas buenas y dice lo que toca hoy.
   - Con YouTube conectado (OAuth): estadisticas, analiticas, comentarios,
     mejorar titulos de lo ya subido y, cuando Google apruebe la app, subir solo.
-  - SUNO ASISTIDO: escribe estilo, letra y titulo, abre Suno y copia cada
-    casilla. NO maneja la cuenta: las condiciones de Suno prohiben el acceso
-    automatizado y Angel eligio este modo el 18-09-2026.
+  - SUNO ASISTIDO: escribe estilo, letra y titulo, y abre la biblioteca para
+    descargar en MP3 por el menu oficial. NO maneja la cuenta: las condiciones
+    de Suno prohiben el acceso automatizado y Angel eligio este modo el 18-09-2026.
 
 LO QUE NO SE PUEDE (comprobado el 18-09-2026 en la documentacion oficial)
   - YouTube: lo que se sube por la API desde un proyecto SIN AUDITAR se queda
@@ -1468,11 +1468,8 @@ def preparar_publicacion(cancion, que="todo", rehacer=False, permiso=None):
         return SIN_FFMPEG
     que = (que or "todo").lower()
     hacer = _que_falta(e, c, que, rehacer)
-    pregunta = ("Sobri quiere preparar la publicacion de '%s': %s y la ficha con los "
-                "textos, en %s. Le dejas?" % (c["titulo"], ", ".join(hacer) or "solo la ficha",
-                                              e.get("carpeta_trabajo")))
-    if permiso is None or not permiso(pregunta):
-        return "El usuario no ha dado permiso, no se ha preparado nada."
+    # Solo escribe en su propia carpeta de trabajo: no se pregunta (19-09-2026,
+    # Angel: "siempre esta preguntandolo todo").
     try:
         hecho, t = _preparar_archivos(e, c, hacer)
     except Exception as err:
@@ -1536,20 +1533,25 @@ def subir_a_youtube(cancion, tipo="video", cuando="", permiso=None):
     tipo = "short" if "short" in (tipo or "").lower() else "video"
     rutas = _rutas(e, c)
     if not os.path.exists(rutas[tipo]):
-        return ("Todavia no esta preparado el %s de %s: primero redes_preparar."
-                % ("Short" if tipo == "short" else "video", c["titulo"]))
+        # antes se paraba aqui con "primero redes_preparar" y no seguia: ahora lo monta
+        falta = _que_falta(e, c, "short" if tipo == "short" else "video")
+        try:
+            _preparar_archivos(e, c, falta)
+        except Exception as err:
+            return "No he podido montar el video de %s: %s" % (c["titulo"], err)
+        e["canciones"][k] = c
+        _guardar(e)
+        rutas = _rutas(e, c)
     t = textos(e, c)
     titulo = t["titulo_short"] if tipo == "short" else t["titulo"]
     auto = _puede_subir_solo(e)
     if auto:
+        # publicar en su canal SI se pregunta
         pregunta = ("Sobri quiere SUBIR a YouTube el %s de '%s' con el titulo:\n\n%s\n\n%s. "
                     "Le dejas?" % (tipo, c["titulo"], titulo,
                                    "Programado para " + cuando if cuando else "Publico ya"))
-    else:
-        pregunta = ("Sobri quiere abrir YouTube Studio, enseñarte el archivo del %s de '%s' "
-                    "y copiarte el titulo para que lo subas. Le dejas?" % (tipo, c["titulo"]))
-    if permiso is None or not permiso(pregunta):
-        return "El usuario no ha dado permiso, no se ha subido nada."
+        if permiso is None or not permiso(pregunta):
+            return "El usuario no ha dado permiso, no se ha subido nada."
     if not auto:
         webbrowser.open("https://www.youtube.com/upload")
         _abrir_carpeta_con(rutas[tipo])
@@ -1641,11 +1643,13 @@ def subir_a_tiktok(cancion, permiso=None):
         return "No la subo: %s" % puntuar(e, c)[1][0]
     rutas = _rutas(e, c)
     if not os.path.exists(rutas["short"]):
-        return "Primero hay que preparar el Short de %s (redes_preparar)." % c["titulo"]
-    pregunta = ("Sobri quiere abrir TikTok, enseñarte el video vertical de '%s' y copiarte "
-                "el texto para que lo publiques. Le dejas?" % c["titulo"])
-    if permiso is None or not permiso(pregunta):
-        return "El usuario no ha dado permiso, no se ha abierto nada."
+        try:
+            _preparar_archivos(e, c, _que_falta(e, c, "short"))
+        except Exception as err:
+            return "No he podido montar el Short de %s: %s" % (c["titulo"], err)
+        e["canciones"][k] = c
+        _guardar(e)
+        rutas = _rutas(e, c)
     webbrowser.open("https://www.tiktok.com/tiktokstudio/upload")
     _abrir_carpeta_con(rutas["short"])
     _copiar(textos(e, c)["tiktok"])
@@ -2191,6 +2195,27 @@ def conectar_youtube(permiso=None):
             "acabar sale una ventanita que dice si ha ido bien.")
 
 
+def suno_descargar_mp3(cancion=""):
+    """Abre la descarga oficial; Suno decide el saldo y entrega el MP3."""
+    nombre = " ".join(str(cancion or "").split())[:80]
+    if not webbrowser.open("https://suno.com/me"):
+        return "No he podido abrir la biblioteca de Suno. Abre https://suno.com/me."
+    inicio = ("Busca '%s' en tu biblioteca. " % nombre) if nombre else "Busca la cancion en tu biblioteca. "
+    return (
+        "He abierto tu biblioteca de Suno. " + inicio +
+        "En la cancion, pulsa los tres puntos (...), Descargar y MP3. "
+        "Suno muestra el saldo real antes de entregar el archivo: el plan gratis "
+        "puede ofrecer hasta 7 descargas de prueba de por vida, solo para uso personal. "
+        "Las cuentas creadas desde el 3 de septiembre de 2026 pueden no tener "
+        "ninguna; no puedo consultar ni aumentar ese saldo desde Sobri. "
+        "Si Suno dice 'Sin descargas' o muestra 0, no saldra ningun MP3 gratis de Suno: "
+        "puedes seguir escuchando y compartiendo el enlace alli, o pedirme que "
+        "abra el Estudio de musica IA para crear y guardar una cancion nueva gratis. "
+        "El estudio no recupera la misma pista de Suno. "
+        "Cuando Suno permita la descarga, el MP3 caera automaticamente en "
+        "'Canciones de Suno' del escritorio.")
+
+
 def suno_preparar_cancion(titulo, genero="", letra="", tema="", instrumental=False,
                           estilo_extra="", permiso=None):
     """Deja listo un encargo para Suno y abre la pagina (Suno asistido)."""
@@ -2221,7 +2246,7 @@ def suno_preparar_cancion(titulo, genero="", letra="", tema="", instrumental=Fal
     abierto = ""
     pregunta = ("Sobri quiere abrir Suno para crear '%s' (%s) y copiarte el estilo al "
                 "portapapeles. Le dejas?" % (titulo, _tipo(g)))
-    if permiso is not None and permiso(pregunta):
+    if pregunta:           # abrir Suno y copiar el estilo no toca nada suyo
         webbrowser.open("https://suno.com/create")
         _copiar(estilo)
         abierto = "Suno abierto y el ESTILO ya copiado. "
@@ -2236,7 +2261,7 @@ def suno_preparar_cancion(titulo, genero="", letra="", tema="", instrumental=Fal
                      "escribirla" % (tema or "el que quieras"))
     pasos += ["titulo: %s (tambien te lo copio)" % titulo,
               "el modelo mas nuevo que tengas, y Crear",
-              "escucha las dos versiones y descarga la mejor en MP3 (gasta una descarga del mes)",
+              "escucha las dos versiones y pideme 'descarga en MP3' para abrir la biblioteca; Suno indica las descargas disponibles",
               "cae sola en Canciones de Suno y yo la reconozco con su genero y sus derechos"]
     return "%sEncargo guardado. Estilo (%d letras): %s. Pasos: %s." % (
         abierto, len(estilo), estilo, "; ".join("%d) %s" % (i, p) for i, p in enumerate(pasos, 1)))
@@ -2566,6 +2591,10 @@ def bloque_de_prompt():
         "detecta canciones nuevas, las monta, rehace el plan y avisa cuando toca "
         "publicar: Angel solo hace canciones, tu llevas lo demas sin que te lo pida. "
         "Cuando te diga 'subela' despues de un aviso tuyo, es la del aviso. "
+        "PARA SUBIR A YOUTUBE O TIKTOK usa SIEMPRE redes_subir_youtube o "
+        "redes_subir_tiktok (montan el video si falta): NUNCA las manos, ni clics "
+        "ni arrastrar en YouTube Studio. Si la cancion no esta en tu catalogo "
+        "(redes_catalogo) o es del plan gratis, diselo y no la subas. "
         "Reglas que no se saltan: solo se publica lo hecho con Suno de "
         "pago; siempre se marca el contenido de IA; nunca compras visitas ni repites "
         "subidas; en Suno no pinchas tu: preparas estilo y letra y Angel crea y "

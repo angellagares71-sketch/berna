@@ -495,6 +495,37 @@ def olvidar(numero):
         return "No he podido olvidarlo: %s" % e
 
 
+def buscar_conversaciones(tema):
+    import conversaciones as cv
+    return cv.texto_para_revisar(tema, limite=12)
+
+
+def buscar_experiencias(tema):
+    import conversaciones as cv
+    episodios = cv.buscar_episodios(tema, 6)
+    if not episodios:
+        return "No tengo experiencias guardadas sobre ese tema."
+    partes = []
+    for e, pasos in episodios:
+        _, fecha, objetivo, contexto, estado, resultado, verificado = e
+        partes.append("%s | %s | %s | %s | %s\n%s\nResultado: %s" %
+                      (fecha[:10], objetivo, contexto, estado,
+                       "verificado" if verificado else "sin verificacion independiente",
+                       "\n".join("- %s: %s" % (p[0], p[2][:250]) for p in pasos),
+                       resultado[:500]))
+    return "\n\n".join(partes)
+
+
+def borrar_historial_guardado(permiso=None):
+    if permiso is None or not permiso(
+            "¿Borro todas las conversaciones y experiencias guardadas? "
+            "Esto no borra las notas personales de 'recordar'."):
+        return "No he borrado el historial."
+    import conversaciones as cv
+    cv.borrar_historial()
+    return "He borrado las conversaciones y experiencias guardadas."
+
+
 # ------------------------------------------------------------------ registro
 def _t(nombre, desc, props, obligatorios):
     return {"type": "function",
@@ -658,6 +689,19 @@ ESQUEMAS = [
 
     _t("olvidar", "Borra uno de tus recuerdos por su numero.",
        {"numero": _N("El numero del recuerdo tal y como sale en ver_recuerdos")}, ["numero"]),
+
+    _t("buscar_conversaciones",
+       "Busca en todas las conversaciones locales guardadas con Angel. "
+       "Usalo si pregunta que dijo antes o pide recuperar una charla antigua.",
+       {"tema": _S("Palabras concretas del tema que se quiere recordar")}, ["tema"]),
+    _t("buscar_experiencias",
+       "Recupera intentos anteriores con sus pasos, resultados y fallos. "
+       "Usalo antes de repetir una tarea dificil o un enfoque que ya fallo.",
+       {"tema": _S("Objetivo o programa de la tarea")}, ["tema"]),
+    _t("borrar_historial_guardado",
+       "Borra permanentemente el archivo local de conversaciones y experiencias. "
+       "Solo si Angel lo pide expresamente; necesita confirmacion en pantalla. "
+       "Las notas de recordar se borran aparte con olvidar.", {}, []),
 
     # ---------------- archivos avanzado ----------------
     _t("leer_excel", "Lee una hoja de calculo de Excel (.xlsx) y te devuelve sus filas.",
@@ -2067,6 +2111,21 @@ ESQUEMAS = [
        {"que_busco": _S("Que hay que localizar, descrito en pocas palabras")},
        ["que_busco"]),
 
+    _t("marcar_en_pantalla",
+       "Dibuja un circulo temporal y visible sobre algo de la pantalla, sin "
+       "pulsarlo ni mover el raton. Usalo cuando Angel diga marca, senala o "
+       "resalta esto. Busca el control por nombre; si no aparece, mira una "
+       "captura puntual. Sin objetivo marca donde esta el raton.",
+       {"objetivo": _S("Nombre o descripcion de lo que hay que marcar"),
+        "x": _N("Coordenada horizontal exacta, si Angel la dio"),
+        "y": _N("Coordenada vertical exacta, si Angel la dio"),
+        "color": _S("rojo, verde, azul, amarillo o naranja"),
+        "segundos": _N("Duracion entre 2 y 20 segundos; por defecto 8"),
+        "ventana": _S("Nombre de la ventana si hay varias")}, []),
+    _t("quitar_marca",
+       "Quita inmediatamente la marca temporal que Sobri dibujo en pantalla.",
+       {}, []),
+
     _t("preguntar_al_consejo",
        "Le hace la MISMA pregunta a varias inteligencias artificiales a la vez, "
        "las coteja entre ellas y te da la respuesta buena, diciendo si se "
@@ -2223,6 +2282,11 @@ ESQUEMAS = [
         "instrumental": {"type": "boolean", "description": "Sin voz"},
         "estilo_extra": _S("Algo mas para el estilo: ambiente, voz femenina, BPM...")},
        ["titulo"]),
+    _t("suno_descargar_mp3",
+       "Abre la biblioteca de Suno para descargar una cancion en MP3 por el menu "
+       "oficial. Explica el saldo de prueba del plan gratis y que hacer si marca 0. "
+       "No descarga ni controla la cuenta automaticamente.",
+       {"cancion": _S("Titulo de la cancion; vacio para abrir la biblioteca")}, []),
 ]
 
 _FUNCIONES = {
@@ -2240,6 +2304,9 @@ _FUNCIONES = {
     "recordar": recordar,
     "ver_recuerdos": ver_recuerdos,
     "olvidar": olvidar,
+    "buscar_conversaciones": buscar_conversaciones,
+    "buscar_experiencias": buscar_experiencias,
+    "borrar_historial_guardado": borrar_historial_guardado,
     "leer_excel": leer_excel,
     "buscar_en_contenido": buscar_en_contenido,
     # que_sabes_hacer se registra mas abajo, cuando ya esta definida
@@ -2562,6 +2629,7 @@ try:
         "redes_conectar_youtube": _Rd.conectar_youtube,
         "redes_piloto": _Rd.piloto,
         "suno_preparar_cancion": _Rd.suno_preparar_cancion,
+        "suno_descargar_mp3": _Rd.suno_descargar_mp3,
     })
 except Exception as _e:
     PROBLEMAS.append("El modulo de redes no ha cargado: %s" % _e)
@@ -2633,6 +2701,14 @@ try:
     _FUNCIONES["ver_controles"] = _Ct.ver_controles
 except Exception as _e:
     PROBLEMAS.append("El modulo de controles no ha cargado: %s" % _e)
+
+# senales visibles, sin tocar los controles debajo de ellas
+try:
+    import marcas as _Mr
+    _FUNCIONES["marcar_en_pantalla"] = _Mr.marcar_en_pantalla
+    _FUNCIONES["quitar_marca"] = _Mr.quitar_marca
+except Exception as _e:
+    PROBLEMAS.append("El modulo de marcas no ha cargado: %s" % _e)
 
 # estar pendiente de lo que hace Angel
 try:
@@ -2809,6 +2885,7 @@ NECESITAN_VOZ = {"cantar"}
 NECESITAN_OIDO = {"transcribir"}
 
 NECESITAN_PERMISO = {"escribir_archivo", "abrir_en_windows", "google_crear_evento",
+                     "borrar_historial_guardado",
                      "crear_documento_word", "crear_hoja_excel",
                      "actualizar_celda_excel", "crear_pdf_texto",
                      "extraer_paginas_pdf", "dividir_pdf", "crear_zip",
@@ -2862,7 +2939,8 @@ NECESITAN_PERMISO = {"escribir_archivo", "abrir_en_windows", "google_crear_event
                      # abre paginas o escribe en YouTube pregunta antes
                      "redes_preparar", "redes_subir_youtube", "redes_subir_tiktok",
                      "redes_responder_comentario", "redes_aplicar_mejora",
-                     "redes_conectar_youtube", "suno_preparar_cancion"}
+                     "redes_conectar_youtube", "suno_preparar_cancion",
+                     "suno_descargar_mp3"}
 
 # lo que se le enseña al usuario mientras la herramienta trabaja
 ROTULOS = {
@@ -2890,6 +2968,7 @@ ROTULOS = {
     "redes_conectar_youtube": "conectarme a tu canal de YouTube",
     "redes_piloto": "llevar tus redes en piloto automatico",
     "suno_preparar_cancion": "prepararte una cancion para Suno",
+    "suno_descargar_mp3": "abrir tu biblioteca de Suno para bajar un MP3",
     "buscar_en_internet": "buscando en internet",
     "leer_pagina_web": "leyendo una pagina web",
     "el_tiempo": "consultando el tiempo",
@@ -3126,6 +3205,8 @@ ROTULOS = {
     "que_he_estado_haciendo": "repasando en que has estado",
     "estado_de_la_vigilancia": "mirando si te sigue la pista",
     "dejar_de_vigilar": "dejando de estar pendiente",
+    "marcar_en_pantalla": "marcando un punto en tu pantalla",
+    "quitar_marca": "quitando la marca de tu pantalla",
     "que_version_tengo": "mirando que version tiene",
     "buscar_actualizaciones": "mirando si hay version nueva",
     "instalar_actualizacion": "poniendose al dia",
@@ -3230,7 +3311,8 @@ GRUPOS = [
                              "apagar_la_camara"]),
     ("Tocar el teclado y el raton", ["modo_manos", "hacer_secuencia",
                                      "usar_menu",
-                                     "ver_controles", "pinchar_en",
+                                     "ver_controles", "marcar_en_pantalla",
+                                     "quitar_marca", "pinchar_en",
                                      "escribir_en", "escribir_texto",
                                      "pulsar_teclas", "mantener_tecla",
                                      "clic_raton",
@@ -3262,7 +3344,8 @@ GRUPOS = [
                                     "mantella_parar"]),
     ("Tus redes: YouTube, TikTok y Suno", [
         "redes_estado", "redes_mejores_canciones", "redes_mirar_mercado",
-        "redes_que_crear", "suno_preparar_cancion", "redes_preparar",
+        "redes_que_crear", "suno_preparar_cancion", "suno_descargar_mp3",
+        "redes_preparar",
         "redes_subir_youtube", "redes_subir_tiktok", "redes_plan",
         "redes_que_toca_hoy", "redes_analiticas", "redes_comentarios",
         "redes_proponer_mejora", "redes_consejos", "redes_catalogo",

@@ -1,8 +1,10 @@
 {
-  "version": "1.11.2",
-  "fecha": "2026-09-19",
+  "version": "1.12.0",
+  "fecha": "2026-09-23",
   "novedades": [
-    "Politica de privacidad y terminos del servicio para la revision de YouTube."
+    "Conversaciones persistentes y memoria de tareas entre reinicios.",
+    "Mejor control de errores de modelos y respuesta local cuando se agota la cuota.",
+    "Mejoras de OCR y de acciones guiadas en el ordenador."
   ],
   "archivos": {
     "ACTUALIZACIONES-COMO-ACTIVARLO.txt": {
@@ -30,8 +32,8 @@
       "bytes": 33811
     },
     "PRIVACIDAD.txt": {
-      "sha256": "01f8eeee5515e62ce7f833cfe6cc600f3a33dd62350dcef167d766b8b172aebc",
-      "bytes": 3528
+      "sha256": "1e2016feeec2d42a6547d4b99fd95fefdd753460527d05b089625b67706c9103",
+      "bytes": 4801
     },
     "REDES-COMO-ACTIVARLO.txt": {
       "sha256": "ce7ee0231f5df3ebc4bb5113b646d1cde59e7cccc3f0817e2fe7761acc0a4cb4",
@@ -46,7 +48,7 @@
       "bytes": 1996
     },
     "actualizaciones.py": {
-      "sha256": "141835b834429aa6970701f29431ef45aeb9242019c5f8b546562de1f78719c1",
+      "sha256": "daab454c8c8be7ba727d1b4433a37450af66015fd19fbca57ce17682f3192534",
       "bytes": 21066
     },
     "agenda.py": {
@@ -54,8 +56,8 @@
       "bytes": 13379
     },
     "asistente.py": {
-      "sha256": "504e28a428cb66322a3fa7908edc60529d5b05f65849450457fe29a6f4c6432f",
-      "bytes": 144353
+      "sha256": "250f1fc61ace436ba518cf1fc9a65108a1f841586b6ca886db45778a0f41b4a3",
+      "bytes": 167214
     },
     "autorizar_google.py": {
       "sha256": "73d01d7777d0108a8ed8d950b9d8dd8390d25b82a068e36269e99c881bec4a7a",
@@ -82,16 +84,20 @@
       "bytes": 15903
     },
     "cerebro.py": {
-      "sha256": "0d85dcd4e5ff0e1030c1a710b4493761edc850b67543003dd00c45b35ade61f7",
-      "bytes": 15069
+      "sha256": "e9d1caa959445ef092f869f6033e31206d10a34cff5c966dd0582f0a67fbfbbc",
+      "bytes": 17496
     },
     "codigo.py": {
       "sha256": "68cf8ed62998a66ac021ffdeddc55c640be18103a20168a890d0117f2b3a9730",
       "bytes": 40591
     },
     "consejo.py": {
-      "sha256": "ec99f6a170547611dcf5214120bfca0d1faab1de0e047b0632904ce466e911c2",
-      "bytes": 10673
+      "sha256": "e63882955ba0c4324010345bfc1801261ce90a800ffb18fe49767151a65bdeb0",
+      "bytes": 10734
+    },
+    "contraste.py": {
+      "sha256": "3a6877729cda3f8ffde51326b4191866fc811629f9c7d01b9046ea41063cb833",
+      "bytes": 1389
     },
     "control_version.py": {
       "sha256": "1c7a4f436d26f9e0dc94fa256df8a6cf4c09fd4af3523d3420aced66a171240a",
@@ -101,9 +107,17 @@
       "sha256": "f464acefe5be677e61a32d7d2ebbf1bb456757b659c15493c1bd122dc74d3c65",
       "bytes": 10452
     },
+    "conversaciones.py": {
+      "sha256": "55c335d4245d947980a1e15aacd0491673bf700121b21db33c427baf7e801424",
+      "bytes": 9620
+    },
     "cuentas.py": {
       "sha256": "b2a99f4a2f7204dfe94bf5fba3c656b85f6f76551c67713a670e59398a0338c9",
       "bytes": 16740
+    },
+    "descargar.py": {
+      "sha256": "df64f17697d99bf172bc8281f8b1cee4b117aafadf4329d3b8ae87738f445780",
+      "bytes": 1042
     },
     "dron.py": {
       "sha256": "fdb85d85b9c8a665b07765ad49c80117f0dbd3728754b528412d309c8115415f",
@@ -118,32 +132,36 @@
       "bytes": 25799
     },
     "herramientas.py": {
-      "sha256": "c6402d5fec0c0093c120d1fd50ad7dd79c7bfab6599f270a5026786dfefdabb8",
-      "bytes": 168006
+      "sha256": "08dbbdd13764b68721fce1e88d7b6490b24fe9936a16bc87335982a5fa170b92",
+      "bytes": 172065
     },
     "instalador.py": {
-      "sha256": "9e57ade3791e00bedaee93f5412ac870526f648e74fd904d4d2a2db05ff97bc8",
-      "bytes": 29585
+      "sha256": "6f950e966e9f5e72a9897adc2cea362037238e78f8edee8da9a175734a2a2c41",
+      "bytes": 29715
     },
     "internet.py": {
       "sha256": "791340cfe7aa41e9ecb056589786f67af0e297993d388c8d47dcfa9a7fd5b01f",
       "bytes": 12379
     },
     "manos.py": {
-      "sha256": "ea0f01639244331b13e1282453b7ec1d3d1880f7158ca5e7e89bc736efc2b499",
-      "bytes": 60530
+      "sha256": "7f69579042a49186004e94bda8bee724bf8de821037ae13e405074a9135d2a42",
+      "bytes": 60673
     },
     "mantella.py": {
-      "sha256": "33a17c01e724df5e6ff42bba282814f9d970c9b97869b5e4e68e540df252fd1d",
-      "bytes": 72565
+      "sha256": "c6f9582c03ca17563cc8943a2d971fff2c0a32d4ac1279aa6bd99db2efd59be5",
+      "bytes": 72673
+    },
+    "marcas.py": {
+      "sha256": "6e2351084d4295996e0f9cfa12317ee5b490d5d90684e80e49eb65de76f5abbb",
+      "bytes": 5371
     },
     "medios.py": {
       "sha256": "f259b150115afb7a83c5a780c10b1284146787729f9daedab94aaee392259110",
       "bytes": 20674
     },
     "movil.py": {
-      "sha256": "bdcb9e54aead0be67d157fe52dc443ecfffd808275112a51fd8e55189f31b91b",
-      "bytes": 79931
+      "sha256": "63e8e8fbc9de5a4bd512e5cad3321c4671766d8cf8b15c253d059952526cb4fa",
+      "bytes": 83511
     },
     "muneco.py": {
       "sha256": "f6dd7f772e8c331dd2e8bcebc154cf90f327f20bcadf4cfe71b307285eb07d53",
@@ -173,6 +191,10 @@
       "sha256": "f1b2cd90a76037235641756a02898b55895c5a7fe4a4ac5aa1d6fffaef427888",
       "bytes": 7288
     },
+    "ocr_local.py": {
+      "sha256": "a97a5bfdf8894f5c3824d1b1252c354d561589eede494282e9d4c67686e40395",
+      "bytes": 3486
+    },
     "oficina.py": {
       "sha256": "94cfcde302cac6a4e32540a9ffbaa03cd164ee0011435d6e4992f0eb003c378c",
       "bytes": 25102
@@ -181,6 +203,10 @@
       "sha256": "cde00951de154a220ea1d0e6c68ce97ae2cbd233881b4442a6992d7efa25188f",
       "bytes": 2046
     },
+    "operaciones.py": {
+      "sha256": "c3a7adcc1b16e0c57cf3e70391fd40b56b78a24c2cc23f3641cbc9fb35490981",
+      "bytes": 4964
+    },
     "operar.py": {
       "sha256": "3ff7aace3b8744f6808c993954962f99b932ae2091cc13b73a0ca71d6726faf0",
       "bytes": 11205
@@ -188,6 +214,10 @@
     "oportunidades.py": {
       "sha256": "3d367a70bd3b786701712741db251744f6a94fabc671f72d1ee3853bb687c6e4",
       "bytes": 15014
+    },
+    "ordenes_rapidas.py": {
+      "sha256": "084fcae93edbd98f067114f3c53ab40c908d4e06cf97a15ff3ea60e3409c3b3e",
+      "bytes": 1772
     },
     "papeles.py": {
       "sha256": "0a9c81232d4dab8f46f2a41dc67a37c1377b280793341d8a2af222146c3261cf",
@@ -202,8 +232,8 @@
       "bytes": 37438
     },
     "redes.py": {
-      "sha256": "9a1e81ec6958384c40e236e03a6446b740f3ba30d6bd418159e1a498c71c7e59",
-      "bytes": 118196
+      "sha256": "1e43ee9dd6e9a584d5de23ededb5930196cde419f73468f989569b30c320e0ce",
+      "bytes": 119675
     },
     "suno.py": {
       "sha256": "1e217c2505b80b051fb4be08f8f7a6abee4eb182bcf64f00ae815589fe1f6d7a",
@@ -222,8 +252,8 @@
       "bytes": 17575
     },
     "vigilante.py": {
-      "sha256": "eeae7ea79f130c6b7b077384aab2f7cf11b0bffc1dd23224a0375a3e8e2b9156",
-      "bytes": 12389
+      "sha256": "6ea7998ac1319f7c2f1f179c1c247633d36942ef61225996a34dc18f50a822e5",
+      "bytes": 12407
     },
     "vista.py": {
       "sha256": "c7f0c29ece38036abfedc0c108a6382dbd09a53667debe8a4294bb3a4edb2fd4",
@@ -237,6 +267,5 @@
       "sha256": "75753c6747b9b9103bc932c438945bf73e34d09f37e5d0cb1c5240b398aa5f02",
       "bytes": 8792
     }
-  },
-  "commit": "00edf2915deb83ebd579993193f43eebec24406c"
+  }
 }

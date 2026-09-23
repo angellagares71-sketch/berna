@@ -69,7 +69,7 @@ def _lista_sensible():
 
 # Programas que no cuentan como "estar trabajando en algo": si esta en el
 # escritorio o en el propio Sobri, no hay nada que vigilar.
-IGNORAR = ("berna", "program manager", "")
+IGNORAR = ("berna", "sobri", "program manager", "")
 
 
 def _sin_tildes(t):
@@ -111,7 +111,7 @@ class Vigilante(object):
         self._config = config          # funcion que devuelve el config al dia
         self.diario = collections.deque(maxlen=400)
         self.actual = None             # {titulo, programa, desde}
-        self.avisos = collections.deque()
+        self.avisos = collections.deque(maxlen=20)
         self.miradas = collections.deque()      # cuando se hizo cada foto
         self.ultimo_aviso = 0.0
         self.ya_avisado = set()        # para no repetir el mismo atasco

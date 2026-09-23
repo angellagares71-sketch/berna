@@ -1598,6 +1598,8 @@ def estado_del_cerebro():
         if not m.startswith("gemini:"):
             l.append("  %-34s (de OpenRouter, no lo pruebo aqui)" % m)
             continue
+        if "@" in m:
+            continue            # el mismo modelo con otra clave: ya se prueba sin '@'
         nombre = m.split(":", 1)[1]
         if not clave:
             l.append("  %-34s sin clave de Google" % nombre)

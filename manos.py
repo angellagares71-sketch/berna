@@ -304,6 +304,9 @@ def _claves_guardadas():
             v = (cfg.get(c) or "").strip()
             if len(v) >= 12:
                 fuera.append(v)
+        for v in cfg.get("claves_gemini_extra") or []:
+            if len((v or "").strip()) >= 12:
+                fuera.append(v.strip())
     except Exception as e:
         # Sin este aviso, el cerrojo de "no escribir sus claves" se apagaba en
         # silencio si config.json no se podia leer.
