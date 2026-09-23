@@ -981,10 +981,21 @@ ESQUEMAS = [
     _t("descargar_archivo",
        "Se baja un archivo de internet y lo deja en la carpeta de Descargas. "
        "NO lo ejecuta ni lo instala: si hace falta abrirlo, es otra orden y otro "
-       "permiso aparte. La direccion tiene que habertela dado Angel.",
+       "permiso aparte. Hazlo solo para una tarea pedida por Angel y verifica "
+       "la fuente. Si autorizo descargas automaticas, en Descargas no preguntas.",
        {"url": _S("La direccion completa del archivo"),
         "para_que": _S("En una frase, para que sirve. Angel lo lee"),
         "carpeta": _S("Donde guardarlo. Vacio para su carpeta de Descargas")}, ["url"]),
+
+    _t("permisos_automaticos",
+       "Consulta si Angel autorizo descargar archivos de Internet y abrir "
+       "aplicaciones instaladas sin preguntar cada vez.", {}, []),
+    _t("configurar_permisos_automaticos",
+       "Activa o desactiva los permisos permanentes para descargar en Descargas "
+       "o abrir aplicaciones instaladas sin preguntar. Usalo solo si Angel lo "
+       "pide directamente. Cambiarlo requiere su confirmacion una vez.",
+       {"descargas": {"type": "boolean", "description": "Permitir descargas sin preguntar"},
+        "programas": {"type": "boolean", "description": "Permitir abrir apps sin preguntar"}}, []),
 
     _t("abrir_pagina_web",
        "Le abre a Angel una pagina en su navegador para que haga algo alli el "
@@ -2443,6 +2454,15 @@ except Exception as _e:
     PROBLEMAS.append("El modulo de internet no ha cargado: %s" % _e)
 
 try:
+    import preferencias as _Pf
+    _FUNCIONES.update({
+        "permisos_automaticos": _Pf.permisos_automaticos,
+        "configurar_permisos_automaticos": _Pf.configurar_permisos_automaticos,
+    })
+except Exception as _e:
+    PROBLEMAS.append("Las preferencias no han cargado: %s" % _e)
+
+try:
     import navegador as _Nv
     _FUNCIONES.update({"web_abrir": _Nv.web_abrir,
                        "web_leer": _Nv.web_leer,
@@ -2920,7 +2940,7 @@ NECESITAN_PERMISO = {"escribir_archivo", "abrir_en_windows", "google_crear_event
                      "ejecutar_orden", "hacer_tarea",
                      "instalar_programa", "descargar_archivo", "abrir_pagina_web",
                      "web_abrir", "web_actuar",
-                     "guardar_clave",
+                     "guardar_clave", "configurar_permisos_automaticos",
                      # las manos: si el modo manos esta encendido no vuelven a
                      # preguntar, pero necesitan la ventana por si esta apagado
                      "ordenar_fotos", "hacer_presupuesto", "unir_pdfs", "fotos_a_pdf",
@@ -3076,6 +3096,8 @@ ROTULOS = {
     "buscar_programa": "mirando que hay para instalar",
     "instalar_programa": "instalandotelo",
     "descargar_archivo": "bajandotelo de internet",
+    "permisos_automaticos": "mirando tus permisos automaticos",
+    "configurar_permisos_automaticos": "guardando tus permisos automaticos",
     "abrir_pagina_web": "abriendote la pagina",
     "guardar_clave": "guardandote la clave",
     "ver_tareas_pendientes": "mirando que te han dejado pendiente",
@@ -3273,7 +3295,8 @@ GRUPOS = [
                         "resultado_de_tarea"]),
     ("Traerlo de internet", ["buscar_programa", "instalar_programa",
                              "descargar_archivo", "abrir_pagina_web",
-                             "guardar_clave"]),
+                             "guardar_clave", "permisos_automaticos",
+                             "configurar_permisos_automaticos"]),
     ("Avisarte a tiempo", ["recordarme", "poner_temporizador",
                            "ver_recordatorios", "quitar_recordatorio"]),
     ("Tus fotos y tus videos", ["ordenar_fotos", "datos_de_foto",

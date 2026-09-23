@@ -1,4 +1,4 @@
-﻿import urllib.request
+import urllib.request
 import re
 
 url = "https://suno.com/s/UA4gy95wpKptFMM7"

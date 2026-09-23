@@ -1,10 +1,11 @@
 {
-  "version": "1.14.0",
+  "version": "1.15.0",
   "fecha": "2026-09-23",
   "novedades": [
-    "El movil revisa controles e instrucciones antes de operar programas del ordenador.",
-    "Sobri distingue acciones enviadas a Android de resultados realmente confirmados.",
-    "Escritorio y movil comparten al momento las esperas de modelos que fallan o agotan su cuota."
+    "Descargas de Internet a Descargas sin preguntar cuando el dueño lo autoriza",
+    "Apertura directa de aplicaciones instaladas con nombres claros",
+    "Permisos privados y revocables; instalación y órdenes conservan su confirmación",
+    "La aplicación móvil respeta el interruptor de control del ordenador"
   ],
   "archivos": {
     "ACTUALIZACIONES-COMO-ACTIVARLO.txt": {
@@ -48,7 +49,7 @@
       "bytes": 1996
     },
     "actualizaciones.py": {
-      "sha256": "37ca076ced03a1dfd73d14161132785ce3de56eddd4f6f02fe78481402f52818",
+      "sha256": "ffe7aedef8b98392fb9a0cfd288f78b8ca7b076d168b9c35101b5d960367fde6",
       "bytes": 21066
     },
     "agenda.py": {
@@ -56,8 +57,8 @@
       "bytes": 13379
     },
     "asistente.py": {
-      "sha256": "5f8487ee32a1906ae8899a2ef8fb67b846c3d1fdf8b7051058471d064efc3e4f",
-      "bytes": 168570
+      "sha256": "23d0d7cb9bfe3aa7a3fe141136af940994f502a223cf04afdb38ebe95f501477",
+      "bytes": 168689
     },
     "autorizar_google.py": {
       "sha256": "73d01d7777d0108a8ed8d950b9d8dd8390d25b82a068e36269e99c881bec4a7a",
@@ -116,8 +117,8 @@
       "bytes": 16740
     },
     "descargar.py": {
-      "sha256": "df64f17697d99bf172bc8281f8b1cee4b117aafadf4329d3b8ae87738f445780",
-      "bytes": 1042
+      "sha256": "2e0e3303e839e4c1ff84700dde2a5a2416c76be025288ced86926a978388d2aa",
+      "bytes": 1063
     },
     "dron.py": {
       "sha256": "fdb85d85b9c8a665b07765ad49c80117f0dbd3728754b528412d309c8115415f",
@@ -132,16 +133,16 @@
       "bytes": 25799
     },
     "herramientas.py": {
-      "sha256": "bfbab2cffbc0eaa5f0641635fed1ca81f00fce138ac2ca9154dc31e2cbfd5bf3",
-      "bytes": 173807
+      "sha256": "271f72adca7c808ee904316c9b2206a60bf7d6c7e751c534a238c63c63f590f4",
+      "bytes": 175092
     },
     "instalador.py": {
-      "sha256": "6f950e966e9f5e72a9897adc2cea362037238e78f8edee8da9a175734a2a2c41",
-      "bytes": 29715
+      "sha256": "c9b50ec7317c853e0c5e1a50574bbdbd5053bbce9b792d55347767277b0a9064",
+      "bytes": 29964
     },
     "internet.py": {
-      "sha256": "791340cfe7aa41e9ecb056589786f67af0e297993d388c8d47dcfa9a7fd5b01f",
-      "bytes": 12379
+      "sha256": "df1bbfa4f71e32879769662dbe941cfbef567f58b562a74a74b044860b726f66",
+      "bytes": 12561
     },
     "manos.py": {
       "sha256": "7f69579042a49186004e94bda8bee724bf8de821037ae13e405074a9135d2a42",
@@ -160,8 +161,8 @@
       "bytes": 20674
     },
     "movil.py": {
-      "sha256": "27584abb437282bf592e639360d3cf5edd8e461e94574b614d92a276d5540b5a",
-      "bytes": 86410
+      "sha256": "47921193421530909bc5b803b80a9f5883f4ee426aee38a7b18cefd4147dcc82",
+      "bytes": 86683
     },
     "muneco.py": {
       "sha256": "f6dd7f772e8c331dd2e8bcebc154cf90f327f20bcadf4cfe71b307285eb07d53",
@@ -212,8 +213,8 @@
       "bytes": 5712
     },
     "operar.py": {
-      "sha256": "3ff7aace3b8744f6808c993954962f99b932ae2091cc13b73a0ca71d6726faf0",
-      "bytes": 11205
+      "sha256": "ffa5b4584a791b21d0e0f0b5a2c4de726c49e84d4c57c2ff05e13bbf0832c77d",
+      "bytes": 11416
     },
     "oportunidades.py": {
       "sha256": "3d367a70bd3b786701712741db251744f6a94fabc671f72d1ee3853bb687c6e4",
@@ -230,6 +231,10 @@
     "persistencia.py": {
       "sha256": "aa33d2b55a5cd61586452df6b3289b55a569390d3549fa4851febee3ccd0a273",
       "bytes": 4035
+    },
+    "preferencias.py": {
+      "sha256": "16c3acaa072580483355d4a5cf96b4a65e76fff9dd89889b111bfc6b34c4f084",
+      "bytes": 2449
     },
     "reaper_ctl.py": {
       "sha256": "77bd9b257d8895b9b049f240a75f6849f0f4a52f9e993f648d8fc231902100c3",
@@ -271,6 +276,5 @@
       "sha256": "75753c6747b9b9103bc932c438945bf73e34d09f37e5d0cb1c5240b398aa5f02",
       "bytes": 8792
     }
-  },
-  "commit": "f5f3009d169b6499d975e5bd791beb2615bf47e2"
+  }
 }

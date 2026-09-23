@@ -6,13 +6,13 @@ Abrir y cerrar programas, volumen, multimedia, portapapeles, capturas de
 pantalla y ver que ventanas hay abiertas.
 
 SEGURIDAD
-  Lo que modifica algo (abrir o cerrar un programa) pasa por una ventana de
-  confirmacion. Sobri lee paginas web, y una pagina podria intentar darle
-  ordenes: la confirmacion es justo lo que corta eso.
+  Abrir un programa conocido puede quedar autorizado por el dueño en su
+  config privada. Las coincidencias dudosas y cerrar programas preguntan.
   Lo inofensivo (subir el volumen, listar programas, leer el portapapeles)
   no pregunta nada.
 """
 import os, time, ctypes, difflib, subprocess, unicodedata
+import preferencias as Pf
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 
@@ -150,7 +150,12 @@ def abrir_programa(nombre, permiso=None):
         return ("No encuentro ningun programa llamado '%s'.%s\n"
                 "Usa listar_programas para ver los disponibles." % (nombre, extra))
     pregunta = "Sobri quiere abrir este programa:\n\n%s\n\nLe dejas?" % prog["nombre"]
-    if permiso is None or not permiso(pregunta):
+    clave = _sin_tildes(nombre)
+    indice = _obtener_indice()
+    claro = (clave in indice or
+             (len(clave) >= 4 and sum(clave in k for k in indice) == 1))
+    automatico = Pf.activada(Pf.PROGRAMAS) and claro
+    if not automatico and (permiso is None or not permiso(pregunta)):
         return "El usuario no ha dado permiso, no he abierto nada."
     try:
         ruta = prog["ruta"]

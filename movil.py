@@ -1096,9 +1096,10 @@ def sistema(manos):
               "avisa antes de hacer algo que no tenga vuelta atras.")
     else:
         s += ("El interruptor de tocar el ordenador esta APAGADO: puedes mirar, "
-              "buscar y leer, pero cualquier herramienta que escriba, abra "
-              "programas o mueva el raton va a fallar. Si hace falta una de "
-               "esas, no lo intentes: dile que encienda el interruptor.")
+              "buscar, leer y guardar descargas previamente autorizadas en "
+              "Descargas. Abrir programas, escribir otros archivos o mover el "
+              "raton sigue bloqueado. Si hace falta una de esas acciones, "
+              "dile que encienda el interruptor.")
     try:
         import redes as _Rd
         s += _Rd.bloque_de_prompt()
@@ -1292,6 +1293,9 @@ def responder(texto, historial, manos, chat_whatsapp="", sesion_archivo="movil:s
                 resultado = ("Accion enviada a la aplicacion Android: %s. "
                              "Ejecucion pendiente en el telefono; no hay "
                              "confirmacion del resultado." % nombre)
+            elif nombre == "abrir_programa" and not manos:
+                resultado = ("No he podido abrir el programa: el interruptor "
+                             "de tocar el ordenador esta apagado en el movil.")
             elif Op.requiere_preparacion(nombre) and nombre not in preparadas_al_empezar:
                 try:
                     suficiente, informe = Op.preparar(nombre, args, texto)
