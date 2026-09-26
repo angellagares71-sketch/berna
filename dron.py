@@ -431,3 +431,25 @@ def calibrar_gimbal(modelo=""):
     partes.append("Diselo paso a paso, de uno en uno si esta con el dron "
                   "delante, y espera a que te diga que ha hecho cada paso.")
     return "\n".join(partes)
+
+
+def abrir_calibrar_gimbal():
+    """Abre el programa Calibrar Gimbal, el de la ventana con los pasos."""
+    import sys
+    import subprocess
+    programa = os.path.join(BASE, "calibrar_gimbal.py")
+    if not os.path.isfile(programa):
+        return ("No encuentro el programa Calibrar Gimbal (calibrar_gimbal.py). "
+                "Dile que actualice Sobri; mientras, usa calibrar_gimbal.")
+    python = sys.executable
+    w = os.path.join(os.path.dirname(python), "pythonw.exe")
+    if os.path.isfile(w):
+        python = w
+    try:
+        subprocess.Popen([python, programa], cwd=BASE,
+                         creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
+    except Exception as e:
+        return "No he podido abrir Calibrar Gimbal: %s" % e
+    return ("Estoy abriendo Calibrar Gimbal; sale en unos segundos. Ahi elige "
+            "el dron y le va dando los pasos de uno en uno. Si quiere tenerlo "
+            "en el escritorio, abajo a la derecha hay un boton para eso.")
