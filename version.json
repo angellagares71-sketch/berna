@@ -1,10 +1,9 @@
 {
-  "version": "1.15.4",
+  "version": "1.15.5",
   "fecha": "2026-09-26",
   "novedades": [
-    "Programa Calibrar Gimbal: ventana con los pasos de uno en uno para el DJI Mini 3, Mini 3 Pro, Mini 4 Pro, Avata y DJI FPV",
-    "Se abre con doble clic en 'Calibrar Gimbal.bat', y su boton 'Poner en el escritorio' deja el icono en el escritorio",
-    "Esta actualizacion no toca asistente.py, cerebro.py, redes.py, dron.py ni herramientas.py, para no pisar cambios que tengas sin publicar"
+    "Pantalla para publicar Sobri en GitHub: doble clic en 'Publicar con pantalla.bat', ya trae el numero que toca y solo hay que pulsar Publicar",
+    "Como la 1.15.4, no toca asistente.py, cerebro.py, redes.py, dron.py ni herramientas.py"
   ],
   "archivos": {
     "ACTUALIZACIONES-COMO-ACTIVARLO.txt": {
@@ -48,7 +47,7 @@
       "bytes": 1996
     },
     "actualizaciones.py": {
-      "sha256": "de352d2e142b392af1e0b2109e0cb59fda27ead2ece27924fe00744b54d42dd3",
+      "sha256": "de987dfc158de6e28c32b5bb34c97dd5805f4d3eb806411b741debb1d6609478",
       "bytes": 21066
     },
     "agenda.py": {
@@ -262,7 +261,15 @@
     "Calibrar Gimbal.bat": {
       "sha256": "d517c09b2fb62d1060606f100b994cb39a1e00af526ba267074999ff18ecad3f",
       "bytes": 95
+    },
+    "publicar_pantalla.py": {
+      "sha256": "087270afc6a480909e80c64c08b8ebdd1ec6ae7c33b8706481f8a9a8a9269038",
+      "bytes": 12173
+    },
+    "Publicar con pantalla.bat": {
+      "sha256": "93428e1f7e5b478f71dde74044bb1cb051184bfd3eb307f473c67af1dbc15412",
+      "bytes": 97
     }
   },
-  "commit": "5303bf258cd77fe704240130f1afe11cc4f540dc"
+  "commit": "57fca62cc27786d3cb4559bb9e52fa0e72b5b55e"
 }
