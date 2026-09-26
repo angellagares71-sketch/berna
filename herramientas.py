@@ -1128,6 +1128,12 @@ ESQUEMAS = [
        "hable de calibrar el gimbal o de que la imagen sale torcida.",
        {"modelo": _S("Modelo del dron. Vacio para el que tenga guardado")}, []),
 
+    _t("abrir_calibrar_gimbal",
+       "Abre el programa Calibrar Gimbal: una ventana aparte donde Angel "
+       "elige el dron y va viendo los pasos de la calibracion de uno en uno. "
+       "Usalo cuando diga 'abre calibrar gimbal' o prefiera verlo en "
+       "pantalla en vez de que se lo digas.", {}, []),
+
     # ---------------- presupuestos y PDF ----------------
     _t("hacer_presupuesto",
        "Hace un presupuesto en PDF con su nombre, los conceptos, el IVA y el "
@@ -2514,6 +2520,7 @@ try:
         "hora_dorada": _Dr.hora_dorada,
         "guardar_mi_dron": _Dr.guardar_mi_dron,
         "calibrar_gimbal": _Dr.calibrar_gimbal,
+        "abrir_calibrar_gimbal": _Dr.abrir_calibrar_gimbal,
     })
 except Exception as _e:
     PROBLEMAS.append("El modulo del dron no ha cargado: %s" % _e)

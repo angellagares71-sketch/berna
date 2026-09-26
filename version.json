@@ -1,9 +1,9 @@
 {
-  "version": "1.15.2",
+  "version": "1.15.3",
   "fecha": "2026-09-26",
   "novedades": [
-    "Calibrar el gimbal paso a paso: DJI Mini 3, Mini 3 Pro, Mini 4 Pro, Avata y DJI FPV",
-    "El DJI FPV ya se reconoce al preguntar si se puede volar (limite de viento 39 km/h)"
+    "Programa nuevo Calibrar Gimbal: ventana con los pasos de uno en uno para el DJI Mini 3, Mini 3 Pro, Mini 4 Pro, Avata y DJI FPV",
+    "Se abre con doble clic en 'Calibrar Gimbal.bat', con su boton 'Poner en el escritorio', o pidiendoselo a Sobri"
   ],
   "archivos": {
     "ACTUALIZACIONES-COMO-ACTIVARLO.txt": {
@@ -47,7 +47,7 @@
       "bytes": 1996
     },
     "actualizaciones.py": {
-      "sha256": "c3e1d7043013c2f6014408c36a8850d57a637bb21dce7deac12c4cd2d80b286d",
+      "sha256": "673b1fea787a5c48e803429f0716f38ae40f284c6a6efe2b62949407de48c333",
       "bytes": 21066
     },
     "agenda.py": {
@@ -119,8 +119,8 @@
       "bytes": 1063
     },
     "dron.py": {
-      "sha256": "5fc0a3855e511a0c9543dfb7f665c2482dcfa9b6a9ce02faf5cbf3f43fba0a92",
-      "bytes": 18138
+      "sha256": "769432224b0fbf92ab5e7fb2579b5be909e552e1d5f73ee31a1a353e68d9a547",
+      "bytes": 19136
     },
     "editor.py": {
       "sha256": "d36d00be1b694bb63e8ff48897146269eca76cc1250ae6b8b489e0a4027450ed",
@@ -131,8 +131,8 @@
       "bytes": 25799
     },
     "herramientas.py": {
-      "sha256": "e3eccc51218a1bb03af62c15a3358a7cf46e491c81988a0534c69aed07249032",
-      "bytes": 175552
+      "sha256": "ff0717c848a0471c265f77f8fac5a483743023f18085c413b1e3422b1399221b",
+      "bytes": 175932
     },
     "instalador.py": {
       "sha256": "c9b50ec7317c853e0c5e1a50574bbdbd5053bbce9b792d55347767277b0a9064",
@@ -273,7 +273,15 @@
     "whatsapp.py": {
       "sha256": "75753c6747b9b9103bc932c438945bf73e34d09f37e5d0cb1c5240b398aa5f02",
       "bytes": 8792
+    },
+    "calibrar_gimbal.py": {
+      "sha256": "4464973dfdc55a9dcd8bd7366b9e36cc0007b2a52a22409d07a95e3272911c29",
+      "bytes": 14793
+    },
+    "Calibrar Gimbal.bat": {
+      "sha256": "d517c09b2fb62d1060606f100b994cb39a1e00af526ba267074999ff18ecad3f",
+      "bytes": 95
     }
   },
-  "commit": "0fdf01f98a31e03f60c54ce274a563ec5251ae74"
+  "commit": "6e742bdd004ea9f4065073a3cb3edb0693bb7506"
 }
