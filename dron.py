@@ -49,6 +49,9 @@ DRONES = {
     "air 3": 43.0, "air 2s": 38.5, "air 3s": 43.0,
     "mavic 3": 43.0, "mavic 3 pro": 43.0, "mavic 3 classic": 43.0,
     "mavic 2": 38.5, "avata": 38.5, "neo": 29.0,
+    # DJI FPV: DJI da un margen de 39-49 km/h; se coge el de abajo, que es
+    # el prudente.
+    "fpv": 39.0,
 }
 LIMITE_POR_DEFECTO = 36.0        # dron pequeno, prudente
 
