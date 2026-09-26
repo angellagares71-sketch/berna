@@ -18,8 +18,10 @@ QUE NO HACE, Y ES A PROPOSITO
   y una orden mal mandada puede dejar el gimbal peor de lo que estaba.
 
 DE DONDE SALEN LOS PASOS
-  De `dron.GIMBAL`, lo mismo que usa Sobri al hablar. Asi hay una sola lista
-  y el programa y Sobri no pueden decir cosas distintas.
+  De `GIMBAL`, aqui mismo. dron.py los importa de aqui para que Sobri, al
+  hablar, diga lo mismo que la ventana. Van en este archivo y no en dron.py
+  para que el programa funcione suelto aunque el dron.py de ese ordenador sea
+  de otra version.
 
 ARRANCARLO
   Doble clic en "Calibrar Gimbal.bat" (en C:\Asistente), o en el acceso directo
@@ -33,13 +35,13 @@ BASE = os.path.dirname(os.path.abspath(__file__))
 if BASE not in sys.path:
     sys.path.insert(0, BASE)
 
-import dron
+import json
 
 TITULO = "Calibrar Gimbal"
 ATAJO = "Calibrar Gimbal"
 
 # Los pasos en los que hay que dejar el dron quieto. Se buscan en el texto del
-# paso para no tener que marcarlos a mano en dron.GIMBAL.
+# paso para no tener que marcarlos a mano en GIMBAL.
 _QUIETO = ("no toques", "sin mover", "no lo toques")
 
 COLOR_FONDO = "#1e1f24"
@@ -51,17 +53,111 @@ COLOR_HECHO = "#3fb950"
 COLOR_AVISO = "#e8912d"
 
 
+# ------------------------------------------------------------ los pasos
+# Donde se calibra el gimbal de cada modelo. La calibracion la hace el propio
+# dron desde la app oficial (DJI Fly) o desde las gafas.
+_PASOS_DJI_FLY = [
+    "Quitale el protector del gimbal con el dron APAGADO y despliega los "
+    "brazos.",
+    "Ponlo en una superficie plana y firme, lejos de coches y de hierros "
+    "(nada de garajes).",
+    "Enciende el mando y el dron y abre DJI Fly hasta ver la imagen de la "
+    "camara.",
+    "Toca los tres puntos (...) de arriba a la derecha > Control > "
+    "Calibracion del gimbal > Automatica.",
+    "No toques el dron ni la mesa hasta que la app diga que ha terminado "
+    "(tarda menos de un minuto).",
+    "Apaga y enciende el dron para que se quede bien.",
+    "Si el horizonte sigue un pelin torcido: en el mismo sitio elige Manual "
+    "y ajusta el giro (roll) a mano, poco a poco, mirando la imagen.",
+]
+
+_PASOS_GAFAS = [
+    "Enciende el dron, las gafas y el mando, y espera a que se vinculen.",
+    "Deja el dron en una superficie plana y firme, lejos de hierros, y no "
+    "lo toques.",
+    "En las gafas abre el menu: Ajustes > Control > Calibracion del gimbal "
+    "> Auto. Con las FPV Goggles V2 se entra con la palanquita (joystick) "
+    "de las gafas; con las Goggles 2 y las Goggles Integra, con la "
+    "palanquita o tocando el lateral.",
+    "Espera sin mover nada a que las gafas digan que ha terminado.",
+    "Apaga y enciende el dron.",
+]
+
+GIMBAL = {
+    "mini 3": {
+        "nombre": "DJI Mini 3", "ejes": 3, "donde": "la app DJI Fly",
+        "pasos": _PASOS_DJI_FLY,
+    },
+    "mini 3 pro": {
+        "nombre": "DJI Mini 3 Pro", "ejes": 3, "donde": "la app DJI Fly",
+        "pasos": _PASOS_DJI_FLY,
+    },
+    "mini 4 pro": {
+        "nombre": "DJI Mini 4 Pro", "ejes": 3, "donde": "la app DJI Fly",
+        "pasos": _PASOS_DJI_FLY,
+    },
+    "avata": {
+        "nombre": "DJI Avata", "ejes": 1, "donde": "las gafas",
+        "pasos": _PASOS_GAFAS,
+        "nota": "El gimbal del Avata solo mueve la inclinacion (un eje); lo "
+                "demas lo estabiliza la camara por software, asi que un "
+                "horizonte un poco torcido en vuelo rapido es normal.",
+    },
+    "fpv": {
+        "nombre": "DJI FPV", "ejes": 1, "donde": "las gafas",
+        "pasos": _PASOS_GAFAS,
+        "nota": "El gimbal del DJI FPV solo mueve la inclinacion (un eje). En "
+                "modo manual (M) el horizonte va con el dron, y eso no se "
+                "arregla calibrando.",
+    },
+}
+
+SI_SIGUE_MAL = (
+    "Si despues de calibrar sigue torcido o temblando: mira que no quede "
+    "ningun resto del protector ni pelos en el gimbal, actualiza el firmware "
+    "(desde la app, las gafas o DJI Assistant 2) y vuelve a calibrar. Si da "
+    "error de motor del gimbal o se sigue moviendo solo, eso ya es del "
+    "servicio tecnico de DJI: no lo fuerces con la mano.")
+
+
+def _cfg():
+    try:
+        with open(os.path.join(BASE, "config.json"), "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return {}
+
+
+def modelo_gimbal(modelo=""):
+    """La clave de GIMBAL para ese modelo, o '' si no esta en la lista.
+
+    Sin modelo se mira el que Sobri tenga guardado en config.json.
+    """
+    m = str(modelo or _cfg().get("dron_modelo") or "").strip().lower()
+    m = m.replace("dji", "").strip()
+    if not m:
+        return ""
+    if m in GIMBAL:
+        return m
+    # la clave mas larga que aparezca: asi "mini 3 pro" no se queda en "mini 3"
+    for k in sorted(GIMBAL, key=len, reverse=True):
+        if k in m:
+            return k
+    return ""
+
+
 # ------------------------------------------------------------ la logica
 # Separada de la ventana para poder probarla sin pantalla.
 def modelos():
-    """(clave, nombre) de cada dron, en el orden de dron.GIMBAL."""
-    return [(k, v["nombre"]) for k, v in dron.GIMBAL.items()]
+    """(clave, nombre) de cada dron, en el orden de GIMBAL."""
+    return [(k, v["nombre"]) for k, v in GIMBAL.items()]
 
 
 def modelo_guardado():
     """La clave del dron que Angel tiene guardado en Sobri, o ''."""
     try:
-        return dron._modelo_gimbal("")
+        return modelo_gimbal("")
     except Exception:
         return ""
 
@@ -89,7 +185,7 @@ def titulo_corto(texto, maximo=50):
 
 
 def resumen(clave):
-    g = dron.GIMBAL[clave]
+    g = GIMBAL[clave]
     return "%s  -  gimbal de %d eje%s  -  se calibra desde %s" % (
         g["nombre"], g["ejes"], "s" if g["ejes"] > 1 else "", g["donde"])
 
@@ -229,7 +325,7 @@ class App:
                       font=("Segoe UI", 14)).pack(pady=60)
 
     def elegir(self, clave):
-        if clave not in dron.GIMBAL:
+        if clave not in GIMBAL:
             return
         self.clave = clave
         self.paso = 0
@@ -241,7 +337,7 @@ class App:
     def _pantalla_pasos(self):
         tk = self.tk
         self._limpiar()
-        pasos = dron.GIMBAL[self.clave]["pasos"]
+        pasos = GIMBAL[self.clave]["pasos"]
 
         # a la izquierda, la lista entera
         lista = tk.Frame(self.cuerpo, bg=COLOR_TARJETA, width=270)
@@ -294,7 +390,7 @@ class App:
         self._pintar_paso()
 
     def _pintar_paso(self):
-        pasos = dron.GIMBAL[self.clave]["pasos"]
+        pasos = GIMBAL[self.clave]["pasos"]
         n = self.paso
         self.contador.configure(text="Paso %d de %d" % (n + 1, len(pasos)))
         self.texto_paso.configure(text=pasos[n])
@@ -317,14 +413,14 @@ class App:
     def _pantalla_final(self):
         tk = self.tk
         self._limpiar()
-        g = dron.GIMBAL[self.clave]
+        g = GIMBAL[self.clave]
         tk.Label(self.cuerpo, text="\u2714  Calibracion terminada", bg=COLOR_FONDO,
                  fg=COLOR_HECHO, font=("Segoe UI", 20, "bold")).pack(
                      anchor="w", pady=(10, 10))
         texto = []
         if g.get("nota"):
             texto.append("Ojo: " + g["nota"])
-        texto.append(dron._SI_SIGUE_MAL)
+        texto.append(SI_SIGUE_MAL)
         tk.Label(self.cuerpo, text="\n\n".join(texto), bg=COLOR_FONDO,
                  fg=COLOR_TEXTO, justify="left", anchor="w", wraplength=820,
                  font=("Segoe UI", 12)).pack(anchor="w", fill="x")
@@ -338,7 +434,7 @@ class App:
     def siguiente(self):
         if not self.clave or not self.etiquetas_lista:
             return
-        if self.paso >= len(dron.GIMBAL[self.clave]["pasos"]) - 1:
+        if self.paso >= len(GIMBAL[self.clave]["pasos"]) - 1:
             self._pantalla_final()
             return
         self.paso += 1

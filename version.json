@@ -1,9 +1,10 @@
 {
-  "version": "1.15.3",
+  "version": "1.15.4",
   "fecha": "2026-09-26",
   "novedades": [
-    "Programa nuevo Calibrar Gimbal: ventana con los pasos de uno en uno para el DJI Mini 3, Mini 3 Pro, Mini 4 Pro, Avata y DJI FPV",
-    "Se abre con doble clic en 'Calibrar Gimbal.bat', con su boton 'Poner en el escritorio', o pidiendoselo a Sobri"
+    "Programa Calibrar Gimbal: ventana con los pasos de uno en uno para el DJI Mini 3, Mini 3 Pro, Mini 4 Pro, Avata y DJI FPV",
+    "Se abre con doble clic en 'Calibrar Gimbal.bat', y su boton 'Poner en el escritorio' deja el icono en el escritorio",
+    "Esta actualizacion no toca asistente.py, cerebro.py, redes.py, dron.py ni herramientas.py, para no pisar cambios que tengas sin publicar"
   ],
   "archivos": {
     "ACTUALIZACIONES-COMO-ACTIVARLO.txt": {
@@ -47,16 +48,12 @@
       "bytes": 1996
     },
     "actualizaciones.py": {
-      "sha256": "673b1fea787a5c48e803429f0716f38ae40f284c6a6efe2b62949407de48c333",
+      "sha256": "de352d2e142b392af1e0b2109e0cb59fda27ead2ece27924fe00744b54d42dd3",
       "bytes": 21066
     },
     "agenda.py": {
       "sha256": "f4e7a16a8994d60eacf6abd790f3eb0f7db08414b0c8eb4a12254dbd2e89b0fa",
       "bytes": 13379
-    },
-    "asistente.py": {
-      "sha256": "a9fb4797ccd0de2edcd453c7b688c78bb449379bbdd3b2a9832f51e49be0f345",
-      "bytes": 168760
     },
     "autorizar_google.py": {
       "sha256": "73d01d7777d0108a8ed8d950b9d8dd8390d25b82a068e36269e99c881bec4a7a",
@@ -81,10 +78,6 @@
     "cantar.py": {
       "sha256": "6d35a6e289ce26a8b4789faabb5ea19b73a147179b696479160a60719d21d4c4",
       "bytes": 15903
-    },
-    "cerebro.py": {
-      "sha256": "9056dd56e45c5d1bc066c3d8b247d6856d06cf73de41ae999674e49ad3023ff5",
-      "bytes": 17742
     },
     "codigo.py": {
       "sha256": "68cf8ed62998a66ac021ffdeddc55c640be18103a20168a890d0117f2b3a9730",
@@ -118,10 +111,6 @@
       "sha256": "2e0e3303e839e4c1ff84700dde2a5a2416c76be025288ced86926a978388d2aa",
       "bytes": 1063
     },
-    "dron.py": {
-      "sha256": "769432224b0fbf92ab5e7fb2579b5be909e552e1d5f73ee31a1a353e68d9a547",
-      "bytes": 19136
-    },
     "editor.py": {
       "sha256": "d36d00be1b694bb63e8ff48897146269eca76cc1250ae6b8b489e0a4027450ed",
       "bytes": 15698
@@ -129,10 +118,6 @@
     "estilos.py": {
       "sha256": "07e2f6c6426c4259884450a71fa84d9c483ef54a7740511d278640da5b9f1786",
       "bytes": 25799
-    },
-    "herramientas.py": {
-      "sha256": "ff0717c848a0471c265f77f8fac5a483743023f18085c413b1e3422b1399221b",
-      "bytes": 175932
     },
     "instalador.py": {
       "sha256": "c9b50ec7317c853e0c5e1a50574bbdbd5053bbce9b792d55347767277b0a9064",
@@ -238,10 +223,6 @@
       "sha256": "77bd9b257d8895b9b049f240a75f6849f0f4a52f9e993f648d8fc231902100c3",
       "bytes": 37438
     },
-    "redes.py": {
-      "sha256": "1e43ee9dd6e9a584d5de23ededb5930196cde419f73468f989569b30c320e0ce",
-      "bytes": 119675
-    },
     "suno.py": {
       "sha256": "1e217c2505b80b051fb4be08f8f7a6abee4eb182bcf64f00ae815589fe1f6d7a",
       "bytes": 7424
@@ -275,13 +256,13 @@
       "bytes": 8792
     },
     "calibrar_gimbal.py": {
-      "sha256": "4464973dfdc55a9dcd8bd7366b9e36cc0007b2a52a22409d07a95e3272911c29",
-      "bytes": 14793
+      "sha256": "f276b367c7819166297bd6d4a36fa1f8692d0f9fe70e2a26e92332189c1c4995",
+      "bytes": 18502
     },
     "Calibrar Gimbal.bat": {
       "sha256": "d517c09b2fb62d1060606f100b994cb39a1e00af526ba267074999ff18ecad3f",
       "bytes": 95
     }
   },
-  "commit": "6e742bdd004ea9f4065073a3cb3edb0693bb7506"
+  "commit": "5303bf258cd77fe704240130f1afe11cc4f540dc"
 }

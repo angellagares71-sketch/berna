@@ -321,88 +321,17 @@ def guardar_mi_dron(modelo, lugar=""):
 
 
 # ------------------------------------------------------------ calibrar el gimbal
-# Donde se calibra el gimbal de cada modelo. La calibracion la hace el propio
-# dron desde la app oficial (DJI Fly) o desde las gafas: Sobri no le manda
-# ordenes al dron, le guia paso a paso. Es a proposito: el protocolo interno
-# de DJI no es publico y una orden mal mandada puede dejar el gimbal peor.
-_PASOS_DJI_FLY = [
-    "Quitale el protector del gimbal con el dron APAGADO y despliega los "
-    "brazos.",
-    "Ponlo en una superficie plana y firme, lejos de coches y de hierros "
-    "(nada de garajes).",
-    "Enciende el mando y el dron y abre DJI Fly hasta ver la imagen de la "
-    "camara.",
-    "Toca los tres puntos (...) de arriba a la derecha > Control > "
-    "Calibracion del gimbal > Automatica.",
-    "No toques el dron ni la mesa hasta que la app diga que ha terminado "
-    "(tarda menos de un minuto).",
-    "Apaga y enciende el dron para que se quede bien.",
-    "Si el horizonte sigue un pelin torcido: en el mismo sitio elige Manual "
-    "y ajusta el giro (roll) a mano, poco a poco, mirando la imagen.",
-]
-
-_PASOS_GAFAS = [
-    "Enciende el dron, las gafas y el mando, y espera a que se vinculen.",
-    "Deja el dron en una superficie plana y firme, lejos de hierros, y no "
-    "lo toques.",
-    "En las gafas abre el menu: Ajustes > Control > Calibracion del gimbal "
-    "> Auto. Con las FPV Goggles V2 se entra con la palanquita (joystick) "
-    "de las gafas; con las Goggles 2 y las Goggles Integra, con la "
-    "palanquita o tocando el lateral.",
-    "Espera sin mover nada a que las gafas digan que ha terminado.",
-    "Apaga y enciende el dron.",
-]
-
-GIMBAL = {
-    "mini 3": {
-        "nombre": "DJI Mini 3", "ejes": 3, "donde": "la app DJI Fly",
-        "pasos": _PASOS_DJI_FLY,
-    },
-    "mini 3 pro": {
-        "nombre": "DJI Mini 3 Pro", "ejes": 3, "donde": "la app DJI Fly",
-        "pasos": _PASOS_DJI_FLY,
-    },
-    "mini 4 pro": {
-        "nombre": "DJI Mini 4 Pro", "ejes": 3, "donde": "la app DJI Fly",
-        "pasos": _PASOS_DJI_FLY,
-    },
-    "avata": {
-        "nombre": "DJI Avata", "ejes": 1, "donde": "las gafas",
-        "pasos": _PASOS_GAFAS,
-        "nota": "El gimbal del Avata solo mueve la inclinacion (un eje); lo "
-                "demas lo estabiliza la camara por software, asi que un "
-                "horizonte un poco torcido en vuelo rapido es normal.",
-    },
-    "fpv": {
-        "nombre": "DJI FPV", "ejes": 1, "donde": "las gafas",
-        "pasos": _PASOS_GAFAS,
-        "nota": "El gimbal del DJI FPV solo mueve la inclinacion (un eje). En "
-                "modo manual (M) el horizonte va con el dron, y eso no se "
-                "arregla calibrando.",
-    },
-}
-
-_SI_SIGUE_MAL = (
-    "Si despues de calibrar sigue torcido o temblando: mira que no quede "
-    "ningun resto del protector ni pelos en el gimbal, actualiza el firmware "
-    "(desde la app, las gafas o DJI Assistant 2) y vuelve a calibrar. Si da "
-    "error de motor del gimbal o se sigue moviendo solo, eso ya es del "
-    "servicio tecnico de DJI: no lo fuerces con la mano.")
+# Los pasos de cada modelo viven en calibrar_gimbal.py, el programa de la
+# ventana, para que ese programa funcione suelto aunque este archivo sea
+# viejo. Aqui se usan los mismos: Sobri y la ventana no pueden decir cosas
+# distintas. Sobri no manda ordenes al dron: guia paso a paso, porque el
+# protocolo interno de DJI no es publico.
+from calibrar_gimbal import GIMBAL, SI_SIGUE_MAL as _SI_SIGUE_MAL, modelo_gimbal
 
 
 def _modelo_gimbal(modelo=""):
     """La clave de GIMBAL para ese modelo, o '' si no esta en la lista."""
-    m = str(modelo or _cfg().get("dron_modelo") or "").strip().lower()
-    m = m.replace("dji", "").strip()
-    if not m:
-        return ""
-    if m in GIMBAL:
-        return m
-    # la clave mas larga que aparezca: asi "mini 3 pro" no se queda en "mini 3"
-    for k in sorted(GIMBAL, key=len, reverse=True):
-        if k in m:
-            return k
-    return ""
+    return modelo_gimbal(modelo or _cfg().get("dron_modelo") or "")
 
 
 def calibrar_gimbal(modelo=""):
