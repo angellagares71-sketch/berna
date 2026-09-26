@@ -1121,6 +1121,13 @@ ESQUEMAS = [
        {"modelo": _S("Por ejemplo DJI Mini 4 Pro"),
         "lugar": _S("Su zona habitual")}, ["modelo"]),
 
+    _t("calibrar_gimbal",
+       "Guia paso a paso para calibrar el gimbal del dron (camara torcida, "
+       "horizonte inclinado o gimbal que tiembla). Vale para DJI Mini 3, "
+       "Mini 3 Pro, Mini 4 Pro, Avata y DJI FPV. Usalo en cuanto Angel "
+       "hable de calibrar el gimbal o de que la imagen sale torcida.",
+       {"modelo": _S("Modelo del dron. Vacio para el que tenga guardado")}, []),
+
     # ---------------- presupuestos y PDF ----------------
     _t("hacer_presupuesto",
        "Hace un presupuesto en PDF con su nombre, los conceptos, el IVA y el "
@@ -2506,6 +2513,7 @@ try:
         "mejor_hora_para_volar": _Dr.mejor_hora_para_volar,
         "hora_dorada": _Dr.hora_dorada,
         "guardar_mi_dron": _Dr.guardar_mi_dron,
+        "calibrar_gimbal": _Dr.calibrar_gimbal,
     })
 except Exception as _e:
     PROBLEMAS.append("El modulo del dron no ha cargado: %s" % _e)

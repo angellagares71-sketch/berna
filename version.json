@@ -1,11 +1,9 @@
 {
-  "version": "1.15.0",
-  "fecha": "2026-09-23",
+  "version": "1.15.2",
+  "fecha": "2026-09-26",
   "novedades": [
-    "Descargas de Internet a Descargas sin preguntar cuando el dueño lo autoriza",
-    "Apertura directa de aplicaciones instaladas con nombres claros",
-    "Permisos privados y revocables; instalación y órdenes conservan su confirmación",
-    "La aplicación móvil respeta el interruptor de control del ordenador"
+    "Calibrar el gimbal paso a paso: DJI Mini 3, Mini 3 Pro, Mini 4 Pro, Avata y DJI FPV",
+    "El DJI FPV ya se reconoce al preguntar si se puede volar (limite de viento 39 km/h)"
   ],
   "archivos": {
     "ACTUALIZACIONES-COMO-ACTIVARLO.txt": {
@@ -49,7 +47,7 @@
       "bytes": 1996
     },
     "actualizaciones.py": {
-      "sha256": "ffe7aedef8b98392fb9a0cfd288f78b8ca7b076d168b9c35101b5d960367fde6",
+      "sha256": "c3e1d7043013c2f6014408c36a8850d57a637bb21dce7deac12c4cd2d80b286d",
       "bytes": 21066
     },
     "agenda.py": {
@@ -57,8 +55,8 @@
       "bytes": 13379
     },
     "asistente.py": {
-      "sha256": "23d0d7cb9bfe3aa7a3fe141136af940994f502a223cf04afdb38ebe95f501477",
-      "bytes": 168689
+      "sha256": "a9fb4797ccd0de2edcd453c7b688c78bb449379bbdd3b2a9832f51e49be0f345",
+      "bytes": 168760
     },
     "autorizar_google.py": {
       "sha256": "73d01d7777d0108a8ed8d950b9d8dd8390d25b82a068e36269e99c881bec4a7a",
@@ -121,8 +119,8 @@
       "bytes": 1063
     },
     "dron.py": {
-      "sha256": "fdb85d85b9c8a665b07765ad49c80117f0dbd3728754b528412d309c8115415f",
-      "bytes": 13129
+      "sha256": "5fc0a3855e511a0c9543dfb7f665c2482dcfa9b6a9ce02faf5cbf3f43fba0a92",
+      "bytes": 18138
     },
     "editor.py": {
       "sha256": "d36d00be1b694bb63e8ff48897146269eca76cc1250ae6b8b489e0a4027450ed",
@@ -133,8 +131,8 @@
       "bytes": 25799
     },
     "herramientas.py": {
-      "sha256": "271f72adca7c808ee904316c9b2206a60bf7d6c7e751c534a238c63c63f590f4",
-      "bytes": 175092
+      "sha256": "e3eccc51218a1bb03af62c15a3358a7cf46e491c81988a0534c69aed07249032",
+      "bytes": 175552
     },
     "instalador.py": {
       "sha256": "c9b50ec7317c853e0c5e1a50574bbdbd5053bbce9b792d55347767277b0a9064",
@@ -277,5 +275,5 @@
       "bytes": 8792
     }
   },
-  "commit": "d29b14f7dd3ba106f9d82a1cebd83e6c9bfa20f3"
+  "commit": "0fdf01f98a31e03f60c54ce274a563ec5251ae74"
 }
