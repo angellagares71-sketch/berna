@@ -1,11 +1,8 @@
 {
-  "version": "1.15.0",
-  "fecha": "2026-09-23",
+  "version": "1.15.1",
+  "fecha": "2026-09-26",
   "novedades": [
-    "Descargas de Internet a Descargas sin preguntar cuando el dueño lo autoriza",
-    "Apertura directa de aplicaciones instaladas con nombres claros",
-    "Permisos privados y revocables; instalación y órdenes conservan su confirmación",
-    "La aplicación móvil respeta el interruptor de control del ordenador"
+    "El DJI FPV ya se reconoce al preguntar si se puede volar (limite de viento 39 km/h)"
   ],
   "archivos": {
     "ACTUALIZACIONES-COMO-ACTIVARLO.txt": {
@@ -49,7 +46,7 @@
       "bytes": 1996
     },
     "actualizaciones.py": {
-      "sha256": "ffe7aedef8b98392fb9a0cfd288f78b8ca7b076d168b9c35101b5d960367fde6",
+      "sha256": "c86a19f149a915827b46a9dfcf5258c13f1f0d3ec7c3e707f8e9ba90e8c8f5a3",
       "bytes": 21066
     },
     "agenda.py": {
@@ -121,8 +118,8 @@
       "bytes": 1063
     },
     "dron.py": {
-      "sha256": "fdb85d85b9c8a665b07765ad49c80117f0dbd3728754b528412d309c8115415f",
-      "bytes": 13129
+      "sha256": "d814edd1a09fe432504a8d8a780aa020999382acfa2ed535a52e455957808868",
+      "bytes": 13240
     },
     "editor.py": {
       "sha256": "d36d00be1b694bb63e8ff48897146269eca76cc1250ae6b8b489e0a4027450ed",
